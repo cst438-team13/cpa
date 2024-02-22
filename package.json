@@ -10,6 +10,7 @@
     "@types/node": "20.2.5",
     "@types/react": "18.2.57",
     "@types/react-dom": "18.2.19",
+    "@types/antd": "^1.0.0",
     "npm-parallel": "^2.0.1",
     "ts-loader": "9.4.3",
     "ts-node": "10.9.2",
@@ -19,7 +20,6 @@
     "webpack-cli": "5.1.1"
   },
   "dependencies": {
-    "@types/antd": "^1.0.0",
     "antd": "^5.14.1",
     "express": "4.18.2",
     "nullthrows": "1.1.1",
