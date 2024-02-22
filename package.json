@@ -19,6 +19,8 @@
     "webpack-cli": "5.1.1"
   },
   "dependencies": {
+    "@types/antd": "^1.0.0",
+    "antd": "^5.14.1",
     "express": "4.18.2",
     "nullthrows": "1.1.1",
     "prettier": "^3.2.5",
