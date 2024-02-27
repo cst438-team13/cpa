@@ -15,9 +15,7 @@ export function LandingPage() {
     >
       <div
         style={{
-          padding: 24,
           display: "flex",
-          flexDirection: "column",
           gap: 8,
         }}
       >
