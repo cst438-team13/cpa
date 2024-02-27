@@ -7,7 +7,7 @@ const port = 3000;
 
 app.use(express.static("public"));
 
-app.get("/", (_req, res) => {
+app.get("*", (_req, res) => {
   const html = ReactDOMServer.renderToString(
     <html lang="en">
       <head>

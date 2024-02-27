@@ -1,18 +1,24 @@
 import React, { StrictMode } from "react";
-import ReactDOMClient from "react-dom/client";
-import nullthrows from "nullthrows";
+import ReactDOM from "react-dom/client";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { LandingPage } from "./pages/LandingPage";
 
-function main() {
-  const domRoot = document.getElementById("root");
-  const reactRoot = ReactDOMClient.createRoot(nullthrows(domRoot));
+function onLoad() {
+  const rootElement = document.getElementById("root");
+  const root = ReactDOM.createRoot(rootElement!);
 
-  // TODO: Use react-router to support other pages i.e. home
-  reactRoot.render(
+  root.render(
     <StrictMode>
-      <LandingPage />
+      <RouterProvider
+        router={createBrowserRouter([
+          {
+            path: "/",
+            element: <LandingPage />,
+          },
+        ])}
+      />
     </StrictMode>
   );
 }
 
-main();
+window.addEventListener("load", onLoad);
