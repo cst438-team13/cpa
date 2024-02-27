@@ -9,7 +9,7 @@
 *   }
 * 
 * We should do this in the .tsx file:
-*   const WideDiv = styled.div`
+*   const WideDiv = styled("div")`
 *     width: 20px;
 *   `;
 */
