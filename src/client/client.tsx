@@ -1,7 +1,7 @@
 import React, { StrictMode } from "react";
 import ReactDOMClient from "react-dom/client";
 import nullthrows from "nullthrows";
-import { App } from "./components/App";
+import { LandingPage } from "./pages/LandingPage";
 
 function main() {
   const domRoot = document.getElementById("root");
@@ -9,7 +9,7 @@ function main() {
 
   reactRoot.render(
     <StrictMode>
-      <App />
+      <LandingPage />
     </StrictMode>
   );
 }
