@@ -1,1 +1,15 @@
 @import url("https://cdn.jsdelivr.net/npm/reset-css@5.0.2/reset.min.css");
+
+/*
+* NOTE: We should avoid using this file. It's mostly here as a "just-in-case" but for individual component styles we want to use styled-components.
+* 
+* For example, if we have a div and we want it's width to 20px, instead of doing this in app.css:
+*   .wideDiv {
+*      width: 20px;
+*   }
+* 
+* We should do this in the .tsx file:
+*   const WideDiv = styled.div`
+*     width: 20px;
+*   `;
+*/
