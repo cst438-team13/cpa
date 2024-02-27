@@ -7,6 +7,7 @@ function main() {
   const domRoot = document.getElementById("root");
   const reactRoot = ReactDOMClient.createRoot(nullthrows(domRoot));
 
+  // TODO: Use react-router to support other pages i.e. home
   reactRoot.render(
     <StrictMode>
       <LandingPage />
