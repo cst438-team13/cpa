@@ -1,7 +1,7 @@
 *.DS_Store
 
 # Webpack output
-public/js/client.js
+public/js/bundle.js
 
 # Logs
 logs
