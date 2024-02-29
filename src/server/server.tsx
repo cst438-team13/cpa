@@ -38,12 +38,14 @@ function onInitServer() {
 
 console.log("Connecting to DB...");
 
+// Connect to DB, then start up server
 DB.init()
   .then(() => {
     console.log("Connected to DB");
-    onInitServer();
 
     app.listen(port, () => {
+      onInitServer();
+
       console.log(`Now running at http://localhost:${port}`);
     });
   })
