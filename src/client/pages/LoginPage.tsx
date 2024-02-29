@@ -2,17 +2,20 @@ import React, { useRef } from "react";
 import styled from "styled-components";
 import { Button, Form, Input, FormInstance } from "antd";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export function LoginPage() {
   const formRef = useRef<FormInstance>();
+  const navigate = useNavigate();
 
   const onSubmit = async (values) => {
     const res = await axios.post("/api/login", values);
 
     if (res.data.success) {
-      window.location.href = "/";
+      navigate("/");
     } else {
-      // TODO: show error message
+      // TODO: better error message
+      alert("Username or password was not recognized");
     }
   };
 

@@ -28,9 +28,14 @@ app.get("*", (_req, res) => {
   res.send(html);
 });
 
-app.post("/api/login", (_req, res) => {
+app.post("/api/login", async (req, res) => {
+  // TODO: hash passwords for security
+  const isUserFound = await DB.exists(User, {
+    where: { username: req.body.username, password: req.body.password },
+  });
+
   // TODO: actually check with db, create session
-  res.send({ success: true });
+  res.send({ success: isUserFound });
 });
 
 function onInitServer() {
