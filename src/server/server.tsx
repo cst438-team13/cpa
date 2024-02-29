@@ -28,6 +28,9 @@ app.get("*", (_req, res) => {
 });
 
 function onInitServer() {
+  // Clear DB (delete all existing info)
+  DB.clear(User);
+
   // Add a user to the db
   const user: User = new User();
   user.username = "abc";
