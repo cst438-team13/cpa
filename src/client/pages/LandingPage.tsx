@@ -1,27 +1,25 @@
 import React from "react";
-import { LoginButton } from "../components/LoginButton";
 import { RegisterButton } from "../components/RegisterButton";
+import styled from "styled-components";
+import { Button, Typography } from "antd";
 
 export function LandingPage() {
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: "100%",
-        height: "100%",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          gap: 8,
-        }}
-      >
-        <LoginButton />
+    <Container>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+        <Typography.Title>CPA Prototype</Typography.Title>
+
+        <Button type="primary">Log in</Button>
         <RegisterButton />
       </div>
-    </div>
+    </Container>
   );
 }
+
+const Container = styled("div")`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+`;
