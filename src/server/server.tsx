@@ -8,6 +8,7 @@ const app = express();
 const port = 3000;
 
 app.use(express.static("public"));
+app.use(express.json());
 
 app.get("*", (_req, res) => {
   const html = ReactDOMServer.renderToString(
@@ -27,12 +28,17 @@ app.get("*", (_req, res) => {
   res.send(html);
 });
 
+app.post("/api/login", (_req, res) => {
+  // TODO: actually check with db, create session
+  res.send({ success: true });
+});
+
 function onInitServer() {
   // Clear DB (delete all existing info)
   DB.clear(User);
 
   // Add a user to the db
-  const user: User = new User();
+  const user = new User();
   user.username = "abc";
   user.name = "Person";
 
