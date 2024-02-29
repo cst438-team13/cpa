@@ -8,20 +8,20 @@ function onLoad() {
   const rootElement = document.getElementById("root");
   const root = ReactDOM.createRoot(rootElement!);
 
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <LandingPage />,
+    },
+    {
+      path: "/login",
+      element: <LoginPage />,
+    },
+  ]);
+
   root.render(
     <StrictMode>
-      <RouterProvider
-        router={createBrowserRouter([
-          {
-            path: "/",
-            element: <LandingPage />,
-          },
-          {
-            path: "/login",
-            element: <LoginPage />,
-          },
-        ])}
-      />
+      <RouterProvider router={router} />
     </StrictMode>
   );
 }
