@@ -39,8 +39,9 @@ function onInitServer() {
 
   // Add a user to the db
   const user = new User();
-  user.username = "abc";
-  user.name = "Person";
+  user.username = "dev";
+  user.password = "somePassword";
+  user.name = "Developer";
 
   DB.save(user);
 }

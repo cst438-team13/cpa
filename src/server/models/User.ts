@@ -9,5 +9,8 @@ export class User {
   username: string;
 
   @Column()
+  password: string; // Should be hashed (w/ bcrypt)
+
+  @Column()
   name: string;
 }
