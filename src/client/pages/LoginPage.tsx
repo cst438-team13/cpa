@@ -26,13 +26,7 @@ export function LoginPage() {
 
   return (
     <Container>
-      <Form
-        name="basic"
-        action="/api/login"
-        onFinish={onSubmit}
-        autoComplete="off"
-        ref={formRef}
-      >
+      <Form onFinish={onSubmit} autoComplete="off" ref={formRef}>
         <Form.Item
           label="Username"
           name="username"
