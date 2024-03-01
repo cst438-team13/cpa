@@ -29,13 +29,15 @@ app.get("*", (_req, res) => {
 });
 
 app.post("/api/login", async (req, res) => {
+  const params = req.body;
+
   // TODO: hash passwords for security
-  const isUserFound = await DB.exists(User, {
-    where: { username: req.body.username, password: req.body.password },
+  const user = await DB.findOne(User, {
+    where: { username: params.username, password: params.password },
   });
 
   // TODO: actually check with db, create session
-  res.send({ success: isUserFound });
+  res.send({ success: user != null });
 });
 
 function onInitServer() {
