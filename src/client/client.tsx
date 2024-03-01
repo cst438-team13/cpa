@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { LandingPage } from "./pages/LandingPage";
 import { LoginPage } from "./pages/LoginPage";
+import { ConfigProvider } from "antd";
 
 function onLoad() {
   const rootElement = document.getElementById("root");
@@ -21,7 +22,9 @@ function onLoad() {
 
   root.render(
     <StrictMode>
-      <RouterProvider router={router} />
+      <ConfigProvider>
+        <RouterProvider router={router} />
+      </ConfigProvider>
     </StrictMode>
   );
 }
