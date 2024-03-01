@@ -9,9 +9,9 @@ import { useLoggedInUser } from "../hooks/useLoggedInUser";
 export function LandingPage() {
   const { logoutUser } = useAuth();
   const user = useLoggedInUser();
-  const isLoggedIn = user != null;
-
   const navigate = useNavigate();
+
+  const isLoggedIn = user != null;
 
   const onClickLogout = async () => {
     const success = await logoutUser();
