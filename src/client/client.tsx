@@ -2,6 +2,7 @@ import { ConfigProvider } from "antd";
 import React, { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { SessionInfoProvider } from "./hooks/useSessionInfo";
 import { LandingPage } from "./pages/LandingPage";
 import { LoginPage } from "./pages/LoginPage";
 
@@ -23,7 +24,9 @@ function onLoad() {
   root.render(
     <StrictMode>
       <ConfigProvider>
-        <RouterProvider router={router} />
+        <SessionInfoProvider>
+          <RouterProvider router={router} />
+        </SessionInfoProvider>
       </ConfigProvider>
     </StrictMode>
   );
