@@ -11,8 +11,6 @@ export function LandingPage() {
   const user = useLoggedInUser();
   const navigate = useNavigate();
 
-  const isLoggedIn = user != null;
-
   const onClickLogout = async () => {
     const success = await logoutUser();
 
@@ -20,6 +18,8 @@ export function LandingPage() {
       message.info("Logged out");
     }
   };
+
+  const isLoggedIn = user != null;
 
   return (
     <Container>

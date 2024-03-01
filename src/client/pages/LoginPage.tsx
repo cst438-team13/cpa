@@ -5,8 +5,6 @@ import styled from "styled-components";
 import { useAuth } from "../hooks/useAuth";
 
 export function LoginPage() {
-  const formRef = useRef<FormInstance>();
-
   const navigate = useNavigate();
   const { loginUser } = useAuth();
 
@@ -25,6 +23,8 @@ export function LoginPage() {
     formRef.current.setFieldValue("username", "dev");
     formRef.current.setFieldValue("password", "somePassword");
   };
+
+  const formRef = useRef<FormInstance>();
 
   return (
     <Container>
