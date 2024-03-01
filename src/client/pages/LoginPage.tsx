@@ -1,17 +1,19 @@
 import { Button, Form, FormInstance, Input, message } from "antd";
-import axios from "axios";
 import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useAuth } from "../hooks/useAuth";
 
 export function LoginPage() {
   const formRef = useRef<FormInstance>();
+
   const navigate = useNavigate();
+  const { loginUser } = useAuth();
 
   const onSubmit = async (values) => {
-    const res = await axios.post("/api/login", values);
+    const success = await loginUser(values.username, values.password);
 
-    if (res.data.success) {
+    if (success) {
       message.info("Logged in!");
       navigate("/");
     } else {
