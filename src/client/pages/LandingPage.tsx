@@ -1,8 +1,8 @@
-import React from "react";
-import { RegisterButton } from "../components/RegisterButton";
-import styled from "styled-components";
 import { Button, Typography } from "antd";
+import React from "react";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { RegisterButton } from "../components/RegisterButton";
 
 export function LandingPage() {
   const navigate = useNavigate();

@@ -1,8 +1,8 @@
 import express from "express";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
-import { User } from "./models/User";
 import { DB } from "./db";
+import { User } from "./models/User";
 
 const app = express();
 const port = 3000;
