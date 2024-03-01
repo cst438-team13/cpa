@@ -7,6 +7,9 @@ import { RegisterButton } from "../components/RegisterButton";
 export function LandingPage() {
   const navigate = useNavigate();
 
+  // TODO: do an actual check here
+  const isLoggedIn = true;
+
   return (
     <Container>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -16,6 +19,7 @@ export function LandingPage() {
           Log in
         </Button>
         <RegisterButton />
+        {isLoggedIn && <Button type="link">Manage profiles</Button>}
       </div>
     </Container>
   );
