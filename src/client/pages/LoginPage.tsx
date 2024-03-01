@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import styled from "styled-components";
-import { Button, Form, Input, FormInstance } from "antd";
+import { Button, Form, Input, FormInstance, message } from "antd";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -12,10 +12,10 @@ export function LoginPage() {
     const res = await axios.post("/api/login", values);
 
     if (res.data.success) {
+      message.info("Logged in!");
       navigate("/");
     } else {
-      // TODO: better error message
-      alert("Username or password was not recognized");
+      message.error("Username or password was incorrect");
     }
   };
 
