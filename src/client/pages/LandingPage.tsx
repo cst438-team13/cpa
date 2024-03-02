@@ -34,9 +34,7 @@ export function LandingPage() {
             Log in
           </Button>
         )}
-        <Button type="primary" onClick={() => navigate("/register")}>
-          Create account
-        </Button>
+        <Button onClick={() => navigate("/register")}>Create account</Button>
         {isLoggedIn && <Button type="link">Manage profiles</Button>}
       </div>
     </Container>
