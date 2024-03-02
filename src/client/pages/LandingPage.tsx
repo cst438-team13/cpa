@@ -34,7 +34,9 @@ export function LandingPage() {
             Log in
           </Button>
         )}
-        <Button onClick={() => navigate("/register")}>Create account</Button>
+        {!isLoggedIn && (
+          <Button onClick={() => navigate("/register")}>Create account</Button>
+        )}
         {isLoggedIn && <Button type="link">Manage profiles</Button>}
       </div>
     </Container>
