@@ -38,6 +38,31 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
+app.post("/api/register", async (req, res) => {
+  const params = req.body;
+
+  // TODO: hash passwords for security
+  const encryptedPassword = params.password;
+
+  // checks if username is taken before creating account
+  const user = await DB.findOne(User, {
+    where: { username: params.username },
+  });
+
+  if (user == null) {
+    // New user
+    const newUser = new User();
+    newUser.username = params.username;
+    newUser.password = encryptedPassword;
+    newUser.name = params.name;
+    await DB.save(newUser);
+    res.json({ success: true });
+  } else {
+    // username already in use
+    res.json({ success: false });
+  }
+});
+
 app.get("/api/getUser", async (req, res) => {
   const params = req.body;
 

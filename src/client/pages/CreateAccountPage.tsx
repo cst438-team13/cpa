@@ -3,22 +3,30 @@ import FormItem from "antd/es/form/FormItem";
 import React, { useRef } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
+import { useCreateNewUser } from "../hooks/useCreateNewUser";
 
 export function CreateAccountPage() {
   const navigate = useNavigate();
-  // const { loginUser } = useAuth();
+  const { createNewUser } = useCreateNewUser();
 
   const onSubmit = async (values) => {
-    // TODO: check if username is taken
     // TODO: Check if Password is a valid format
     if (values.password != values.confirmPassword) {
       message.error("Passwords do not match.");
       return;
     }
-    // TODO: encrypt passord before sending to server
     // TODO: create new user with given info
-    console.log(values.username);
-    console.log(values.password);
+    const success = await createNewUser(
+      values.username,
+      values.password,
+      values.name
+    );
+    if (success) {
+      message.info("Account Created!");
+      navigate("/");
+    } else {
+      message.error("Username is already taken.");
+    }
   };
 
   const formRef = useRef<FormInstance>();
@@ -28,6 +36,10 @@ export function CreateAccountPage() {
       <Form onFinish={onSubmit} autoComplete="off" ref={formRef}>
         <Typography.Title>Create Account</Typography.Title>
         <div>
+          <FormItem label="Name" name="name" rules={[{ required: true }]}>
+            <Input />
+          </FormItem>
+
           <FormItem
             label="Username"
             name="username"
@@ -41,7 +53,7 @@ export function CreateAccountPage() {
             name="password"
             rules={[{ required: true }]}
           >
-            <Input />
+            <Input.Password />
           </FormItem>
 
           <FormItem
@@ -49,7 +61,7 @@ export function CreateAccountPage() {
             name="confirmPassword"
             rules={[{ required: true }]}
           >
-            <Input />
+            <Input.Password />
           </FormItem>
 
           <Button type="primary" htmlType="submit">
