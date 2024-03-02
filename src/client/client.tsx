@@ -4,6 +4,7 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { LoggedInUserProvider } from "./hooks/useLoggedInUser";
 import { SessionInfoProvider } from "./hooks/useSessionInfo";
+import { CreateAccountPage } from "./pages/CreateAccountPage";
 import { LandingPage } from "./pages/LandingPage";
 import { LoginPage } from "./pages/LoginPage";
 
@@ -19,6 +20,10 @@ function onLoad() {
     {
       path: "/login",
       element: <LoginPage />,
+    },
+    {
+      path: "/register",
+      element: <CreateAccountPage />,
     },
   ]);
 
