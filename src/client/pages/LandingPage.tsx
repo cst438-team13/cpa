@@ -2,7 +2,6 @@ import { Button, Typography, message } from "antd";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { RegisterButton } from "../components/RegisterButton";
 import { useAuth } from "../hooks/useAuth";
 import { useLoggedInUser } from "../hooks/useLoggedInUser";
 
@@ -35,7 +34,9 @@ export function LandingPage() {
             Log in
           </Button>
         )}
-        <RegisterButton />
+        {!isLoggedIn && (
+          <Button onClick={() => navigate("/register")}>Create account</Button>
+        )}
         {isLoggedIn && <Button type="link">Manage profiles</Button>}
       </div>
     </Container>
