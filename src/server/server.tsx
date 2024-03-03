@@ -111,29 +111,16 @@ app.get("*", (_req, res) => {
   res.send(html);
 });
 
-function onInitServer() {
-  // Clear DB (delete all existing info)
-  DB.clear(User);
-
-  // Add a user to the db
-  const user = new User();
-  user.username = "dev";
-  user.password = "somePassword";
-  user.name = "Developer";
-
-  DB.save(user);
-}
-
 console.log("Connecting to DB...");
 
 // Connect to DB, then start up server
 DB.init()
-  .then(() => {
+  .then(async () => {
     console.log("Connected to DB");
 
-    app.listen(port, () => {
-      onInitServer();
+    await DB.seed();
 
+    app.listen(port, () => {
       console.log(`Now running at http://localhost:${port}`);
     });
   })

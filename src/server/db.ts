@@ -4,6 +4,7 @@ import { User } from "./models/User";
 interface DBManager extends EntityManager {
   dataSource: DataSource;
   init: () => Promise<DataSource>;
+  seed: () => Promise<void>;
 }
 
 const dataSource = new DataSource({
@@ -22,3 +23,16 @@ const dataSource = new DataSource({
 export const DB = dataSource.manager as DBManager;
 DB.dataSource = dataSource;
 DB.init = () => dataSource.initialize();
+
+DB.seed = async () => {
+  // Clear DB (delete all existing info)
+  await DB.clear(User);
+
+  // Add a user to the db
+  const user = new User();
+  user.username = "dev";
+  user.password = "somePassword";
+  user.name = "Developer";
+
+  await DB.save(user);
+};
