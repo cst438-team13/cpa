@@ -1,6 +1,6 @@
 import { Button, Form, FormInstance, Input, Typography, message } from "antd";
 import FormItem from "antd/es/form/FormItem";
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
 import { useLoggedInUser } from "../hooks/useLoggedInUser";
@@ -12,7 +12,12 @@ export function ManageAccountPage() {
 
   const navigate = useNavigate();
   const { updateUser } = useUpdateUser();
-  const userId = useSessionInfo().userId;
+
+  const userId = useSessionInfo()?.userId;
+
+  useEffect(() => {
+    formRef.current?.setFieldValue("name", user?.name);
+  }, [user]);
 
   const onSubmit = async (values) => {
     // TODO: Check if Password is a valid format
@@ -36,6 +41,9 @@ export function ManageAccountPage() {
   };
 
   const formRef = useRef<FormInstance>();
+  if (!user) {
+    return <div></div>;
+  }
 
   return (
     <Container>
@@ -44,7 +52,7 @@ export function ManageAccountPage() {
         <div>
           <FormItem label="Name" name="name" rules={[{ required: true }]}>
             {/* Pull name from logged in user, ask ELI */}
-            <Input placeholder="user.name" />
+            <Input value={user.name} />
           </FormItem>
 
           <FormItem
@@ -52,7 +60,7 @@ export function ManageAccountPage() {
             name="password"
             rules={[{ required: true }]}
           >
-            <Input.Password placeholder="user.password" />
+            <Input.Password placeholder="Enter a password: " />
           </FormItem>
 
           <FormItem
@@ -60,7 +68,7 @@ export function ManageAccountPage() {
             name="confirmPassword"
             rules={[{ required: true }]}
           >
-            <Input.Password placeholder="user.password" />
+            <Input.Password placeholder="Confirm your password: " />
           </FormItem>
 
           <Button type="primary" htmlType="submit">
