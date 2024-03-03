@@ -16,6 +16,7 @@ const port = 3000;
 
 app.use(express.static("public"));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(
   session({ secret: "sessionKey", saveUninitialized: false, resave: false })
 );
@@ -56,6 +57,7 @@ app.post("/api/register", async (req, res) => {
     newUser.password = encryptedPassword;
     newUser.name = params.name;
     await DB.save(newUser);
+
     res.json({ success: true });
   } else {
     // username already in use
@@ -64,7 +66,7 @@ app.post("/api/register", async (req, res) => {
 });
 
 app.get("/api/getUser", async (req, res) => {
-  const params = req.body;
+  const params = req.query as Record<any, any>;
 
   const user = await DB.findOne(User, {
     where: { id: params.userId },
