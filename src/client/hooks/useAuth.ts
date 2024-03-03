@@ -1,9 +1,9 @@
 import axios from "axios";
-import { useSessionInfo } from "./useSessionInfo";
+import { useRefetchSessionInfo } from "./useSessionInfo";
 
 // Provides login/logout functions that automatically update state
 export function useAuth() {
-  const [, refetchSessionInfo] = useSessionInfo();
+  const refetchSessionInfo = useRefetchSessionInfo();
 
   const loginUser = async (
     username: string,
