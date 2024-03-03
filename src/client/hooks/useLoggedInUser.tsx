@@ -14,7 +14,7 @@ type Props = {
 };
 
 export function LoggedInUserProvider({ children }: Props) {
-  const [sessionInfo] = useSessionInfo();
+  const sessionInfo = useSessionInfo();
 
   const { data } = useFetch(
     `/api/getUser?userId=${sessionInfo?.userId}`,

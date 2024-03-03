@@ -21,7 +21,12 @@ export function SessionInfoProvider({ children }: Props) {
   );
 }
 
-export function useSessionInfo(): [SessionInfo, () => void] {
-  const { data, refetch } = useContext(SessionInfoContext);
-  return [data, refetch];
+export function useSessionInfo() {
+  const { data } = useContext(SessionInfoContext);
+  return data;
+}
+
+export function useRefetchSessionInfo() {
+  const { refetch } = useContext(SessionInfoContext);
+  return refetch;
 }
