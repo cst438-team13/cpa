@@ -1,10 +1,10 @@
 import { Button, Form, FormInstance, Input, Typography, message } from "antd";
 import FormItem from "antd/es/form/FormItem";
+import nullthrows from "nullthrows";
 import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
 import { useLoggedInUser } from "../hooks/useLoggedInUser";
-import { useSessionInfo } from "../hooks/useSessionInfo";
 import { useUpdateUser } from "../hooks/useUpdateUser";
 
 export function ManageAccountPage() {
@@ -13,8 +13,6 @@ export function ManageAccountPage() {
   const navigate = useNavigate();
   const { updateUser } = useUpdateUser();
 
-  const userId = useSessionInfo()?.userId;
-
   const onSubmit = async (values) => {
     // TODO: Check if Password is a valid format
     if (values.password != values.confirmPassword) {
@@ -22,7 +20,11 @@ export function ManageAccountPage() {
       return;
     }
 
-    const success = await updateUser(userId, values.name, values.password);
+    const success = await updateUser(
+      nullthrows(user).id,
+      values.name,
+      values.password
+    );
 
     if (success) {
       message.info("Account updated!");
@@ -32,7 +34,7 @@ export function ManageAccountPage() {
     }
   };
 
-  const formRef = useRef<FormInstance>();
+  const formRef = useRef<FormInstance>(null);
 
   useEffect(() => {
     // Pre-fill default values
@@ -45,7 +47,7 @@ export function ManageAccountPage() {
         <Typography.Title>Manage Account</Typography.Title>
         <div>
           <FormItem label="Name" name="name" rules={[{ required: true }]}>
-            <Input value={user.name} />
+            <Input />
           </FormItem>
 
           <FormItem

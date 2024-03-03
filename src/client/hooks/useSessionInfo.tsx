@@ -1,3 +1,4 @@
+import nullthrows from "nullthrows";
 import React, { createContext, useContext } from "react";
 import { FetchResult, useFetch } from "./useFetch";
 
@@ -5,7 +6,7 @@ type SessionInfo = {
   userId: number | null;
 };
 
-const SessionInfoContext = createContext<FetchResult<SessionInfo>>(null);
+const SessionInfoContext = createContext<FetchResult<SessionInfo> | null>(null);
 
 type Props = {
   children: React.ReactNode;
@@ -22,11 +23,11 @@ export function SessionInfoProvider({ children }: Props) {
 }
 
 export function useSessionInfo() {
-  const { data } = useContext(SessionInfoContext);
-  return data;
+  const val = useContext(SessionInfoContext);
+  return nullthrows(val).data;
 }
 
 export function useRefetchSessionInfo() {
-  const { refetch } = useContext(SessionInfoContext);
-  return refetch;
+  const val = useContext(SessionInfoContext);
+  return nullthrows(val).refetch;
 }

@@ -75,6 +75,11 @@ app.post("/api/updateUser", async (req, res) => {
     where: { id: params.id },
   });
 
+  if (!user) {
+    res.json({ success: false });
+    return;
+  }
+
   user.name = params.name;
   user.password = encryptedPassword;
   await DB.save(user);

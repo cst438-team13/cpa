@@ -20,11 +20,11 @@ export function LoginPage() {
   };
 
   const onClickAutofill = () => {
-    formRef.current.setFieldValue("username", "dev");
-    formRef.current.setFieldValue("password", "somePassword");
+    formRef.current?.setFieldValue("username", "dev");
+    formRef.current?.setFieldValue("password", "somePassword");
   };
 
-  const formRef = useRef<FormInstance>();
+  const formRef = useRef<FormInstance>(null);
 
   return (
     <Container>
