@@ -3,6 +3,7 @@ import { useFetch } from "./useFetch";
 import { useSessionInfo } from "./useSessionInfo";
 
 type User = {
+  id: number;
   name: string;
   username: string;
 };

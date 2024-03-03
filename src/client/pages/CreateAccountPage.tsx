@@ -29,7 +29,7 @@ export function CreateAccountPage() {
     }
   };
 
-  const formRef = useRef<FormInstance>();
+  const formRef = useRef<FormInstance>(null);
 
   return (
     <Container>
