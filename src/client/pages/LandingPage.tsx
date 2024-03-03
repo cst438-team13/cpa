@@ -37,7 +37,11 @@ export function LandingPage() {
         {!isLoggedIn && (
           <Button onClick={() => navigate("/register")}>Create account</Button>
         )}
-        {isLoggedIn && <Button type="link">Manage profiles</Button>}
+        {isLoggedIn && (
+          <Button type="primary" onClick={() => navigate("/manage")}>
+            Manage profiles
+          </Button>
+        )}
       </div>
     </Container>
   );
