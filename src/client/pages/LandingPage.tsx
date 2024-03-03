@@ -38,7 +38,7 @@ export function LandingPage() {
           <Button onClick={() => navigate("/register")}>Create account</Button>
         )}
         {isLoggedIn && (
-          <Button type="primary" onClick={() => navigate("/manage")}>
+          <Button type="link" onClick={() => navigate("/manageAccount")}>
             Manage profiles
           </Button>
         )}
