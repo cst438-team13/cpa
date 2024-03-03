@@ -65,6 +65,23 @@ app.post("/api/register", async (req, res) => {
   }
 });
 
+// Check with Eli about correctness
+app.post("api/update", async (req, res) => {
+  const params = req.body;
+
+  // TODO: hash passwords for security
+  const encryptedPassword = params.password;
+
+  const updatedUser = new User();
+  updatedUser.id = params.id;
+  updatedUser.username = params.username;
+  updatedUser.password = encryptedPassword;
+  updatedUser.name = params.name;
+  await DB.save(updatedUser);
+
+  res.json({ success: true });
+});
+
 app.get("/api/getUser", async (req, res) => {
   const params = req.query as Record<any, any>;
 

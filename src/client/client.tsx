@@ -7,6 +7,7 @@ import { SessionInfoProvider } from "./hooks/useSessionInfo";
 import { CreateAccountPage } from "./pages/CreateAccountPage";
 import { LandingPage } from "./pages/LandingPage";
 import { LoginPage } from "./pages/LoginPage";
+import { ManageAccountPage } from "./pages/ManageAccountPage";
 
 function onLoad() {
   const rootElement = document.getElementById("root");
@@ -25,6 +26,7 @@ function onLoad() {
       path: "/register",
       element: <CreateAccountPage />,
     },
+    { path: "/manage", element: <ManageAccountPage /> },
   ]);
 
   root.render(
