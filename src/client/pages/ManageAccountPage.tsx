@@ -15,25 +15,17 @@ export function ManageAccountPage() {
 
   const userId = useSessionInfo()?.userId;
 
-  useEffect(() => {
-    formRef.current?.setFieldValue("name", user?.name);
-  }, [user]);
-
   const onSubmit = async (values) => {
     // TODO: Check if Password is a valid format
     if (values.password != values.confirmPassword) {
       message.error("Passwords do not match.");
       return;
     }
-    // TODO: update user with given info
-    const success = await updateUser(
-      userId,
-      user.username,
-      values.password,
-      values.name
-    );
+
+    const success = await updateUser(userId, values.name, values.password);
+
     if (success) {
-      message.info("Account Updated!");
+      message.info("Account updated!");
       navigate("/");
     } else {
       message.error("Error");
@@ -41,9 +33,11 @@ export function ManageAccountPage() {
   };
 
   const formRef = useRef<FormInstance>();
-  if (!user) {
-    return <div></div>;
-  }
+
+  useEffect(() => {
+    // Pre-fill default values
+    formRef.current?.setFieldValue("name", user?.name);
+  }, [user]);
 
   return (
     <Container>
@@ -51,7 +45,6 @@ export function ManageAccountPage() {
         <Typography.Title>Manage Account</Typography.Title>
         <div>
           <FormItem label="Name" name="name" rules={[{ required: true }]}>
-            {/* Pull name from logged in user, ask ELI */}
             <Input value={user.name} />
           </FormItem>
 

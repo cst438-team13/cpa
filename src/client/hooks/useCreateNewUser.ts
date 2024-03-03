@@ -7,13 +7,13 @@ export function useCreateNewUser() {
     password: string,
     name: string
   ): Promise<boolean> => {
-    const res = await axios.post("/api/register", { username, password, name });
+    const res = await axios.post("/api/register", {
+      username,
+      password,
+      name,
+    });
 
-    if (res.data.success) {
-      return true;
-    }
-
-    return false;
+    return res.data.success;
   };
 
   return { createNewUser };

@@ -26,7 +26,10 @@ function onLoad() {
       path: "/register",
       element: <CreateAccountPage />,
     },
-    { path: "/manage", element: <ManageAccountPage /> },
+    {
+      path: "/manageAccount",
+      element: <ManageAccountPage />,
+    },
   ]);
 
   root.render(

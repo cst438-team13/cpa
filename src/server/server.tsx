@@ -65,8 +65,7 @@ app.post("/api/register", async (req, res) => {
   }
 });
 
-// Check with Eli about correctness
-app.post("/api/update", async (req, res) => {
+app.post("/api/updateUser", async (req, res) => {
   const params = req.body;
 
   // TODO: hash passwords for security

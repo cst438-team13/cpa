@@ -4,22 +4,16 @@ import axios from "axios";
 export function useUpdateUser() {
   const updateUser = async (
     id: number,
-    username: string,
-    password: string,
-    name: string
+    name: string,
+    password: string
   ): Promise<boolean> => {
-    const res = await axios.post("/api/update", {
+    const res = await axios.post("/api/updateUser", {
       id,
-      username,
-      password,
       name,
+      password,
     });
 
-    if (res.data.success) {
-      return true;
-    }
-
-    return false;
+    return res.data.success;
   };
 
   return { updateUser };
