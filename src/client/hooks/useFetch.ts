@@ -14,6 +14,8 @@ export function useFetch<T>(
   deps?: React.DependencyList,
   condition?: boolean
 ): FetchResult<T> {
+  condition ??= true;
+
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
