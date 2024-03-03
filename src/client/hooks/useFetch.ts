@@ -36,8 +36,10 @@ export function useFetch<T>(
   };
 
   useEffect(() => {
-    if (!condition) {
+    if (condition) {
       fetchData();
+    } else {
+      setData(null);
     }
   }, [url, condition, ...(deps ?? [])]);
 
