@@ -15,14 +15,16 @@ export function CreateAccountPage() {
       message.error("Passwords do not match.");
       return;
     }
+
     // TODO: create new user with given info
     const success = await createNewUser(
       values.username,
       values.password,
       values.name
     );
+
     if (success) {
-      message.info("Account Created!");
+      message.info("Account created!");
       navigate("/");
     } else {
       message.error("Username is already taken.");
