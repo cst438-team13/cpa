@@ -46,11 +46,11 @@ app.post("/api/register", async (req, res) => {
   const encryptedPassword = params.password;
 
   // checks if username is taken before creating account
-  const user = await DB.findOne(User, {
+  const isNameInUse = await DB.exists(User, {
     where: { username: params.username },
   });
 
-  if (user == null) {
+  if (!isNameInUse) {
     // New user
     const newUser = new User();
     newUser.username = params.username;
