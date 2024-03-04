@@ -1,4 +1,4 @@
-import axios from "axios";
+import { API } from "../client";
 
 // Provides login/logout functions that automatically update state
 export function useCreateNewUser() {
@@ -7,13 +7,8 @@ export function useCreateNewUser() {
     password: string,
     name: string
   ): Promise<boolean> => {
-    const res = await axios.post("/api/register", {
-      username,
-      password,
-      name,
-    });
-
-    return res.data.success;
+    const success = API.registerUser(username, password, name);
+    return success;
   };
 
   return { createNewUser };

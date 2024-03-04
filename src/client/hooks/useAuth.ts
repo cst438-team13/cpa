@@ -1,4 +1,4 @@
-import axios from "axios";
+import { API } from "../client";
 import { useRefetchSessionInfo } from "./useSessionInfo";
 
 // Provides login/logout functions that automatically update state
@@ -9,9 +9,9 @@ export function useAuth() {
     username: string,
     password: string
   ): Promise<boolean> => {
-    const res = await axios.post("/api/login", { username, password });
+    const success = await API.authLogin(username, password);
 
-    if (res.data.success) {
+    if (success) {
       refetchSessionInfo();
       return true;
     }
@@ -20,10 +20,10 @@ export function useAuth() {
   };
 
   const logoutUser = async (): Promise<boolean> => {
-    const res = await axios.post("/api/logout");
+    const success = await API.authLogout();
     refetchSessionInfo();
 
-    return res.data.success;
+    return success;
   };
 
   return { loginUser, logoutUser };
