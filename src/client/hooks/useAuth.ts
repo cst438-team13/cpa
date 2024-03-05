@@ -12,6 +12,7 @@ export function useAuth() {
     const success = await api.authLogin(username, password);
 
     if (success) {
+      // We just changed the result of getSessionInfo(), so refetch it.
       await queryClient.invalidateQueries({ queryKey: ["getSessionInfo"] });
       return true;
     }

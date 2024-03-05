@@ -4,7 +4,7 @@ import React, { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { rpcClient } from "typed-rpc";
-import type { APIService } from "../server/services/APIService";
+import type { APIService } from "../server/server";
 import { CreateAccountPage } from "./pages/CreateAccountPage";
 import { LandingPage } from "./pages/LandingPage";
 import { LoginPage } from "./pages/LoginPage";
