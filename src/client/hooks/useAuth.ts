@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { api } from "../client";
+import { api } from "../api";
 
 // Provides login/logout functions that automatically update state
 export function useAuth() {

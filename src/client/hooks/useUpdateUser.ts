@@ -1,4 +1,4 @@
-import { api } from "../client";
+import { api } from "../api";
 
 // Provides user information used to update existing values in server
 export function useUpdateUser() {
