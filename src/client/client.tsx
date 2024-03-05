@@ -5,7 +5,6 @@ import ReactDOM from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { rpcClient } from "typed-rpc";
 import type { APIService } from "../server/server";
-import { LoggedInUserProvider } from "./hooks/useLoggedInUser";
 import { CreateAccountPage } from "./pages/CreateAccountPage";
 import { LandingPage } from "./pages/LandingPage";
 import { LoginPage } from "./pages/LoginPage";
@@ -42,9 +41,7 @@ function onLoad() {
     <StrictMode>
       <ConfigProvider>
         <QueryClientProvider client={queryClient}>
-          <LoggedInUserProvider>
-            <RouterProvider router={router} />
-          </LoggedInUserProvider>
+          <RouterProvider router={router} />
         </QueryClientProvider>
       </ConfigProvider>
     </StrictMode>
