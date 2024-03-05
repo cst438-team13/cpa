@@ -16,6 +16,30 @@ app.use(
   session({ secret: "sessionKey", saveUninitialized: false, resave: false })
 );
 
+app.post(
+  "/api/rpc",
+  rpcHandler((req) => new APIService(req.session as SessionData))
+);
+
+// Make sure this is always the last app.get() call
+app.get("*", (_req, res) => {
+  const html = ReactDOMServer.renderToString(
+    <html lang="en">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link href="css/app.css" rel="stylesheet" />
+        <title>CPA</title>
+      </head>
+      <body>
+        <div id="root"></div>
+        <script src="js/bundle.js" />
+      </body>
+    </html>
+  );
+
+  res.send(html);
+});
+
 class APIService {
   constructor(private session: SessionData) {}
 
@@ -97,30 +121,6 @@ class APIService {
     return user;
   }
 }
-
-app.post(
-  "/api/rpc",
-  rpcHandler((req) => new APIService(req.session as SessionData))
-);
-
-// Make sure this is always the last app.get() call
-app.get("*", (_req, res) => {
-  const html = ReactDOMServer.renderToString(
-    <html lang="en">
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link href="css/app.css" rel="stylesheet" />
-        <title>CPA</title>
-      </head>
-      <body>
-        <div id="root"></div>
-        <script src="js/bundle.js" />
-      </body>
-    </html>
-  );
-
-  res.send(html);
-});
 
 console.log("Connecting to DB...");
 
