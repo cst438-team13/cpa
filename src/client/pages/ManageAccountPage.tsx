@@ -4,14 +4,12 @@ import nullthrows from "nullthrows";
 import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
-import { useLoggedInUser } from "../hooks/useLoggedInUser";
-import { useUpdateUser } from "../hooks/useUpdateUser";
+import { api } from "../api";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 
 export function ManageAccountPage() {
-  const user = useLoggedInUser();
-
+  const user = useCurrentUser();
   const navigate = useNavigate();
-  const { updateUser } = useUpdateUser();
 
   const onSubmit = async (values) => {
     // TODO: Check if Password is a valid format
@@ -20,10 +18,10 @@ export function ManageAccountPage() {
       return;
     }
 
-    const success = await updateUser(
+    const success = await api.updateUser(
       nullthrows(user).id,
-      values.name,
-      values.password
+      values.password,
+      values.name
     );
 
     if (success) {

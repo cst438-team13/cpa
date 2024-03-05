@@ -9,11 +9,11 @@ export function useAuth() {
     username: string,
     password: string
   ): Promise<boolean> => {
-    const success = await api.authLogin(username, password);
+    const success = await api.loginSession(username, password);
 
     if (success) {
-      // We just changed the result of getSessionInfo(), so refetch it.
-      await queryClient.invalidateQueries({ queryKey: ["getSessionInfo"] });
+      // We just changed the result of getCurrentUser(), so refetch it.
+      await queryClient.invalidateQueries({ queryKey: ["getCurrentUser"] });
       return true;
     }
 
@@ -21,8 +21,8 @@ export function useAuth() {
   };
 
   const logoutUser = async (): Promise<boolean> => {
-    const success = await api.authLogout();
-    await queryClient.invalidateQueries({ queryKey: ["getSessionInfo"] });
+    const success = await api.logoutSession();
+    await queryClient.invalidateQueries({ queryKey: ["getCurrentUser"] });
 
     return success;
   };

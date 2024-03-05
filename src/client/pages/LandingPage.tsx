@@ -3,11 +3,11 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAuth } from "../hooks/useAuth";
-import { useLoggedInUser } from "../hooks/useLoggedInUser";
+import { useCurrentUser } from "../hooks/useCurrentUser";
 
 export function LandingPage() {
   const { logoutUser } = useAuth();
-  const user = useLoggedInUser();
+  const user = useCurrentUser();
   const navigate = useNavigate();
 
   const onClickLogout = async () => {
