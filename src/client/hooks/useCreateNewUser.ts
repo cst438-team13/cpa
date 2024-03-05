@@ -1,4 +1,4 @@
-import { API } from "../client";
+import { api } from "../client";
 
 // Provides login/logout functions that automatically update state
 export function useCreateNewUser() {
@@ -7,7 +7,7 @@ export function useCreateNewUser() {
     password: string,
     name: string
   ): Promise<boolean> => {
-    const success = API.registerUser(username, password, name);
+    const success = api.registerUser(username, password, name);
     return success;
   };
 

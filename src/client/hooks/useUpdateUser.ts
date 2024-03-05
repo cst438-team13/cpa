@@ -1,4 +1,4 @@
-import { API } from "../client";
+import { api } from "../client";
 
 // Provides user information used to update existing values in server
 export function useUpdateUser() {
@@ -7,7 +7,7 @@ export function useUpdateUser() {
     name: string,
     password: string
   ): Promise<boolean> => {
-    const success = API.updateUser(id, password, name);
+    const success = api.updateUser(id, password, name);
     return success;
   };
 

@@ -5,12 +5,7 @@ import ReactDOMServer from "react-dom/server";
 import { rpcHandler } from "typed-rpc/express";
 import { DB } from "./db";
 import { User } from "./models/User";
-
-declare module "express-session" {
-  interface SessionData {
-    userId: number | null;
-  }
-}
+import { APIService } from "./services/APIService";
 
 const app = express();
 const port = 3000;
@@ -20,77 +15,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   session({ secret: "sessionKey", saveUninitialized: false, resave: false })
-);
-
-export class APIService {
-  constructor(private session) {}
-
-  async authLogin(username: string, password: string) {
-    // TODO: hash passwords for security
-    const user = await DB.findOne(User, {
-      where: { username, password },
-    });
-
-    if (user) {
-      this.session.userId = user.id;
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  async authLogout() {
-    this.session.userId = null;
-    return true;
-  }
-
-  async registerUser(username: string, password: string, name: string) {
-    // TODO: hash passwords for security
-    const encryptedPassword = password;
-
-    // checks if username is taken before creating account
-    const isNameInUse = await DB.exists(User, {
-      where: { username: username },
-    });
-
-    if (!isNameInUse) {
-      // New user
-      const newUser = new User();
-      newUser.username = username;
-      newUser.password = encryptedPassword;
-      newUser.name = name;
-      await DB.save(newUser);
-
-      return true;
-    } else {
-      // username already in use
-      return false;
-    }
-  }
-
-  async updateUser(id: number, password: string, name: string) {
-    // TODO: hash passwords for security
-    const encryptedPassword = password;
-
-    const user = await DB.findOne(User, {
-      where: { id: id },
-    });
-
-    if (user) {
-      user.name = name;
-      user.password = encryptedPassword;
-      await DB.save(user);
-
-      return true;
-    } else {
-      return false;
-    }
-  }
-}
-
-app.post(
-  "/api/rpc",
-  rpcHandler((req) => new APIService(req.session))
 );
 
 app.get("/api/getUser", async (req, res) => {
@@ -106,13 +30,10 @@ app.get("/api/getUser", async (req, res) => {
   });
 });
 
-app.get("/api/getSessionInfo", async (req, res) => {
-  const sessionInfo = {
-    userId: req.session.userId ?? null,
-  };
-
-  res.json(sessionInfo);
-});
+app.post(
+  "/api/rpc",
+  rpcHandler((req) => new APIService(req.session))
+);
 
 // Make sure this is always the last app.get() call
 app.get("*", (_req, res) => {
@@ -147,3 +68,9 @@ DB.init()
     });
   })
   .catch((error) => console.log(error));
+
+declare module "express-session" {
+  interface SessionData {
+    userId: number | null;
+  }
+}
