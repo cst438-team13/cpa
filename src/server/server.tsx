@@ -43,7 +43,7 @@ app.get("*", (_req, res) => {
 class APIService {
   constructor(private session: SessionData) {}
 
-  async loginSession(username: string, password: string) {
+  async authLogin(username: string, password: string) {
     // TODO: hash passwords for security
     const user = await DB.findOne(User, {
       where: { username, password },
@@ -57,7 +57,7 @@ class APIService {
     }
   }
 
-  async logoutSession() {
+  async authLogout() {
     this.session.userId = null;
     return true;
   }
