@@ -8,7 +8,8 @@ import { api } from "../api";
 
 type APIType = typeof api;
 
-// NOTE: Derived from https://github.com/fgnass/react-api-query/blob/main/src/query.ts
+// NOTE: Don't worry about this file, mostly
+// derived from https://github.com/fgnass/react-api-query/blob/main/src/query.ts
 
 export function useQuery<
   T extends keyof APIType,
