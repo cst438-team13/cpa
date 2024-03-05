@@ -1,4 +1,4 @@
-import axios from "axios";
+import { api } from "../client";
 
 // Provides user information used to update existing values in server
 export function useUpdateUser() {
@@ -7,13 +7,8 @@ export function useUpdateUser() {
     name: string,
     password: string
   ): Promise<boolean> => {
-    const res = await axios.post("/api/updateUser", {
-      id,
-      name,
-      password,
-    });
-
-    return res.data.success;
+    const success = api.updateUser(id, password, name);
+    return success;
   };
 
   return { updateUser };

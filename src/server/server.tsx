@@ -1,15 +1,10 @@
 import express from "express";
-import session from "express-session";
+import session, { SessionData } from "express-session";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
+import { rpcHandler } from "typed-rpc/express";
 import { DB } from "./db";
 import { User } from "./models/User";
-
-declare module "express-session" {
-  interface SessionData {
-    userId: number | null;
-  }
-}
 
 const app = express();
 const port = 3000;
@@ -21,98 +16,10 @@ app.use(
   session({ secret: "sessionKey", saveUninitialized: false, resave: false })
 );
 
-app.post("/api/login", async (req, res) => {
-  const params = req.body;
-
-  // TODO: hash passwords for security
-  const user = await DB.findOne(User, {
-    where: { username: params.username, password: params.password },
-  });
-
-  if (user == null) {
-    // Not logged in
-    req.session.userId = null;
-    res.send({ success: false });
-  } else {
-    req.session.userId = user.id;
-    res.json({ success: true });
-  }
-});
-
-app.post("/api/register", async (req, res) => {
-  const params = req.body;
-
-  // TODO: hash passwords for security
-  const encryptedPassword = params.password;
-
-  // checks if username is taken before creating account
-  const isNameInUse = await DB.exists(User, {
-    where: { username: params.username },
-  });
-
-  if (!isNameInUse) {
-    // New user
-    const newUser = new User();
-    newUser.username = params.username;
-    newUser.password = encryptedPassword;
-    newUser.name = params.name;
-    await DB.save(newUser);
-
-    res.json({ success: true });
-  } else {
-    // username already in use
-    res.json({ success: false });
-  }
-});
-
-app.post("/api/updateUser", async (req, res) => {
-  const params = req.body;
-
-  // TODO: hash passwords for security
-  const encryptedPassword = params.password;
-
-  const user = await DB.findOne(User, {
-    where: { id: params.id },
-  });
-
-  if (!user) {
-    res.json({ success: false });
-    return;
-  }
-
-  user.name = params.name;
-  user.password = encryptedPassword;
-  await DB.save(user);
-
-  res.json({ success: true });
-});
-
-app.get("/api/getUser", async (req, res) => {
-  const params = req.query as Record<any, any>;
-
-  const user = await DB.findOne(User, {
-    where: { id: params.userId },
-  });
-
-  res.json({
-    success: user != null,
-    ...user,
-  });
-});
-
-app.post("/api/logout", async (req, res) => {
-  req.session.userId = null;
-
-  res.json({ success: true });
-});
-
-app.get("/api/getSessionInfo", async (req, res) => {
-  const sessionInfo = {
-    userId: req.session.userId ?? null,
-  };
-
-  res.json(sessionInfo);
-});
+app.post(
+  "/api/rpc",
+  rpcHandler((req) => new APIService(req.session as SessionData))
+);
 
 // Make sure this is always the last app.get() call
 app.get("*", (_req, res) => {
@@ -133,6 +40,88 @@ app.get("*", (_req, res) => {
   res.send(html);
 });
 
+class APIService {
+  constructor(private session: SessionData) {}
+
+  async authLogin(username: string, password: string) {
+    // TODO: hash passwords for security
+    const user = await DB.findOne(User, {
+      where: { username, password },
+    });
+
+    if (user) {
+      this.session.userId = user.id;
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  async authLogout() {
+    this.session.userId = null;
+    return true;
+  }
+
+  async registerUser(username: string, password: string, name: string) {
+    // TODO: hash passwords for security
+    const encryptedPassword = password;
+
+    // checks if username is taken before creating account
+    const isNameInUse = await DB.exists(User, {
+      where: { username: username },
+    });
+
+    if (!isNameInUse) {
+      // New user
+      const newUser = new User();
+      newUser.username = username;
+      newUser.password = encryptedPassword;
+      newUser.name = name;
+      await DB.save(newUser);
+
+      return true;
+    } else {
+      // username already in use
+      return false;
+    }
+  }
+
+  async updateUser(id: number, password: string, name: string) {
+    // TODO: hash passwords for security
+    const encryptedPassword = password;
+
+    const user = await DB.findOne(User, {
+      where: { id: id },
+    });
+
+    if (user) {
+      user.name = name;
+      user.password = encryptedPassword;
+      await DB.save(user);
+
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  getSessionInfo() {
+    const sessionInfo = {
+      userId: this.session.userId,
+    };
+
+    return sessionInfo;
+  }
+
+  async getUser(id: number) {
+    const user = await DB.findOne(User, {
+      where: { id },
+    });
+
+    return user;
+  }
+}
+
 console.log("Connecting to DB...");
 
 // Connect to DB, then start up server
@@ -147,3 +136,11 @@ DB.init()
     });
   })
   .catch((error) => console.log(error));
+
+declare module "express-session" {
+  interface SessionData {
+    userId: number | null;
+  }
+}
+
+export type { APIService };
