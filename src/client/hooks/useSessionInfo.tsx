@@ -1,6 +1,6 @@
 import { useQuery } from "./useQuery";
 
 export function useSessionInfo() {
-  const res = useQuery("getSessionInfo");
-  return res.data;
+  const { data } = useQuery("getSessionInfo");
+  return data;
 }

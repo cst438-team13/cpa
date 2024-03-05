@@ -1,5 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { useQuery } from "./useQuery";
 import { useSessionInfo } from "./useSessionInfo";
 
 type User = {
@@ -12,12 +11,13 @@ export function useLoggedInUser(): User | null {
   const sessionInfo = useSessionInfo();
   const userId = sessionInfo?.userId ?? null;
 
-  const res = useQuery({
-    queryKey: ["getUser", "getSessionInfo"],
-    queryFn: () =>
-      axios.get(`/api/getUser?userId=${userId}`).then((o) => o.data),
-    enabled: userId != null,
-  });
+  const { data } = useQuery(
+    {
+      method: "getUser",
+      enabled: userId != null,
+    },
+    userId ?? 0
+  );
 
-  return userId == null ? null : (res.data as User);
+  return data ?? null;
 }

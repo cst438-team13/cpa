@@ -66,11 +66,19 @@ export class APIService {
     }
   }
 
-  async getSessionInfo() {
+  getSessionInfo() {
     const sessionInfo = {
-      userId: this.session.userId as string | null,
+      userId: this.session.userId as number | null,
     };
 
     return sessionInfo;
+  }
+
+  async getUser(id: number) {
+    const user = await DB.findOne(User, {
+      where: { id },
+    });
+
+    return user;
   }
 }
