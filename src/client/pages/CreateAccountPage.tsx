@@ -3,11 +3,10 @@ import FormItem from "antd/es/form/FormItem";
 import React, { useRef } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
-import { useCreateNewUser } from "../hooks/useCreateNewUser";
+import { api } from "../api";
 
 export function CreateAccountPage() {
   const navigate = useNavigate();
-  const { createNewUser } = useCreateNewUser();
 
   const onSubmit = async (values) => {
     // TODO: Check if Password is a valid format
@@ -16,8 +15,7 @@ export function CreateAccountPage() {
       return;
     }
 
-    // TODO: create new user with given info
-    const success = await createNewUser(
+    const success = await api.registerUser(
       values.username,
       values.password,
       values.name
