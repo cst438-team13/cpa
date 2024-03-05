@@ -1,9 +1,9 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { API } from "../client";
-import { useRefetchSessionInfo } from "./useSessionInfo";
 
 // Provides login/logout functions that automatically update state
 export function useAuth() {
-  const refetchSessionInfo = useRefetchSessionInfo();
+  const queryClient = useQueryClient();
 
   const loginUser = async (
     username: string,
@@ -12,7 +12,7 @@ export function useAuth() {
     const success = await API.authLogin(username, password);
 
     if (success) {
-      refetchSessionInfo();
+      await queryClient.invalidateQueries({ queryKey: ["getSessionInfo"] });
       return true;
     }
 
@@ -21,7 +21,7 @@ export function useAuth() {
 
   const logoutUser = async (): Promise<boolean> => {
     const success = await API.authLogout();
-    refetchSessionInfo();
+    await queryClient.invalidateQueries({ queryKey: ["getSessionInfo"] });
 
     return success;
   };

@@ -76,15 +76,15 @@ export class APIService {
       where: { id: id },
     });
 
-    if (!user) {
+    if (user) {
+      user.name = name;
+      user.password = encryptedPassword;
+      await DB.save(user);
+
+      return true;
+    } else {
       return false;
     }
-
-    user.name = name;
-    user.password = encryptedPassword;
-    await DB.save(user);
-
-    return true;
   }
 }
 

@@ -1,17 +1,19 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ConfigProvider } from "antd";
 import React, { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { rpcClient } from "typed-rpc";
 import type { APIService } from "../server/server";
 import { LoggedInUserProvider } from "./hooks/useLoggedInUser";
-import { SessionInfoProvider } from "./hooks/useSessionInfo";
 import { CreateAccountPage } from "./pages/CreateAccountPage";
 import { LandingPage } from "./pages/LandingPage";
 import { LoginPage } from "./pages/LoginPage";
 import { ManageAccountPage } from "./pages/ManageAccountPage";
 
 export const API = rpcClient<APIService>("http://localhost:3000/api/rpc");
+
+const queryClient = new QueryClient();
 
 function onLoad() {
   const rootElement = document.getElementById("root");
@@ -39,11 +41,11 @@ function onLoad() {
   root.render(
     <StrictMode>
       <ConfigProvider>
-        <SessionInfoProvider>
+        <QueryClientProvider client={queryClient}>
           <LoggedInUserProvider>
             <RouterProvider router={router} />
           </LoggedInUserProvider>
-        </SessionInfoProvider>
+        </QueryClientProvider>
       </ConfigProvider>
     </StrictMode>
   );

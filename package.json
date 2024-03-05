@@ -20,6 +20,7 @@
     "webpack-cli": "5.1.1"
   },
   "dependencies": {
+    "@tanstack/react-query": "5.24.8",
     "@types/bcrypt": "5.0.2",
     "@types/express-session": "1.18.0",
     "@types/react-router-dom": "5.3.3",
