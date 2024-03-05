@@ -7,8 +7,7 @@ export function useCreateNewUser() {
     password: string,
     name: string
   ): Promise<boolean> => {
-    const success = api.registerUser(username, password, name);
-    return success;
+    return await api.registerUser(username, password, name);
   };
 
   return { createNewUser };

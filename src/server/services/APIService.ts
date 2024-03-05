@@ -2,7 +2,7 @@ import { DB } from "../db";
 import { User } from "../models/User";
 
 export class APIService {
-  constructor(private session) {}
+  constructor(private session: any) {}
 
   async authLogin(username: string, password: string) {
     // TODO: hash passwords for security

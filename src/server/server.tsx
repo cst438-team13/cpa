@@ -4,7 +4,6 @@ import React from "react";
 import ReactDOMServer from "react-dom/server";
 import { rpcHandler } from "typed-rpc/express";
 import { DB } from "./db";
-import { User } from "./models/User";
 import { APIService } from "./services/APIService";
 
 const app = express();
@@ -17,19 +16,7 @@ app.use(
   session({ secret: "sessionKey", saveUninitialized: false, resave: false })
 );
 
-app.get("/api/getUser", async (req, res) => {
-  const params = req.query as Record<any, any>;
-
-  const user = await DB.findOne(User, {
-    where: { id: params.userId },
-  });
-
-  res.json({
-    success: user != null,
-    ...user,
-  });
-});
-
+// API is defined in services/APIService.ts
 app.post(
   "/api/rpc",
   rpcHandler((req) => new APIService(req.session))
