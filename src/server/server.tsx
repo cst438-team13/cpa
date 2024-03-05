@@ -1,5 +1,5 @@
 import express from "express";
-import session from "express-session";
+import session, { SessionData } from "express-session";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 import { rpcHandler } from "typed-rpc/express";
@@ -17,7 +17,7 @@ app.use(
 );
 
 class APIService {
-  constructor(private session: any) {}
+  constructor(private session: SessionData) {}
 
   async authLogin(username: string, password: string) {
     // TODO: hash passwords for security
@@ -83,7 +83,7 @@ class APIService {
 
   getSessionInfo() {
     const sessionInfo = {
-      userId: this.session.userId as number | null,
+      userId: this.session.userId,
     };
 
     return sessionInfo;
@@ -100,7 +100,7 @@ class APIService {
 
 app.post(
   "/api/rpc",
-  rpcHandler((req) => new APIService(req.session))
+  rpcHandler((req) => new APIService(req.session as SessionData))
 );
 
 // Make sure this is always the last app.get() call
