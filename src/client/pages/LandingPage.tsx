@@ -23,7 +23,7 @@ export function LandingPage() {
   return (
     <Container>
       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        <Typography.Title>CPA Prototype</Typography.Title>
+        <Typography.Title>PawsConnect</Typography.Title>
 
         {isLoggedIn ? (
           <Button type="primary" onClick={onClickLogout}>
