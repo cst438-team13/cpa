@@ -26,7 +26,7 @@ DB.init = () => dataSource.initialize();
 
 DB.seed = async () => {
   // Clear DB (delete all existing info)
-  await DB.clear(User);
+  dataSource.synchronize(true);
 
   // Add a user to the db
   const user = new User();
