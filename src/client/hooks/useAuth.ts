@@ -5,10 +5,7 @@ import { api } from "../api";
 export function useAuth() {
   const queryClient = useQueryClient();
 
-  const loginUser = async (
-    username: string,
-    password: string
-  ): Promise<boolean> => {
+  const loginUser = async (username: string, password: string) => {
     const success = await api.authLogin(username, password);
 
     if (success) {
@@ -20,7 +17,7 @@ export function useAuth() {
     return false;
   };
 
-  const logoutUser = async (): Promise<boolean> => {
+  const logoutUser = async () => {
     const success = await api.authLogout();
     await queryClient.invalidateQueries({ queryKey: ["getCurrentUser"] });
 
