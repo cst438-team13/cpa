@@ -6,23 +6,23 @@ import {
 } from "@tanstack/react-query";
 import { api } from "../api";
 
-type APIType = Omit<typeof api, "$abort">;
+type API = typeof api;
 
 // NOTE: Don't worry about this file, mostly
 // derived from https://github.com/fgnass/react-api-query/blob/main/src/query.ts
 
 export function useQuery<
-  T extends keyof APIType,
-  TQueryFnData = ReturnType<APIType[T]>,
+  T extends keyof API,
+  TQueryFnData = ReturnType<API[T]>,
   TData = Awaited<TQueryFnData>,
 >(
   opts: T | (Omit<UseQueryOptions<TData>, "queryKey"> & { method: T }),
-  ...args: Parameters<APIType[T]>
+  ...args: Parameters<API[T]>
 ) {
   const method = typeof opts === "object" ? opts.method : opts;
   const queryKey = [method, ...args] as const;
 
-  const apiFn: (...args: Parameters<APIType[T]>) => TQueryFnData = api[
+  const apiFn: (...args: Parameters<API[T]>) => TQueryFnData = api[
     method
   ] as any;
 
