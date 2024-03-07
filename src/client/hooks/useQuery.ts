@@ -16,24 +16,23 @@ export function useQuery<
   TQueryFnData = ReturnType<APIType[T]>,
   TData = Awaited<TQueryFnData>,
 >(
-  opts: T | (UseQueryOptions<TData> & { method: T }),
+  opts: T | (Omit<UseQueryOptions<TData>, "queryKey"> & { method: T }),
   ...args: Parameters<APIType[T]>
 ) {
-  if (typeof opts !== "object") {
-    opts = { method: opts };
-  }
-
-  const { method, ...queryOpts } = opts;
+  const method = typeof opts === "object" ? opts.method : opts;
   const queryKey = [method, ...args] as const;
+
   const apiFn: (...args: Parameters<APIType[T]>) => TQueryFnData = api[
     method
   ] as any;
 
   const queryFn = () => apiFn.apply(api, args);
+  const queryOpts = typeof opts === "object" ? opts : {};
+
   const result = useTanstackQuery<TQueryFnData, Error, TData>({
     queryKey,
     queryFn,
-    ...(queryOpts as any),
+    ...queryOpts,
   });
 
   const queryClient = useQueryClient();
@@ -45,10 +44,14 @@ export function useQuery<
       queryClient.setQueryData(queryKey, updater);
     },
     invalidate: () => {
-      queryClient.invalidateQueries(queryKey);
+      queryClient.invalidateQueries({
+        queryKey,
+      });
     },
     removeQuery: () => {
-      queryClient.removeQueries(queryKey);
+      queryClient.removeQueries({
+        queryKey,
+      });
     },
   };
 }
