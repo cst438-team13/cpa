@@ -6,7 +6,7 @@ export function useAuth() {
   const queryClient = useQueryClient();
 
   const loginUser = async (username: string, password: string) => {
-    const success = await api.authLogin(username, password);
+    const success = await api.authLoginWithPassword(username, password);
 
     if (success) {
       // We just changed the result of getCurrentUser(), so refetch it.
