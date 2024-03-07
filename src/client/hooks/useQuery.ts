@@ -6,7 +6,7 @@ import {
 } from "@tanstack/react-query";
 import { api } from "../api";
 
-type APIType = typeof api;
+type APIType = Omit<typeof api, "$abort">;
 
 // NOTE: Don't worry about this file, mostly
 // derived from https://github.com/fgnass/react-api-query/blob/main/src/query.ts
