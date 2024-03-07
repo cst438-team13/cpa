@@ -2,8 +2,8 @@ import { Button, Typography, message } from "antd";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useAuth } from "../hooks/useAuth";
-import { useCurrentUser } from "../hooks/useCurrentUser";
+import { useAuth } from "../../hooks/useAuth";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 
 export function LandingPage() {
   const { logoutUser } = useAuth();

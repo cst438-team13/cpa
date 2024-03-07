@@ -1,11 +1,14 @@
 import { Button, Form, FormInstance, Input, Typography, message } from "antd";
 import FormItem from "antd/es/form/FormItem";
-import React, { useRef } from "react";
+import nullthrows from "nullthrows";
+import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
-import { api } from "../api";
+import { api } from "../../api";
+import { useCurrentUser } from "../../hooks/useCurrentUser";
 
-export function CreateAccountPage() {
+export function ManageAccountPage() {
+  const user = useCurrentUser();
   const navigate = useNavigate();
 
   const onSubmit = async (values) => {
@@ -15,36 +18,33 @@ export function CreateAccountPage() {
       return;
     }
 
-    const success = await api.registerUser(
-      values.username,
+    const success = await api.updateUser(
+      nullthrows(user).id,
       values.password,
       values.name
     );
 
     if (success) {
-      message.info("Account created!");
+      message.info("Account updated!");
       navigate("/");
     } else {
-      message.error("Username is already taken.");
+      message.error("Error");
     }
   };
 
   const formRef = useRef<FormInstance>(null);
 
+  useEffect(() => {
+    // Pre-fill default values
+    formRef.current?.setFieldValue("name", user?.name);
+  }, [user]);
+
   return (
     <Container>
       <Form onFinish={onSubmit} autoComplete="off" ref={formRef}>
-        <Typography.Title>Create Account</Typography.Title>
+        <Typography.Title>Manage Account</Typography.Title>
         <div>
           <FormItem label="Name" name="name" rules={[{ required: true }]}>
-            <Input />
-          </FormItem>
-
-          <FormItem
-            label="Username"
-            name="username"
-            rules={[{ required: true }]}
-          >
             <Input />
           </FormItem>
 
@@ -53,7 +53,7 @@ export function CreateAccountPage() {
             name="password"
             rules={[{ required: true }]}
           >
-            <Input.Password />
+            <Input.Password placeholder="Enter a password: " />
           </FormItem>
 
           <FormItem
@@ -61,11 +61,11 @@ export function CreateAccountPage() {
             name="confirmPassword"
             rules={[{ required: true }]}
           >
-            <Input.Password />
+            <Input.Password placeholder="Confirm your password: " />
           </FormItem>
 
           <Button type="primary" htmlType="submit">
-            Create Account!
+            Update Account!
           </Button>
         </div>
       </Form>
