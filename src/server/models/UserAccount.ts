@@ -30,7 +30,7 @@ export class UserAccount {
   @Column()
   passwordHash?: string; // Should be hashed (w/ bcrypt)
 
-  @OneToOne(() => UserProfile, { cascade: true })
-  @JoinColumn({ name: "id" })
+  @JoinColumn({ name: "profileId" })
+  @OneToOne(() => UserProfile, { cascade: true, eager: true })
   profile: UserProfile;
 }
