@@ -1,5 +1,7 @@
+import bcrypt from "bcrypt";
 import { DataSource, type EntityManager } from "typeorm";
-import { User } from "./models/User";
+import { UserAccount } from "./models/UserAccount";
+import { UserProfile } from "./models/UserProfile";
 
 interface DBManager extends EntityManager {
   dataSource: DataSource;
@@ -13,7 +15,7 @@ const dataSource = new DataSource({
   username: "usuzxuui6mwipij2",
   password: "xtt1ask6fapd7tqg",
   database: "iv7yk8xt5q8bsq9e",
-  entities: [User],
+  entities: [UserAccount, UserProfile],
   synchronize: true,
   logging: false,
   acquireTimeout: 30 * 1000,
@@ -29,10 +31,12 @@ DB.seed = async () => {
   await dataSource.synchronize(true);
 
   // Add a user to the db
-  const user = new User();
-  user.username = "dev";
-  user.password = "somePassword";
-  user.name = "Developer";
+  const user = new UserAccount();
+  user.authName = "dev";
+  user.passwordHash = await bcrypt.hash("somePassword", 10);
+
+  user.profile = new UserProfile();
+  user.profile.name = "Developer";
 
   await DB.save(user);
 };
