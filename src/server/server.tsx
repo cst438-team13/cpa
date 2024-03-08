@@ -48,7 +48,7 @@ class APIService {
   async authLoginWithPassword(username: string, password: string) {
     // TODO: hash passwords for security
     const users = await DB.findBy(UserAccount, {
-      authName: username,
+      username: username,
     });
 
     const user = users
@@ -82,13 +82,13 @@ class APIService {
 
     // Check if username is taken before creating account
     const isNameInUse = await DB.exists(UserAccount, {
-      where: { authName: username },
+      where: { username: username },
     });
 
     if (!isNameInUse) {
       // New user
       const newUser = new UserAccount();
-      newUser.authName = username;
+      newUser.username = username;
       newUser.passwordHash = passwordHash;
 
       // New profile (do this separately?)

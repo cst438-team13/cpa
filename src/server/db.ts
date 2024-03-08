@@ -32,7 +32,7 @@ DB.seed = async () => {
 
   // Add a user to the db
   const user = new UserAccount();
-  user.authName = "dev";
+  user.username = "dev";
   user.passwordHash = await bcrypt.hash("somePassword", 10);
 
   user.profile = new UserProfile();

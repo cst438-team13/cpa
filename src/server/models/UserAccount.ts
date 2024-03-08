@@ -21,7 +21,7 @@ export class UserAccount {
    * With Google auth: email
    */
   @Column()
-  authName: string;
+  username: string;
 
   /**
    * With basic auth: password hash
