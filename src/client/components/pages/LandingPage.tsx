@@ -27,7 +27,7 @@ export function LandingPage() {
 
         {isLoggedIn ? (
           <Button type="primary" onClick={onClickLogout}>
-            Log out ({user.username})
+            Log out ({user.name})
           </Button>
         ) : (
           <Button type="primary" onClick={() => navigate("/login")}>

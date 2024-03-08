@@ -9,7 +9,9 @@ export function LoginPage() {
   const { loginUser } = useAuth();
 
   const onSubmit = async (values) => {
+    message.loading("Logging in...");
     const success = await loginUser(values.username, values.password);
+    message.destroy();
 
     if (success) {
       message.info("Logged in!");

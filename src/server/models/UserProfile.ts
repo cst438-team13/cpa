@@ -1,15 +1,9 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class User {
+export class UserProfile {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column()
-  username: string;
-
-  @Column()
-  password: string; // Should be hashed (w/ bcrypt)
 
   @Column()
   name: string;

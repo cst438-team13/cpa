@@ -10,7 +10,7 @@ export function useAuth() {
 
     if (success) {
       // We just changed the result of getCurrentUser(), so refetch it.
-      await queryClient.invalidateQueries({ queryKey: ["getCurrentUser"] });
+      await queryClient.refetchQueries({ queryKey: ["getCurrentUser"] });
       return true;
     }
 
@@ -19,7 +19,7 @@ export function useAuth() {
 
   const logoutUser = async () => {
     const success = await api.authLogout();
-    await queryClient.invalidateQueries({ queryKey: ["getCurrentUser"] });
+    await queryClient.refetchQueries({ queryKey: ["getCurrentUser"] });
 
     return success;
   };

@@ -1,10 +1,12 @@
+import bcrypt from "bcrypt";
 import express from "express";
 import session, { SessionData } from "express-session";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 import { rpcHandler } from "typed-rpc/express";
 import { DB } from "./db";
-import { User } from "./models/User";
+import { UserAccount } from "./models/UserAccount";
+import { UserProfile } from "./models/UserProfile";
 
 const app = express();
 const port = 3000;
@@ -45,9 +47,14 @@ class APIService {
 
   async authLoginWithPassword(username: string, password: string) {
     // TODO: hash passwords for security
-    const user = await DB.findOne(User, {
-      where: { username, password },
+    const users = await DB.findBy(UserAccount, {
+      authName: username,
     });
+
+    const user = users
+      .filter((o) => o.passwordHash)
+      .filter((o) => bcrypt.compareSync(password, o.passwordHash!))
+      .at(0);
 
     if (user) {
       this.session.userId = user.id;
@@ -71,20 +78,23 @@ class APIService {
   }
 
   async registerUser(username: string, password: string, name: string) {
-    // TODO: hash passwords for security
-    const encryptedPassword = password;
+    const passwordHash = await bcrypt.hash(password, 10);
 
-    // checks if username is taken before creating account
-    const isNameInUse = await DB.exists(User, {
-      where: { username: username },
+    // Check if username is taken before creating account
+    const isNameInUse = await DB.exists(UserAccount, {
+      where: { authName: username },
     });
 
     if (!isNameInUse) {
       // New user
-      const newUser = new User();
-      newUser.username = username;
-      newUser.password = encryptedPassword;
-      newUser.name = name;
+      const newUser = new UserAccount();
+      newUser.authName = username;
+      newUser.passwordHash = passwordHash;
+
+      // New profile (do this separately?)
+      newUser.profile = new UserProfile();
+      newUser.profile.name = name;
+
       await DB.save(newUser);
 
       return true;
@@ -94,17 +104,16 @@ class APIService {
     }
   }
 
-  async updateUser(id: number, password: string, name: string) {
-    // TODO: hash passwords for security
-    const encryptedPassword = password;
+  async updateUserAccount(id: number, password: string) {
+    const passwordHash = await bcrypt.hash(password, 10);
 
-    const user = await DB.findOne(User, {
+    const user = await DB.findOne(UserAccount, {
       where: { id: id },
+      loadRelationIds: true,
     });
 
     if (user) {
-      user.name = name;
-      user.password = encryptedPassword;
+      user.passwordHash = passwordHash;
       await DB.save(user);
 
       return true;
@@ -115,15 +124,22 @@ class APIService {
 
   async getCurrentUser() {
     const id = this.session.userId;
-    return id ? await this.getUser(id) : null;
-  }
 
-  async getUser(id: number) {
-    const user = await DB.findOne(User, {
+    // User is not logged in
+    if (!id) {
+      return null;
+    }
+
+    const user = await DB.findOne(UserAccount, {
       where: { id },
+      loadRelationIds: true,
     });
 
-    return user;
+    const profile = await DB.findOne(UserProfile, {
+      where: { id: user?.profile.id },
+    });
+
+    return profile;
   }
 }
 

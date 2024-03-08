@@ -1,7 +1,7 @@
 import { Button, Form, FormInstance, Input, Typography, message } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import nullthrows from "nullthrows";
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
 import { api } from "../../api";
@@ -18,10 +18,9 @@ export function ManageAccountPage() {
       return;
     }
 
-    const success = await api.updateUser(
+    const success = await api.updateUserAccount(
       nullthrows(user).id,
-      values.password,
-      values.name
+      values.password
     );
 
     if (success) {
@@ -34,20 +33,11 @@ export function ManageAccountPage() {
 
   const formRef = useRef<FormInstance>(null);
 
-  useEffect(() => {
-    // Pre-fill default values
-    formRef.current?.setFieldValue("name", user?.name);
-  }, [user]);
-
   return (
     <Container>
       <Form onFinish={onSubmit} autoComplete="off" ref={formRef}>
         <Typography.Title>Manage Account</Typography.Title>
         <div>
-          <FormItem label="Name" name="name" rules={[{ required: true }]}>
-            <Input />
-          </FormItem>
-
           <FormItem
             label="Password"
             name="password"
