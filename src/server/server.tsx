@@ -67,7 +67,8 @@ class APIService {
   async authLoginWithGoogle(token: string) {
     // 1. Get email from token
     // 2. Get user where username matches email
-    // 3. Set user id for session
+    // 3. If doesn't exist, create new UserAccount
+    // 4. Set user id for session
 
     return false;
   }
@@ -109,7 +110,6 @@ class APIService {
 
     const user = await DB.findOne(UserAccount, {
       where: { id: id },
-      loadRelationIds: true,
     });
 
     if (user) {
@@ -132,14 +132,9 @@ class APIService {
 
     const user = await DB.findOne(UserAccount, {
       where: { id },
-      loadRelationIds: true,
     });
 
-    const profile = await DB.findOne(UserProfile, {
-      where: { id: user?.profile.id },
-    });
-
-    return profile;
+    return user!.profile;
   }
 }
 
