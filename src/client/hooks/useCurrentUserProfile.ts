@@ -1,8 +1,8 @@
 import { useQuery } from "./useQuery";
 
-export function useCurrentUser() {
+export function useCurrentUserProfile() {
   const { data } = useQuery({
-    method: "getCurrentUser",
+    method: "getCurrentUserProfile",
   });
 
   return data ?? null;

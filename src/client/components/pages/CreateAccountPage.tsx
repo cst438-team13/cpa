@@ -4,9 +4,13 @@ import React, { useRef } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
 import { api } from "../../api";
+import { useAuth } from "../../hooks/useAuth";
+import { useSetupProfileModal } from "../../hooks/useSetupProfileModal";
 
 export function CreateAccountPage() {
   const navigate = useNavigate();
+  const { openSetupProfileModal } = useSetupProfileModal();
+  const { loginUser } = useAuth();
 
   const onSubmit = async (values) => {
     // TODO: Check if Password is a valid format
@@ -15,14 +19,18 @@ export function CreateAccountPage() {
       return;
     }
 
-    const success = await api.registerUser(
+    const profileInfo = await openSetupProfileModal();
+
+    const success = await api.createUserAccount(
       values.username,
       values.password,
-      values.name
+      profileInfo
     );
 
     if (success) {
       message.info("Account created!");
+      await loginUser(values.username, values.password);
+
       navigate("/");
     } else {
       message.error("Username is already taken.");
@@ -36,10 +44,6 @@ export function CreateAccountPage() {
       <Form onFinish={onSubmit} autoComplete="off" ref={formRef}>
         <Typography.Title>Create Account</Typography.Title>
         <div>
-          <FormItem label="Name" name="name" rules={[{ required: true }]}>
-            <Input />
-          </FormItem>
-
           <FormItem
             label="Username"
             name="username"

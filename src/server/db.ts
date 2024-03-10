@@ -36,7 +36,9 @@ DB.seed = async () => {
   user.passwordHash = await bcrypt.hash("somePassword", 10);
 
   user.profile = new UserProfile();
-  user.profile.name = "Developer";
+  user.profile.displayName = "Developer";
+  user.profile.location = "CSUMB";
+  user.profile.language = "en";
 
   await DB.save(user);
 };

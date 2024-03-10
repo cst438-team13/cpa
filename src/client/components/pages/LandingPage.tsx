@@ -1,14 +1,16 @@
-import { Button, Typography, message } from "antd";
+import { Button, Flex, Typography, message } from "antd";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAuth } from "../../hooks/useAuth";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
+import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 
 export function LandingPage() {
   const { logoutUser } = useAuth();
-  const user = useCurrentUser();
+  const user = useCurrentUserProfile();
   const navigate = useNavigate();
+
+  const isLoggedIn = user != null;
 
   const onClickLogout = async () => {
     const success = await logoutUser();
@@ -18,32 +20,48 @@ export function LandingPage() {
     }
   };
 
-  const isLoggedIn = user != null;
-
   return (
     <Container>
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+      <Flex vertical gap={8}>
         <Typography.Title>PawsConnect</Typography.Title>
 
-        {isLoggedIn ? (
-          <Button type="primary" onClick={onClickLogout}>
-            Log out ({user.name})
-          </Button>
+        {!isLoggedIn ? (
+          <>
+            <Button type="primary" onClick={() => navigate("/login")}>
+              Log in
+            </Button>
+
+            <Button onClick={() => navigate("/register")}>
+              Create account
+            </Button>
+
+            <br />
+            <GoogleLoginButton />
+          </>
         ) : (
-          <Button type="primary" onClick={() => navigate("/login")}>
-            Log in
-          </Button>
+          <>
+            <Button type="primary" onClick={onClickLogout}>
+              Log out ({user.displayName})
+            </Button>
+
+            <Button type="link" onClick={() => navigate("/manageAccount")}>
+              Manage profiles
+            </Button>
+          </>
         )}
-        {!isLoggedIn && (
-          <Button onClick={() => navigate("/register")}>Create account</Button>
-        )}
-        {isLoggedIn && (
-          <Button type="link" onClick={() => navigate("/manageAccount")}>
-            Manage profiles
-          </Button>
-        )}
-      </div>
+      </Flex>
     </Container>
+  );
+}
+
+function GoogleLoginButton() {
+  return (
+    <Button>
+      <Flex gap={8} justify="center" align="center">
+        <img src="svg/google.svg" width={18} />
+        Continue with Google
+      </Flex>
+    </Button>
   );
 }
 
