@@ -9,8 +9,10 @@ export function useAuth() {
     const success = await api.authLoginWithPassword(username, password);
 
     if (success) {
-      // We just changed the result of getCurrentUser(), so refetch it.
-      await queryClient.refetchQueries({ queryKey: ["getCurrentUser"] });
+      // We just changed the result of getCurrentUserProfile(), so refetch it.
+      await queryClient.refetchQueries({
+        queryKey: ["getCurrentUserProfile"],
+      });
       return true;
     }
 
@@ -19,7 +21,9 @@ export function useAuth() {
 
   const logoutUser = async () => {
     const success = await api.authLogout();
-    await queryClient.refetchQueries({ queryKey: ["getCurrentUser"] });
+    await queryClient.refetchQueries({
+      queryKey: ["getCurrentUserProfile"],
+    });
 
     return success;
   };

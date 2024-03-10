@@ -6,5 +6,11 @@ export class UserProfile {
   id: number;
 
   @Column()
-  name: string;
+  displayName: string;
+
+  @Column()
+  location: string;
+
+  @Column()
+  language: string;
 }

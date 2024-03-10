@@ -78,7 +78,11 @@ class APIService {
     return true;
   }
 
-  async registerUser(username: string, password: string, name: string) {
+  async createUserAccount(
+    username: string,
+    password: string,
+    profileInfo: Pick<UserProfile, "displayName" | "location" | "language">
+  ) {
     const passwordHash = await bcrypt.hash(password, 10);
 
     // Check if username is taken before creating account
@@ -92,9 +96,11 @@ class APIService {
       newUser.username = username;
       newUser.passwordHash = passwordHash;
 
-      // New profile (do this separately?)
+      // New profile
       newUser.profile = new UserProfile();
-      newUser.profile.name = name;
+      newUser.profile.displayName = profileInfo.displayName;
+      newUser.profile.location = profileInfo.location;
+      newUser.profile.language = profileInfo.language;
 
       await DB.save(newUser);
 
@@ -122,7 +128,7 @@ class APIService {
     }
   }
 
-  async getCurrentUser() {
+  async getCurrentUserProfile() {
     const id = this.session.userId;
 
     // User is not logged in

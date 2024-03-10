@@ -5,10 +5,10 @@ import React, { useRef } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
 import { api } from "../../api";
-import { useCurrentUser } from "../../hooks/useCurrentUser";
+import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 
 export function ManageAccountPage() {
-  const user = useCurrentUser();
+  const user = useCurrentUserProfile();
   const navigate = useNavigate();
 
   const onSubmit = async (values) => {
