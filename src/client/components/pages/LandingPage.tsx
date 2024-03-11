@@ -55,8 +55,12 @@ export function LandingPage() {
 }
 
 function GoogleLoginButton() {
+  const onClick = () => {
+    message.error("Not implemented");
+  };
+
   return (
-    <Button>
+    <Button onClick={onClick}>
       <Flex gap={8} justify="center" align="center">
         <img src="svg/google.svg" width={18} />
         Continue with Google
