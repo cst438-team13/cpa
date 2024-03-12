@@ -9,23 +9,24 @@ export function GoogleLoginButton() {
   const queryClient = useQueryClient();
   const { openSetupProfileModal } = useSetupProfileModal();
 
+  const onLogin = async (accessToken: string) => {
+    let success = await api.authLoginWithGoogle(accessToken);
+
+    if (!success) {
+      const profileInfo = await openSetupProfileModal();
+      success = await api.authSignupWithGoogle(accessToken, profileInfo);
+    }
+
+    if (success) {
+      message.info("Logged in!");
+      await queryClient.refetchQueries({
+        queryKey: ["getCurrentUserProfile"],
+      });
+    }
+  };
+
   const googleLogin = useGoogleLogin({
-    onSuccess: async (e) => {
-      const token = e.access_token;
-      let success = await api.authLoginWithGoogle(token);
-
-      if (!success) {
-        const profileInfo = await openSetupProfileModal();
-        success = await api.authSignupWithGoogle(token, profileInfo);
-      }
-
-      if (success) {
-        message.info("Logged in!");
-        await queryClient.refetchQueries({
-          queryKey: ["getCurrentUserProfile"],
-        });
-      }
-    },
+    onSuccess: (e) => onLogin(e.access_token),
     onError: (e) => {
       message.error(`Google auth failed (${e})`);
     },
