@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { api } from "../../api";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
-import { GoogleLoginButton } from "../GoogleLoginButton";
+import { GoogleButton } from "../GoogleButton";
 
 export function LandingPage() {
   const user = useCurrentUserProfile();
@@ -43,7 +43,7 @@ export function LandingPage() {
             </Button>
 
             <br />
-            <GoogleLoginButton />
+            <GoogleButton />
           </>
         ) : (
           <>

@@ -28,7 +28,7 @@ export function LoginPage() {
         queryKey: ["getCurrentUserProfile"],
       });
 
-      // Go back to landing page
+      // Go to home page
       navigate("/");
     } else {
       message.error("Username or password was incorrect");

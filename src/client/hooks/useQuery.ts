@@ -2,7 +2,7 @@ import {
   Updater,
   UseQueryOptions,
   useQueryClient,
-  useQuery as useTanstackQuery,
+  useSuspenseQuery as useTanstackSuspenseQuery,
 } from "@tanstack/react-query";
 import { api } from "../api";
 
@@ -29,7 +29,7 @@ export function useQuery<
   const queryFn = () => apiFn.apply(api, args);
   const queryOpts = typeof opts === "object" ? opts : {};
 
-  const result = useTanstackQuery<TQueryFnData, Error, TData>({
+  const result = useTanstackSuspenseQuery<TQueryFnData, Error, TData>({
     queryKey,
     queryFn,
     ...queryOpts,

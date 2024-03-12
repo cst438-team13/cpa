@@ -5,7 +5,7 @@ import React from "react";
 import { api } from "../api";
 import { useSetupProfileModal } from "../hooks/useSetupProfileModal";
 
-export function GoogleLoginButton() {
+export function GoogleButton() {
   const queryClient = useQueryClient();
   const { openSetupProfileModal } = useSetupProfileModal();
 
