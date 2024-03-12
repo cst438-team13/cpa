@@ -25,6 +25,8 @@ export function ManageAccountPage() {
 
     if (success) {
       message.info("Account updated!");
+
+      // Go back to landing page
       navigate("/");
     } else {
       message.error("Error");

@@ -1,22 +1,28 @@
+import { googleLogout } from "@react-oauth/google";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button, Flex, Typography, message } from "antd";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useAuth } from "../../hooks/useAuth";
+import { api } from "../../api";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 import { GoogleLoginButton } from "../GoogleLoginButton";
 
 export function LandingPage() {
-  const { logoutUser } = useAuth();
   const user = useCurrentUserProfile();
   const navigate = useNavigate();
-
-  const isLoggedIn = user != null;
+  const queryClient = useQueryClient();
 
   const onClickLogout = async () => {
-    const success = await logoutUser();
+    const success = await api.authLogout();
+    googleLogout();
 
     if (success) {
+      // We just changed the result of getCurrentUserProfile(), so refetch it.
+      await queryClient.refetchQueries({
+        queryKey: ["getCurrentUserProfile"],
+      });
+
       message.info("Logged out");
     }
   };
@@ -26,7 +32,7 @@ export function LandingPage() {
       <Flex vertical gap={8}>
         <Typography.Title>PawsConnect</Typography.Title>
 
-        {!isLoggedIn ? (
+        {user == null ? (
           <>
             <Button type="primary" onClick={() => navigate("/login")}>
               Log in

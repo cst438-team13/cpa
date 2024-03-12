@@ -1,20 +1,34 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { Button, Form, FormInstance, Input, message } from "antd";
 import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useAuth } from "../../hooks/useAuth";
+import { api } from "../../api";
 
 export function LoginPage() {
   const navigate = useNavigate();
-  const { loginUser } = useAuth();
+  const queryClient = useQueryClient();
 
   const onSubmit = async (values) => {
     message.loading("Logging in...");
-    const success = await loginUser(values.username, values.password);
+
+    // Try to log in with the given username/password
+    const success = await api.authLoginWithPassword(
+      values.username,
+      values.password
+    );
+
     message.destroy();
 
     if (success) {
       message.info("Logged in!");
+
+      // We just changed the result of getCurrentUserProfile(), so refetch it.
+      await queryClient.refetchQueries({
+        queryKey: ["getCurrentUserProfile"],
+      });
+
+      // Go back to landing page
       navigate("/");
     } else {
       message.error("Username or password was incorrect");
