@@ -2,6 +2,7 @@ import axios from "axios";
 import bcrypt from "bcrypt";
 import express from "express";
 import session, { SessionData } from "express-session";
+import nullthrows from "nullthrows";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 import { rpcHandler } from "typed-rpc/express";
@@ -30,10 +31,6 @@ app.get("*", (_req, res) => {
     <html lang="en">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta
-          name="Cross-Origin-Opener-Policy"
-          content="same-origin-allow-popups"
-        />
         <link href="css/app.css" rel="stylesheet" />
         <title>CPA</title>
       </head>
@@ -49,6 +46,38 @@ app.get("*", (_req, res) => {
 
 class APIService {
   constructor(private session: SessionData) {}
+
+  async updateUserAccount(id: number, password: string) {
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const user = await DB.findOne(UserAccount, {
+      where: { id: id },
+    });
+
+    if (user) {
+      user.passwordHash = passwordHash;
+      await DB.save(user);
+
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  async getCurrentUserProfile() {
+    const id = this.session.userId;
+
+    // User is not logged in
+    if (!id) {
+      return null;
+    }
+
+    const user = await DB.findOne(UserAccount, {
+      where: { id },
+    });
+
+    return nullthrows(user).profile;
+  }
 
   async authLoginWithPassword(username: string, password: string) {
     // TODO: hash passwords for security
@@ -69,9 +98,6 @@ class APIService {
     }
   }
 
-  /**
-   * @returns true if account already exists, false if it needs to be created
-   */
   async authLoginWithGoogle(token: string) {
     const email = await axios
       .get("https://www.googleapis.com/oauth2/v3/userinfo", {
@@ -147,41 +173,9 @@ class APIService {
     return await this.authLoginWithGoogle(token);
   }
 
-  async authLogout() {
+  authLogout() {
     this.session.userId = null;
     return true;
-  }
-
-  async updateUserAccount(id: number, password: string) {
-    const passwordHash = await bcrypt.hash(password, 10);
-
-    const user = await DB.findOne(UserAccount, {
-      where: { id: id },
-    });
-
-    if (user) {
-      user.passwordHash = passwordHash;
-      await DB.save(user);
-
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  async getCurrentUserProfile() {
-    const id = this.session.userId;
-
-    // User is not logged in
-    if (!id) {
-      return null;
-    }
-
-    const user = await DB.findOne(UserAccount, {
-      where: { id },
-    });
-
-    return user!.profile;
   }
 }
 
