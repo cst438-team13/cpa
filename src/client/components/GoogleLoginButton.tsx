@@ -10,8 +10,15 @@ export function GoogleLoginButton() {
   const { openSetupProfileModal } = useSetupProfileModal();
 
   const onLogin = async (accessToken: string) => {
+    message.loading("Logging in...");
+
+    // Try to log in with token from Google
     let success = await api.authLoginWithGoogle(accessToken);
 
+    message.destroy();
+
+    // Login failed, which probably means this user doesn't have an
+    // account yet. Try again by creating one.
     if (!success) {
       const profileInfo = await openSetupProfileModal();
       success = await api.authSignupWithGoogle(accessToken, profileInfo);
@@ -19,6 +26,8 @@ export function GoogleLoginButton() {
 
     if (success) {
       message.info("Logged in!");
+
+      // We just changed the result of getCurrentUserProfile(), so refetch it.
       await queryClient.refetchQueries({
         queryKey: ["getCurrentUserProfile"],
       });
