@@ -81,6 +81,7 @@ class APIService {
 
     const user = await DB.findOneBy(UserAccount, {
       username: email,
+      passwordHash: undefined,
     });
 
     if (!user) {
