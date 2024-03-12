@@ -1,3 +1,4 @@
+import axios from "axios";
 import bcrypt from "bcrypt";
 import express from "express";
 import session, { SessionData } from "express-session";
@@ -29,6 +30,10 @@ app.get("*", (_req, res) => {
     <html lang="en">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+          name="Cross-Origin-Opener-Policy"
+          content="same-origin-allow-popups"
+        />
         <link href="css/app.css" rel="stylesheet" />
         <title>CPA</title>
       </head>
@@ -64,21 +69,30 @@ class APIService {
     }
   }
 
+  /**
+   * @returns true if account already exists, false if it needs to be created
+   */
   async authLoginWithGoogle(token: string) {
-    // 1. Get email from token
-    // 2. Get user where username matches email
-    // 3. If doesn't exist, create new UserAccount
-    // 4. Set user id for session
+    const email = await axios
+      .get("https://www.googleapis.com/oauth2/v3/userinfo", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => res.data.email);
 
-    return false;
-  }
+    const user = await DB.findOneBy(UserAccount, {
+      username: email,
+      passwordHash: undefined,
+    });
 
-  async authLogout() {
-    this.session.userId = null;
+    if (!user) {
+      return false;
+    }
+
+    this.session.userId = user.id;
     return true;
   }
 
-  async createUserAccount(
+  async authSignupWithPassword(
     username: string,
     password: string,
     profileInfo: Pick<UserProfile, "displayName" | "location" | "language">
@@ -90,25 +104,52 @@ class APIService {
       where: { username: username },
     });
 
-    if (!isNameInUse) {
-      // New user
-      const newUser = new UserAccount();
-      newUser.username = username;
-      newUser.passwordHash = passwordHash;
-
-      // New profile
-      newUser.profile = new UserProfile();
-      newUser.profile.displayName = profileInfo.displayName;
-      newUser.profile.location = profileInfo.location;
-      newUser.profile.language = profileInfo.language;
-
-      await DB.save(newUser);
-
-      return true;
-    } else {
-      // username already in use
+    if (isNameInUse) {
       return false;
     }
+
+    // New user
+    const newUser = new UserAccount();
+    newUser.username = username;
+    newUser.passwordHash = passwordHash;
+
+    // New profile
+    newUser.profile = new UserProfile();
+    newUser.profile.displayName = profileInfo.displayName;
+    newUser.profile.location = profileInfo.location;
+    newUser.profile.language = profileInfo.language;
+
+    await DB.save(newUser);
+    return await this.authLoginWithPassword(username, password);
+  }
+
+  async authSignupWithGoogle(
+    token: string,
+    profileInfo: Pick<UserProfile, "displayName" | "location" | "language">
+  ) {
+    const email = await axios
+      .get("https://www.googleapis.com/oauth2/v3/userinfo", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res) => res.data.email);
+
+    // New user
+    const newUser = new UserAccount();
+    newUser.username = email;
+
+    // New profile
+    newUser.profile = new UserProfile();
+    newUser.profile.displayName = profileInfo.displayName;
+    newUser.profile.location = profileInfo.location;
+    newUser.profile.language = profileInfo.language;
+
+    await DB.save(newUser);
+    return await this.authLoginWithGoogle(token);
+  }
+
+  async authLogout() {
+    this.session.userId = null;
+    return true;
   }
 
   async updateUserAccount(id: number, password: string) {

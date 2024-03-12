@@ -21,7 +21,7 @@ export function CreateAccountPage() {
 
     const profileInfo = await openSetupProfileModal();
 
-    const success = await api.createUserAccount(
+    const success = await api.authSignupWithPassword(
       values.username,
       values.password,
       profileInfo

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAuth } from "../../hooks/useAuth";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
+import { GoogleLoginButton } from "../GoogleLoginButton";
 
 export function LandingPage() {
   const { logoutUser } = useAuth();
@@ -51,21 +52,6 @@ export function LandingPage() {
         )}
       </Flex>
     </Container>
-  );
-}
-
-function GoogleLoginButton() {
-  const onClick = () => {
-    message.error("Not implemented");
-  };
-
-  return (
-    <Button onClick={onClick}>
-      <Flex gap={8} justify="center" align="center">
-        <img src="svg/google.svg" width={18} />
-        Continue with Google
-      </Flex>
-    </Button>
   );
 }
 

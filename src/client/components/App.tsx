@@ -1,3 +1,4 @@
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ConfigProvider } from "antd";
 import React from "react";
@@ -32,7 +33,9 @@ export function App() {
   return (
     <ConfigProvider>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
+        <GoogleOAuthProvider clientId="564916212911-csikdeti37k8tm5uik4kqtc9rgk3a1iv.apps.googleusercontent.com">
+          <RouterProvider router={router} />
+        </GoogleOAuthProvider>
       </QueryClientProvider>
     </ConfigProvider>
   );
