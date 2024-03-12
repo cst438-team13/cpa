@@ -1,3 +1,4 @@
+import { googleLogout } from "@react-oauth/google";
 import { useQueryClient } from "@tanstack/react-query";
 import { api } from "../api";
 
@@ -20,6 +21,8 @@ export function useAuth() {
   };
 
   const logoutUser = async () => {
+    googleLogout();
+
     const success = await api.authLogout();
     await queryClient.refetchQueries({
       queryKey: ["getCurrentUserProfile"],
