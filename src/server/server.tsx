@@ -7,6 +7,7 @@ import React from "react";
 import ReactDOMServer from "react-dom/server";
 import { rpcHandler } from "typed-rpc/express";
 import { DB } from "./db";
+import { GoogleHelper } from "./helpers/google";
 import { UserAccount } from "./models/UserAccount";
 import { UserProfile } from "./models/UserProfile";
 
@@ -44,8 +45,23 @@ app.get("*", (_req, res) => {
   res.send(html);
 });
 
+// GoogleHelper.getStorageBucket()
+//   .upload("/Users/elikramer/Desktop/Screenshot 2024-03-08 at 3.06.26 PM.png", {
+//     destination: "someScreenshot.png",
+//   })
+//   .then(() => console.log("done"));
+
+// Look at https://github.com/googleapis/nodejs-storage/blob/main/samples/uploadFromMemory.js
+const bucket = GoogleHelper.getStorageBucket();
+bucket.file("someScreenshot.png").save();
+
 class APIService {
   constructor(private session: SessionData) {}
+
+  async uploadToBucket(remoteName: string, data: string) {
+    const bucket = GoogleHelper.getStorageBucket();
+    bucket.file(remoteName).save(data);
+  }
 
   async updateUserAccount(id: number, password: string) {
     const passwordHash = await bcrypt.hash(password, 10);
