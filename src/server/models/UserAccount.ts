@@ -9,7 +9,7 @@ import { UserProfile } from "./UserProfile";
 
 /**
  * Used only for authentication. All profile details (name, profile photo, pets, etc) should
- * go in @see UserProfile.
+ * go in {@link UserProfile}.
  */
 @Entity()
 export class UserAccount {

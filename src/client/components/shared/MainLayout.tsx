@@ -25,7 +25,7 @@ const RightButtonsContainer = styled("div")`
 `;
 
 const LayoutCustom = styled(Layout)`
-  height: 100%;
+  min-height: 100%;
   background-color: #f0f2f5;
 `;
 
