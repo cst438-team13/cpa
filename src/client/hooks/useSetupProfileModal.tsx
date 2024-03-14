@@ -23,7 +23,7 @@ export function useSetupProfileModal() {
         content: (
           <Flex vertical>
             <Typography.Paragraph>
-              Almost done! Now it's time to set up your profile.
+              Almost done! Now it&lsquo;s time to set up your profile.
             </Typography.Paragraph>
             <Form onFinish={onFinish}>
               <Form.Item

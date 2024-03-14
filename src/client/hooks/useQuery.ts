@@ -24,7 +24,7 @@ export function useQuery<
 
   const apiFn: (...args: Parameters<API[T]>) => TQueryFnData = api[
     method
-  ] as any;
+  ] as typeof apiFn;
 
   const queryFn = () => apiFn.apply(api, args);
   const queryOpts = typeof opts === "object" ? opts : {};
