@@ -4,7 +4,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Button, Dropdown, message } from "antd";
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { api } from "../api";
+import { api } from "../../api";
 
 export function UserButton() {
   const queryClient = useQueryClient();

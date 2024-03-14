@@ -2,12 +2,14 @@ import { Layout } from "antd";
 import React from "react";
 
 import styled from "styled-components";
+import { SearchBar } from "./SearchBar";
 import { UserButton } from "./UserButton";
 
-export function AppHeader({ children }: { children: React.ReactNode }) {
+export function MainLayout({ children }: { children: React.ReactNode }) {
   return (
     <LayoutCustom>
       <HeaderCustom>
+        <SearchBar />
         <RightButtonsContainer>
           <UserButton />
         </RightButtonsContainer>
@@ -16,6 +18,11 @@ export function AppHeader({ children }: { children: React.ReactNode }) {
     </LayoutCustom>
   );
 }
+
+const RightButtonsContainer = styled("div")`
+  position: absolute;
+  right: 12px;
+`;
 
 const LayoutCustom = styled(Layout)`
   height: 100%;
@@ -28,11 +35,5 @@ const HeaderCustom = styled(Layout.Header)`
   z-index: 1;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-`;
-
-const RightButtonsContainer = styled("div")`
-  display: flex;
-  padding: 0 12px;
-  gap: 12px;
+  justify-content: center;
 `;
