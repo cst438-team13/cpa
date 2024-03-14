@@ -1,9 +1,9 @@
 import { useQuery } from "./useQuery";
 
 export function useCurrentUserProfile() {
-  const { data } = useQuery({
-    method: "getCurrentUserProfile",
-  });
-
+  // Using useQuery() over api.getCurrentUserProfile() for two reasons:
+  // 1. We want this to automatically refresh when logging in/out
+  // 2. We want to show a loading spinner while this is being fetched
+  const { data } = useQuery("getCurrentUserProfile");
   return data ?? null;
 }
