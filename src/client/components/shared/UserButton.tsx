@@ -1,16 +1,16 @@
 import { UserOutlined } from "@ant-design/icons";
 import { googleLogout } from "@react-oauth/google";
-import { useQueryClient } from "@tanstack/react-query";
 import { Button, Dropdown, message } from "antd";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../api";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
+import { useRefetchQuery } from "../../hooks/useQuery";
 
 export function UserButton() {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const user = useCurrentUserProfile();
+  const refetchQuery = useRefetchQuery();
 
   const onClickLogout = async () => {
     const success = await api.authLogout();
@@ -18,9 +18,7 @@ export function UserButton() {
 
     if (success) {
       // We just changed the result of getCurrentUserProfile(), so refetch it.
-      await queryClient.refetchQueries({
-        queryKey: ["getCurrentUserProfile"],
-      });
+      await refetchQuery("getCurrentUserProfile");
 
       navigate("/");
       message.info("Logged out");

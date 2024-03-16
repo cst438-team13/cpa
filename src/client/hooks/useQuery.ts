@@ -11,6 +11,16 @@ type API = typeof api;
 // NOTE: Don't worry about this file, mostly
 // derived from https://github.com/fgnass/react-api-query/blob/main/src/query.ts
 
+export function useRefetchQuery<T extends keyof API>() {
+  const queryClient = useQueryClient();
+
+  return async (method: T, ...args: Parameters<API[T]>) => {
+    await queryClient.refetchQueries({
+      queryKey: [method, ...args],
+    });
+  };
+}
+
 export function useQuery<
   T extends keyof API,
   TQueryFnData = ReturnType<API[T]>,

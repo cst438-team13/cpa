@@ -1,12 +1,12 @@
 import { useGoogleLogin } from "@react-oauth/google";
-import { useQueryClient } from "@tanstack/react-query";
 import { Button, Flex, message } from "antd";
 import React from "react";
 import { api } from "../api";
+import { useRefetchQuery } from "../hooks/useQuery";
 import { useSetupProfileModal } from "../hooks/useSetupProfileModal";
 
 export function GoogleButton() {
-  const queryClient = useQueryClient();
+  const refetchQuery = useRefetchQuery();
   const { openSetupProfileModal } = useSetupProfileModal();
 
   const onLogin = async (accessToken: string) => {
@@ -28,9 +28,7 @@ export function GoogleButton() {
       message.info("Logged in!");
 
       // We just changed the result of getCurrentUserProfile(), so refetch it.
-      await queryClient.refetchQueries({
-        queryKey: ["getCurrentUserProfile"],
-      });
+      await refetchQuery("getCurrentUserProfile");
     }
   };
 

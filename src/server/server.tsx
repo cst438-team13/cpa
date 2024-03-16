@@ -64,6 +64,17 @@ class APIService {
     }
   }
 
+  async updateUserProfile(id: number, displayName?: string) {
+    const userProfile = await this.getUserProfile(id);
+
+    if (displayName != null) {
+      userProfile.displayName = displayName;
+    }
+
+    await DB.save(userProfile);
+    return true;
+  }
+
   async getUserProfile(id: number) {
     const user = await DB.findOne(UserAccount, {
       where: { id },

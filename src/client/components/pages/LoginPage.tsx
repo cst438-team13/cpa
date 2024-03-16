@@ -1,13 +1,13 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { Button, Form, FormInstance, Input, message } from "antd";
 import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { api } from "../../api";
+import { useRefetchQuery } from "../../hooks/useQuery";
 
 export function LoginPage() {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
+  const refetchQuery = useRefetchQuery();
 
   const onSubmit = async (values) => {
     message.loading("Logging in...");
@@ -24,9 +24,7 @@ export function LoginPage() {
       message.info("Logged in!");
 
       // We just changed the result of getCurrentUserProfile(), so refetch it.
-      await queryClient.refetchQueries({
-        queryKey: ["getCurrentUserProfile"],
-      });
+      await refetchQuery("getCurrentUserProfile");
 
       // Go to home page
       navigate("/");
