@@ -36,7 +36,7 @@ export function App() {
       element: <ManageAccountPage />,
     },
     {
-      path: "/profilePage",
+      path: "/profile/:id",
       element: <ProfilePage />,
     },
   ]);
