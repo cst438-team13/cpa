@@ -1,18 +1,35 @@
 import { UserOutlined } from "@ant-design/icons";
-import { Avatar, Card, Flex, List, Typography } from "antd";
+import { Avatar, Card, Flex, List, Typography, message } from "antd";
 import React from "react";
 import { useParams } from "react-router-dom";
-import { useQuery } from "../../hooks/useQuery";
+import { api } from "../../api";
+import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
+import { useQuery, useRefetchQuery } from "../../hooks/useQuery";
 import { MainLayout } from "../shared/MainLayout";
 
 export function ProfilePage() {
   const params = useParams();
-  const userId = params.id;
+  const userId = Number(params.id);
 
-  const { data: user } = useQuery("getUserProfile", Number(userId));
+  const refetchQuery = useRefetchQuery();
+  const { data: user } = useQuery("getUserProfile", userId);
 
-  const infoTemplates = ["Name:", "Location:", "Language:"];
-  const userInfo = [user.displayName, user.location, user.language];
+  const currentUser = useCurrentUserProfile();
+  const canEdit = currentUser?.id === userId;
+
+  const infoTemplates = ["Location: ", "Language: "];
+  const userInfo = [user.location, user.language];
+
+  const onChangeName = async (value: string) => {
+    message.loading("Updating...");
+
+    await api.updateUserProfile(userId, value);
+    await refetchQuery("getCurrentUserProfile");
+    await refetchQuery("getUserProfile", userId);
+
+    message.destroy();
+    message.info("Updated!");
+  };
 
   return (
     <MainLayout>
@@ -20,6 +37,12 @@ export function ProfilePage() {
         <Card title="Profile Details" style={{ width: 650 }}>
           <Flex vertical align="center" gap={18}>
             <Avatar size={128} icon={<UserOutlined />} />
+            <Typography.Title
+              level={4}
+              editable={canEdit && { onChange: onChangeName }}
+            >
+              {user.displayName}
+            </Typography.Title>
             <List
               size="large"
               dataSource={userInfo}

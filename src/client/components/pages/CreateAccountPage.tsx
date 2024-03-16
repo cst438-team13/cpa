@@ -1,17 +1,16 @@
-import { useQueryClient } from "@tanstack/react-query";
 import { Button, Form, FormInstance, Input, Typography, message } from "antd";
 import FormItem from "antd/es/form/FormItem";
 import React, { useRef } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
 import { api } from "../../api";
+import { useRefetchQuery } from "../../hooks/useQuery";
 import { useSetupProfileModal } from "../../hooks/useSetupProfileModal";
 
 export function CreateAccountPage() {
   const navigate = useNavigate();
+  const refetchQuery = useRefetchQuery();
   const { openSetupProfileModal } = useSetupProfileModal();
-
-  const queryClient = useQueryClient();
 
   const onSubmit = async (values) => {
     // TODO: Check if Password is a valid format
@@ -31,9 +30,7 @@ export function CreateAccountPage() {
 
     if (success) {
       // We just changed the result of getCurrentUserProfile(), so refetch it.
-      await queryClient.refetchQueries({
-        queryKey: ["getCurrentUserProfile"],
-      });
+      await refetchQuery("getCurrentUserProfile");
 
       message.destroy();
       message.info("Logged in!");
