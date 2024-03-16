@@ -28,6 +28,8 @@ export function UserButton() {
   const onClickMenuItem = async (menuItemKey) => {
     if (menuItemKey === "logout") {
       await onClickLogout();
+    } else if (menuItemKey == "profile") {
+      navigate("/profilePage");
     }
   };
 

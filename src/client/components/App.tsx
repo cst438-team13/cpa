@@ -10,6 +10,7 @@ import { HomePage } from "./pages/HomePage";
 import { LandingPage } from "./pages/LandingPage";
 import { LoginPage } from "./pages/LoginPage";
 import { ManageAccountPage } from "./pages/ManageAccountPage";
+import { ProfilePage } from "./pages/ProfilePage";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,10 @@ export function App() {
     {
       path: "/manageAccount",
       element: <ManageAccountPage />,
+    },
+    {
+      path: "/profilePage",
+      element: <ProfilePage />,
     },
   ]);
 
