@@ -29,8 +29,8 @@ export function CreateAccountPage() {
     );
 
     if (success) {
-      // We just changed the result of getCurrentUserProfile(), so refetch it.
-      await refetchQuery("getCurrentUserProfile");
+      // We just changed the result of getCurrentUserId(), so refetch it.
+      await refetchQuery("getCurrentUserId");
 
       message.destroy();
       message.info("Logged in!");

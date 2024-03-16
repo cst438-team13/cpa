@@ -24,7 +24,7 @@ export function ProfilePage() {
     message.loading("Updating...");
 
     await api.updateUserProfile(userId, value);
-    await refetchQuery("getCurrentUserProfile");
+    await refetchQuery("getCurrentUserId");
     await refetchQuery("getUserProfile", userId);
 
     message.destroy();

@@ -18,8 +18,8 @@ export function LandingPage() {
     googleLogout();
 
     if (success) {
-      // We just changed the result of getCurrentUserProfile(), so refetch it.
-      await refetchQuery("getCurrentUserProfile");
+      // We just changed the result of getCurrentUserId(), so refetch it.
+      await refetchQuery("getCurrentUserId");
       message.info("Logged out");
     }
   };

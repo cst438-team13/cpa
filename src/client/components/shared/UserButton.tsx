@@ -17,8 +17,8 @@ export function UserButton() {
     googleLogout();
 
     if (success) {
-      // We just changed the result of getCurrentUserProfile(), so refetch it.
-      await refetchQuery("getCurrentUserProfile");
+      // We just changed the result of getCurrentUserId(), so refetch it.
+      await refetchQuery("getCurrentUserId");
 
       navigate("/");
       message.info("Logged out");
