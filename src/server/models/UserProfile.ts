@@ -9,6 +9,9 @@ export class UserProfile {
   displayName: string;
 
   @Column()
+  avatarUrl: string;
+
+  @Column()
   location: string;
 
   @Column()

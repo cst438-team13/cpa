@@ -2,8 +2,12 @@ import { Loading3QuartersOutlined } from "@ant-design/icons";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ConfigProvider, Flex, Spin } from "antd";
-import React, { Suspense } from "react";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import React, { Suspense, useEffect } from "react";
+import {
+  RouterProvider,
+  createBrowserRouter,
+  useNavigate,
+} from "react-router-dom";
 import { useCurrentUserProfile } from "../hooks/useCurrentUserProfile";
 import { CreateAccountPage } from "./pages/CreateAccountPage";
 import { HomePage } from "./pages/HomePage";
@@ -18,10 +22,9 @@ export function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: React.createElement(() => {
-        const user = useCurrentUserProfile();
-        return user == null ? <LandingPage /> : <HomePage />;
-      }),
+      element: (
+        <RequireAuth Component={HomePage} FallbackComponent={LandingPage} />
+      ),
     },
     {
       path: "/login",
@@ -33,11 +36,11 @@ export function App() {
     },
     {
       path: "/manageAccount",
-      element: <ManageAccountPage />,
+      element: <RequireAuth Component={ManageAccountPage} />,
     },
     {
       path: "/profile/:id",
-      element: <ProfilePage />,
+      element: <RequireAuth Component={ProfilePage} />,
     },
   ]);
 
@@ -52,6 +55,32 @@ export function App() {
       </QueryClientProvider>
     </ConfigProvider>
   );
+}
+
+/**
+ * Prevents routes from being accessed if not logged in.
+ */
+function RequireAuth({
+  Component,
+  FallbackComponent,
+}: {
+  Component: React.FC;
+  FallbackComponent?: React.FC;
+}) {
+  const user = useCurrentUserProfile();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user == null && !FallbackComponent) {
+      navigate("/");
+    }
+  }, [user, FallbackComponent]);
+
+  if (user == null) {
+    return FallbackComponent == null ? null : <FallbackComponent />;
+  }
+
+  return <Component />;
 }
 
 function SuspenseLoadingSpinner() {

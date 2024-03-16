@@ -36,7 +36,7 @@ export function ProfilePage() {
       <Flex vertical align="center">
         <Card title="Profile Details" style={{ width: 650 }}>
           <Flex vertical align="center" gap={18}>
-            <Avatar size={128} icon={<UserOutlined />} />
+            <Avatar size={128} icon={<UserOutlined />} src={user.avatarUrl} />
             <Typography.Title
               level={4}
               editable={canEdit && { onChange: onChangeName }}

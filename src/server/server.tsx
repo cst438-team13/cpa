@@ -2,6 +2,7 @@ import axios from "axios";
 import bcrypt from "bcrypt";
 import express from "express";
 import session, { SessionData } from "express-session";
+import fs from "fs";
 import nullthrows from "nullthrows";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
@@ -24,6 +25,17 @@ app.post(
   "/api/rpc",
   rpcHandler((req) => new APIService(req.session as SessionData))
 );
+
+app.get("/user-content/*", (req, res) => {
+  console.log(req.url);
+  fs.readFile(`/${req.url}`, (err, data) => {
+    if (err) {
+      res.sendStatus(404);
+    } else {
+      res.send(data);
+    }
+  });
+});
 
 // Make sure this is always the last app.get() call
 app.get("*", (_req, res) => {
