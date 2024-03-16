@@ -12,7 +12,7 @@ export function ProfilePage() {
   const userId = Number(params.id);
 
   const refetchQuery = useRefetchQuery();
-  const { data: user } = useQuery("getUserProfile", userId);
+  const user = useQuery("getUserProfile", userId);
 
   const currentUser = useCurrentUserProfile();
   const canEdit = currentUser?.id === userId;

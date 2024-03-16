@@ -25,7 +25,7 @@ export function useSetupProfileModal() {
             <Typography.Paragraph>
               Almost done! Now it&lsquo;s time to set up your profile.
             </Typography.Paragraph>
-            <Form onFinish={onFinish}>
+            <Form onFinish={onFinish} initialValues={{ language: "en" }}>
               <Form.Item
                 label="Name"
                 name="displayName"
@@ -44,7 +44,6 @@ export function useSetupProfileModal() {
 
               <Form.Item label="Language (preferred)" name="language">
                 <Select
-                  defaultValue="en"
                   options={[
                     { value: "en", label: "English" },
                     { value: "es", label: "Spanish" },

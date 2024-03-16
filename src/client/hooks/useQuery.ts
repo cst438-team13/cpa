@@ -1,5 +1,4 @@
 import {
-  Updater,
   UseQueryOptions,
   useQueryClient,
   useSuspenseQuery as useTanstackSuspenseQuery,
@@ -45,23 +44,5 @@ export function useQuery<
     ...queryOpts,
   });
 
-  const queryClient = useQueryClient();
-
-  return {
-    ...result,
-    queryKey,
-    update: (updater: Updater<TData | undefined, TData | undefined>) => {
-      queryClient.setQueryData(queryKey, updater);
-    },
-    invalidate: () => {
-      queryClient.invalidateQueries({
-        queryKey,
-      });
-    },
-    removeQuery: () => {
-      queryClient.removeQueries({
-        queryKey,
-      });
-    },
-  };
+  return result.data;
 }
