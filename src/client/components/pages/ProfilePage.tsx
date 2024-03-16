@@ -27,7 +27,7 @@ export function ProfilePage() {
                 <List.Item>
                   <Typography.Text strong>
                     {infoTemplates[index]}
-                  </Typography.Text>{" "}
+                  </Typography.Text>
                   {item}
                 </List.Item>
               )}
