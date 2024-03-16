@@ -31,12 +31,12 @@ app.get("*", (_req, res) => {
     <html lang="en">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link href="css/app.css" rel="stylesheet" />
+        <link href="/css/app.css" rel="stylesheet" />
         <title>CPA</title>
       </head>
       <body>
         <div id="root"></div>
-        <script src="js/bundle.js" />
+        <script src="/js/bundle.js" />
       </body>
     </html>
   );
@@ -64,6 +64,14 @@ class APIService {
     }
   }
 
+  async getUserProfile(id: number) {
+    const user = await DB.findOne(UserAccount, {
+      where: { id },
+    });
+
+    return nullthrows(user).profile;
+  }
+
   async getCurrentUserProfile() {
     const id = this.session.userId;
 
@@ -72,11 +80,7 @@ class APIService {
       return null;
     }
 
-    const user = await DB.findOne(UserAccount, {
-      where: { id },
-    });
-
-    return nullthrows(user).profile;
+    return await nullthrows(this.getUserProfile(id));
   }
 
   async authLoginWithPassword(username: string, password: string) {

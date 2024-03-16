@@ -1,26 +1,25 @@
 import { UserOutlined } from "@ant-design/icons";
 import { Avatar, Card, Flex, List, Typography } from "antd";
 import React from "react";
-import { useNavigate } from "react-router";
-import styled from "styled-components";
-import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
+import { useParams } from "react-router-dom";
+import { useQuery } from "../../hooks/useQuery";
 import { MainLayout } from "../shared/MainLayout";
 
 export function ProfilePage() {
-  const navigate = useNavigate();
-  const user = useCurrentUserProfile();
-  const infoTemplates = ["Name:", "Location:", "Language:"];
-  const userInfo = [user?.displayName, user?.location, user?.language];
+  const params = useParams();
+  const userId = params.id;
 
-  // const formRef = useRef<FormInstance>(null);
+  const { data: user } = useQuery("getUserProfile", Number(userId));
+
+  const infoTemplates = ["Name:", "Location:", "Language:"];
+  const userInfo = [user.displayName, user.location, user.language];
 
   return (
     <MainLayout>
-      <Flex vertical align="center" style={{ width: "100%" }}>
+      <Flex vertical align="center">
         <Card title="Profile Details" style={{ width: 650 }}>
-          <Flex vertical align="center" style={{ width: "100%" }}>
-            <Avatar size={128} icon={<UserOutlined />}></Avatar>
-            <br></br>
+          <Flex vertical align="center" gap={18}>
+            <Avatar size={128} icon={<UserOutlined />} />
             <List
               size="large"
               dataSource={userInfo}
@@ -39,11 +38,3 @@ export function ProfilePage() {
     </MainLayout>
   );
 }
-
-const Container = styled("div")`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-`;

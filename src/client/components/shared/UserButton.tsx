@@ -5,10 +5,12 @@ import { Button, Dropdown, message } from "antd";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../api";
+import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 
 export function UserButton() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const user = useCurrentUserProfile();
 
   const onClickLogout = async () => {
     const success = await api.authLogout();
@@ -29,7 +31,7 @@ export function UserButton() {
     if (menuItemKey === "logout") {
       await onClickLogout();
     } else if (menuItemKey == "profile") {
-      navigate("/profilePage");
+      navigate(`/profile/${user?.id}`);
     }
   };
 
