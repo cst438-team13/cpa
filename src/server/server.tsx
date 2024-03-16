@@ -83,15 +83,8 @@ class APIService {
     return nullthrows(user).profile;
   }
 
-  async getCurrentUserProfile() {
-    const id = this.session.userId;
-
-    // User is not logged in
-    if (!id) {
-      return null;
-    }
-
-    return await nullthrows(this.getUserProfile(id));
+  async getCurrentUserId() {
+    return this.session.userId ?? null;
   }
 
   async authLoginWithPassword(username: string, password: string) {
