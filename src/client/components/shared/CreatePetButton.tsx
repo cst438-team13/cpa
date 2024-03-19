@@ -9,10 +9,13 @@ export function CreatePetButton() {
   const user = useCurrentUserProfile();
   const refetchQuery = useRefetchQuery();
 
-  const menuItems = [
-    { label: "Profile", key: "profile" },
-    { label: "Log out", key: "logout", danger: true },
-  ];
+  const onClickButton = () => {
+    navigate("/createPet");
+  };
 
-  return <Button type={"primary"} shape="circle" />;
+  return (
+    <Button type={"primary"} shape="circle" onClick={onClickButton}>
+      Create Pet
+    </Button>
+  );
 }

@@ -4,6 +4,7 @@ import React, { useRef } from "react";
 import { useNavigate } from "react-router";
 import styled from "styled-components";
 import { api } from "../../api";
+import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 import { useRefetchQuery } from "../../hooks/useQuery";
 import { useSetupProfileModal } from "../../hooks/useSetupProfileModal";
 
@@ -11,6 +12,7 @@ export function CreatePetPage() {
   const navigate = useNavigate();
   const refetchQuery = useRefetchQuery();
   const { openSetupProfileModal } = useSetupProfileModal();
+  const user = useCurrentUserProfile();
 
   const onSubmit = async (values) => {
     // TODO: Add values to database
@@ -22,7 +24,7 @@ export function CreatePetPage() {
       values.breed,
       values.color,
       values.age,
-      this.session.userId
+      user!.id
     );
 
     if (success) {

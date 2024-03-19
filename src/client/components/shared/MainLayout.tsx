@@ -2,6 +2,7 @@ import { Layout } from "antd";
 import React from "react";
 
 import styled from "styled-components";
+import { CreatePetButton } from "./CreatePetButton";
 import { SearchBar } from "./SearchBar";
 import { UserButton } from "./UserButton";
 
@@ -12,7 +13,7 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
         <SearchBar />
         <RightButtonsContainer>
           {/* TODO: Implement Create Pet Button */}
-          {/* <CreatePetButton /> */}
+          <CreatePetButton />
           <UserButton />
         </RightButtonsContainer>
       </HeaderCustom>
