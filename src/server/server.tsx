@@ -167,7 +167,7 @@ class APIService {
     newUser.profile.language = profileInfo.language;
 
     if (profileInfo.avatarData) {
-      const fileId = Math.floor(Math.random() * 10000);
+      const fileId = `avatar-${crypto.randomUUID()}`;
       const path = `/ugc/${fileId}`;
       const data = profileInfo.avatarData
         .replace("data:", "")
@@ -204,7 +204,7 @@ class APIService {
     newUser.profile.language = profileInfo.language;
 
     if (profileInfo.avatarData) {
-      const fileId = Math.floor(Math.random() * 10000);
+      const fileId = `avatar-${crypto.randomUUID()}`;
       const path = `/ugc/${fileId}`;
       const data = profileInfo.avatarData
         .replace("data:", "")
