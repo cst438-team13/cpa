@@ -3,6 +3,9 @@
 # Webpack output
 public/js
 
+public/ugc/*
+!public/ugc/1.png
+
 # Logs
 logs
 *.log

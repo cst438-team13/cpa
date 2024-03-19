@@ -1,10 +1,24 @@
-import { Button, Flex, Form, Input, Modal, Select, Typography } from "antd";
-import React from "react";
+import { PlusOutlined } from "@ant-design/icons";
+import {
+  Button,
+  Flex,
+  Form,
+  Input,
+  Modal,
+  Select,
+  Typography,
+  Upload,
+} from "antd";
+import ImgCrop from "antd-img-crop";
+import { RcFile } from "antd/es/upload";
+import React, { useState } from "react";
+import { getScaledImageFromFile } from "../helpers/imageHelpers";
 
 type ProfileInfo = {
   displayName: string;
   location: string;
   language: string;
+  avatarData: string | null;
 };
 
 export function useSetupProfileModal() {
@@ -20,45 +34,85 @@ export function useSetupProfileModal() {
         centered: true,
         closable: false,
         footer: null,
-        content: (
-          <Flex vertical>
-            <Typography.Paragraph>
-              Almost done! Now it&lsquo;s time to set up your profile.
-            </Typography.Paragraph>
-            <Form onFinish={onFinish} initialValues={{ language: "en" }}>
-              <Form.Item
-                label="Name"
-                name="displayName"
-                rules={[{ required: true }]}
-              >
-                <Input />
-              </Form.Item>
-
-              <Form.Item
-                label="Location"
-                name="location"
-                rules={[{ required: true }]}
-              >
-                <Input />
-              </Form.Item>
-
-              <Form.Item label="Language (preferred)" name="language">
-                <Select
-                  options={[
-                    { value: "en", label: "English" },
-                    { value: "es", label: "Spanish" },
-                  ]}
-                />
-              </Form.Item>
-
-              <Button type="primary" htmlType="submit">
-                Ok
-              </Button>
-            </Form>
-          </Flex>
-        ),
+        content: <SetupProfileContent onFinish={onFinish} />,
       });
     });
 
   return { openSetupProfileModal };
+}
+
+type ContentProps = {
+  onFinish: (values: unknown) => void;
+};
+
+function SetupProfileContent({ onFinish }: ContentProps) {
+  const [avatarData, setAvatarData] = useState<string | null>(null);
+
+  const handleSetAvatar = async (file: RcFile) => {
+    const data = await getScaledImageFromFile(file, 128);
+    setAvatarData(data);
+  };
+
+  return (
+    <Flex vertical>
+      <Typography.Paragraph>
+        Almost done! Now it's time to set up your profile.
+      </Typography.Paragraph>
+      <Form
+        onFinish={(values) => {
+          onFinish({ avatarData: avatarData, ...values });
+        }}
+        initialValues={{ language: "en" }}
+      >
+        <Form.Item>
+          <ImgCrop>
+            <Upload
+              name="avatar"
+              listType="picture-card"
+              showUploadList={false}
+              customRequest={(e) => handleSetAvatar(e.file as RcFile)}
+              style={{ cursor: "pointer" }}
+            >
+              {avatarData != null ? (
+                <img src={avatarData} alt="avatar" style={{ width: "100%" }} />
+              ) : (
+                <button
+                  style={{ border: 0, background: "none", cursor: "pointer" }}
+                  type="button"
+                >
+                  <PlusOutlined />
+                  <div style={{ marginTop: 8 }}>Upload</div>
+                </button>
+              )}
+            </Upload>
+          </ImgCrop>
+        </Form.Item>
+
+        <Form.Item label="Name" name="displayName" rules={[{ required: true }]}>
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          label="Location"
+          name="location"
+          rules={[{ required: true }]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item label="Language (preferred)" name="language">
+          <Select
+            options={[
+              { value: "en", label: "English" },
+              { value: "es", label: "Spanish" },
+            ]}
+          />
+        </Form.Item>
+
+        <Button type="primary" htmlType="submit">
+          Ok
+        </Button>
+      </Form>
+    </Flex>
+  );
 }
