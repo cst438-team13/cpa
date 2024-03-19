@@ -8,6 +8,7 @@ import React from "react";
 import ReactDOMServer from "react-dom/server";
 import { rpcHandler } from "typed-rpc/express";
 import { DB } from "./db";
+import { PetProfile } from "./models/PetProfile";
 import { UserAccount } from "./models/UserAccount";
 import { UserProfile } from "./models/UserProfile";
 
@@ -57,6 +58,30 @@ app.get("*", (_req, res) => {
 
 class APIService {
   constructor(private session: SessionData) {}
+
+  //TODO: Check to make sure this updates the DB
+  async updatePetAccount(
+    Name: string,
+    Description: string,
+    PictureURL: string,
+    Breed: string,
+    Color: string,
+    Age: number,
+    UserId: number
+  ) {
+    // New pet
+    const newPet = new PetProfile();
+    newPet.name = Name;
+    newPet.description = Description;
+    newPet.pictureURL = PictureURL;
+    newPet.breed = Breed;
+    newPet.color = Color;
+    newPet.age = Age;
+    newPet.userId = UserId;
+
+    await DB.save(newPet);
+    return true;
+  }
 
   async updateUserAccount(id: number, password: string) {
     const passwordHash = await bcrypt.hash(password, 10);

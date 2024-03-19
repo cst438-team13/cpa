@@ -3,6 +3,7 @@ import React from "react";
 
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { CreatePetButton } from "./CreatePetButton";
 import { SearchBar } from "./SearchBar";
 import { UserButton } from "./UserButton";
 
@@ -19,6 +20,8 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
         </LeftButtonsContainer>
         <SearchBar />
         <RightButtonsContainer>
+          {/* TODO: Implement Create Pet Button */}
+          <CreatePetButton />
           <UserButton />
         </RightButtonsContainer>
       </HeaderCustom>
