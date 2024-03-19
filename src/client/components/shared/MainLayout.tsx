@@ -11,6 +11,8 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
       <HeaderCustom>
         <SearchBar />
         <RightButtonsContainer>
+          {/* TODO: Implement Create Pet Button */}
+          {/* <CreatePetButton /> */}
           <UserButton />
         </RightButtonsContainer>
       </HeaderCustom>

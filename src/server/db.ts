@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import { DataSource, type EntityManager } from "typeorm";
+import { PetProfile } from "./models/PetProfile";
 import { UserAccount } from "./models/UserAccount";
 import { UserProfile } from "./models/UserProfile";
 
@@ -15,7 +16,7 @@ const dataSource = new DataSource({
   username: "usuzxuui6mwipij2",
   password: "xtt1ask6fapd7tqg",
   database: "iv7yk8xt5q8bsq9e",
-  entities: [UserAccount, UserProfile],
+  entities: [UserAccount, UserProfile, PetProfile],
   synchronize: true,
   logging: false,
   acquireTimeout: 30 * 1000,
