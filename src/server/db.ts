@@ -36,7 +36,7 @@ DB.seed = async () => {
   user.passwordHash = await bcrypt.hash("somePassword", 10);
 
   user.profile = new UserProfile();
-  user.profile.avatarUrl = "/user-content/avatars/1.png";
+  user.profile.avatarUrl = "/ugc/1.png";
   user.profile.displayName = "Developer";
   user.profile.location = "CSUMB";
   user.profile.language = "en";

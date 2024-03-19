@@ -26,8 +26,7 @@ app.post(
   rpcHandler((req) => new APIService(req.session as SessionData))
 );
 
-app.get("/user-content/*", (req, res) => {
-  console.log(req.url);
+app.get("/ugc/*", (req, res) => {
   fs.readFile(`/${req.url}`, (err, data) => {
     if (err) {
       res.sendStatus(404);
@@ -141,7 +140,9 @@ class APIService {
   async authSignupWithPassword(
     username: string,
     password: string,
-    profileInfo: Pick<UserProfile, "displayName" | "location" | "language">
+    profileInfo: Pick<UserProfile, "displayName" | "location" | "language"> & {
+      avatarData: string | null;
+    }
   ) {
     const passwordHash = await bcrypt.hash(password, 10);
 
@@ -165,13 +166,26 @@ class APIService {
     newUser.profile.location = profileInfo.location;
     newUser.profile.language = profileInfo.language;
 
+    if (profileInfo.avatarData) {
+      const fileId = Math.floor(Math.random() * 10000);
+      const path = `/ugc/${fileId}`;
+      const data = profileInfo.avatarData
+        .replace("data:", "")
+        .replace(/^.+,/, "");
+
+      fs.writeFileSync(`public${path}`, data, "base64");
+      newUser.profile.avatarUrl = path;
+    }
+
     await DB.save(newUser);
     return await this.authLoginWithPassword(username, password);
   }
 
   async authSignupWithGoogle(
     token: string,
-    profileInfo: Pick<UserProfile, "displayName" | "location" | "language">
+    profileInfo: Pick<UserProfile, "displayName" | "location" | "language"> & {
+      avatarData: string | null;
+    }
   ) {
     const email = await axios
       .get("https://www.googleapis.com/oauth2/v3/userinfo", {
@@ -188,6 +202,17 @@ class APIService {
     newUser.profile.displayName = profileInfo.displayName;
     newUser.profile.location = profileInfo.location;
     newUser.profile.language = profileInfo.language;
+
+    if (profileInfo.avatarData) {
+      const fileId = Math.floor(Math.random() * 10000);
+      const path = `/ugc/${fileId}`;
+      const data = profileInfo.avatarData
+        .replace("data:", "")
+        .replace(/^.+,/, "");
+
+      fs.writeFileSync(`public${path}`, data, "base64");
+      newUser.profile.avatarUrl = path;
+    }
 
     await DB.save(newUser);
     return await this.authLoginWithGoogle(token);
