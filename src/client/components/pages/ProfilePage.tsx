@@ -1,21 +1,12 @@
 import { UserOutlined } from "@ant-design/icons";
-import {
-  Button,
-  Card,
-  Col,
-  Flex,
-  List,
-  Row,
-  Skeleton,
-  Typography,
-  message,
-} from "antd";
+import { Card, Col, Flex, List, Row, Typography, message } from "antd";
 import Avatar from "antd/es/avatar/avatar";
 import React from "react";
 import { useParams } from "react-router-dom";
 import { api } from "../../api";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 import { useQuery, useRefetchQuery } from "../../hooks/useQuery";
+import { ProfilePetsCard } from "../profile/ProfilePetsCard";
 import { MainLayout } from "../shared/MainLayout";
 
 export function ProfilePage() {
@@ -42,40 +33,11 @@ export function ProfilePage() {
     message.info("Updated!");
   };
 
-  // TEMP
-  const petsData = [
-    {
-      name: "Milo",
-      breed: "Bulldog",
-    },
-    {
-      name: "Cooper",
-      breed: "German Shepard",
-    },
-  ];
-
   return (
     <MainLayout>
       <Row justify="space-around">
         <Col flex="400px">
-          <Card title="Pets">
-            <List
-              dataSource={petsData}
-              renderItem={(item) => (
-                <List.Item actions={[<Button>View</Button>]}>
-                  <Skeleton avatar title={false} loading={false}>
-                    <List.Item.Meta
-                      avatar={<Avatar src={user.avatarUrl} />}
-                      title={
-                        <Typography.Text strong>{item.name}</Typography.Text>
-                      }
-                      description={item.breed}
-                    />
-                  </Skeleton>
-                </List.Item>
-              )}
-            ></List>
-          </Card>
+          <ProfilePetsCard userId={userId} />
         </Col>
 
         <Col flex="650px">
