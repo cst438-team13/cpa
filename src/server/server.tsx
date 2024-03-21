@@ -9,6 +9,7 @@ import ReactDOMServer from "react-dom/server";
 import { rpcHandler } from "typed-rpc/express";
 import { DB } from "./db";
 import { PetProfile } from "./models/PetProfile";
+import { Posts } from "./models/Posts";
 import { UserAccount } from "./models/UserAccount";
 import { UserProfile } from "./models/UserProfile";
 
@@ -92,6 +93,24 @@ class APIService {
     }
 
     await DB.save(newPet);
+    return true;
+  }
+
+  async createPost(
+    picURL: string,
+    caption: string,
+    petTags: string,
+    visibility: string,
+    userId: number
+  ) {
+    const newPost = new Posts();
+    newPost.pictureURL = picURL;
+    newPost.caption = caption;
+    newPost.petTags = petTags;
+    newPost.visibility = visibility;
+    newPost.userId = userId;
+
+    await DB.save(newPost);
     return true;
   }
 
