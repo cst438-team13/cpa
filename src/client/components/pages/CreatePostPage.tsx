@@ -1,6 +1,17 @@
-import { Button, Card, Flex, Form, FormInstance, Input, message } from "antd";
+import type { RadioChangeEvent } from "antd";
+import {
+  Button,
+  Card,
+  Flex,
+  Form,
+  FormInstance,
+  Input,
+  message,
+  Radio,
+  Typography,
+} from "antd";
 import FormItem from "antd/es/form/FormItem";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { api } from "../../api";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
@@ -9,18 +20,24 @@ import { MainLayout } from "../shared/MainLayout";
 export function CreatePostPage() {
   const navigate = useNavigate();
   const user = useCurrentUserProfile();
+  const [radioValue, setRadioValue] = useState("public");
+  const visOptions = [
+    { label: "Public", value: "public" },
+    { label: "Friends Only", value: "friends" },
+  ];
+
+  const onChange = ({ target: { value } }: RadioChangeEvent) => {
+    setRadioValue(value);
+  };
 
   const onSubmit = async (values) => {
     // TODO: Add values to database
     message.loading("Posting...");
-    if (values.petTags == null) {
-      values.petTags = "";
-    }
     const success = await api.createPost(
       values.pictureURL,
       values.caption,
       values.petTags,
-      "public",
+      radioValue,
       user!.id
     );
 
@@ -67,6 +84,18 @@ export function CreatePostPage() {
               >
                 <Input />
               </FormItem>
+
+              <Typography.Text>Who Can See Post: </Typography.Text>
+              <Radio.Group
+                name="visibility"
+                options={visOptions}
+                onChange={onChange}
+                value={radioValue}
+                optionType="button"
+                buttonStyle="solid"
+              />
+              <br></br>
+              <br></br>
 
               <Button type="primary" htmlType="submit">
                 Post!
