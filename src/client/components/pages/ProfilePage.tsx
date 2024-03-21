@@ -25,7 +25,7 @@ export function ProfilePage() {
   const onChangeName = async (value: string) => {
     message.loading("Updating...");
 
-    await api.updateUserProfile(userId, value);
+    await api.updateUserProfile(userId, { displayName: value });
     await refetchQuery("getCurrentUserId");
     await refetchQuery("getUserProfile", userId);
 

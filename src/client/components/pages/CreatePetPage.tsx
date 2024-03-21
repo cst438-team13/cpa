@@ -16,8 +16,8 @@ export function CreatePetPage() {
 
   const onSubmit = async (values) => {
     // TODO: Add values to database
-    message.loading("Creating Pet Profile...");
-    const success = await api.updatePetAccount(
+    message.loading("Creating pet profile...");
+    const success = await api.createPetProfile(
       values.name,
       values.description,
       values.pictureURL,
@@ -29,11 +29,11 @@ export function CreatePetPage() {
 
     if (success) {
       message.destroy();
-      message.info("Created Pet Account!");
+      message.info("Created pet profile!");
 
       navigate("/");
     } else {
-      message.error("Pet Account Creation Failed");
+      message.error("Couldn't create pet profile");
     }
   };
 

@@ -59,25 +59,26 @@ app.get("*", (_req, res) => {
 class APIService {
   constructor(private session: SessionData) {}
 
-  //TODO: Check to make sure this updates the DB
-  async updatePetAccount(
-    Name: string,
-    Description: string,
-    PictureURL: string,
-    Breed: string,
-    Color: string,
-    Age: number,
-    UserId: number
+  async createPetProfile(
+    name: string,
+    description: string,
+    avatarUrl: string,
+    breed: string,
+    color: string,
+    age: number,
+    userId: number
   ) {
+    const owner = await this.getUserProfile(userId);
+
     // New pet
     const newPet = new PetProfile();
-    newPet.name = Name;
-    newPet.description = Description;
-    newPet.pictureURL = PictureURL;
-    newPet.breed = Breed;
-    newPet.color = Color;
-    newPet.age = Age;
-    newPet.userId = UserId;
+    newPet.displayName = name;
+    newPet.description = description;
+    newPet.avatarUrl = avatarUrl;
+    newPet.breed = breed;
+    newPet.color = color;
+    newPet.age = age;
+    newPet.owner = owner;
 
     await DB.save(newPet);
     return true;
@@ -100,11 +101,13 @@ class APIService {
     }
   }
 
-  async updateUserProfile(id: number, displayName?: string) {
+  async updateUserProfile(id: number, updatedInfo: Partial<UserProfile>) {
     const userProfile = await this.getUserProfile(id);
 
-    if (displayName != null) {
-      userProfile.displayName = displayName;
+    for (const prop in updatedInfo) {
+      if (updatedInfo[prop] !== undefined) {
+        userProfile[prop] = updatedInfo[prop];
+      }
     }
 
     await DB.save(userProfile);
