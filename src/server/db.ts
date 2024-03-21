@@ -31,7 +31,7 @@ DB.seed = async () => {
   // Clear DB (delete all existing info)
   await dataSource.synchronize(true);
 
-  // Add a user to the db
+  // Add a user account to the db
   const user = new UserAccount();
   user.username = "dev";
   user.passwordHash = await bcrypt.hash("somePassword", 10);
@@ -41,6 +41,7 @@ DB.seed = async () => {
   user.profile.displayName = "Developer";
   user.profile.location = "CSUMB";
   user.profile.language = "en";
+  user.profile.pets = [];
 
   await DB.save(user);
 };

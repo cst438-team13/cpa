@@ -1,15 +1,16 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { UserProfile } from "./UserProfile";
 
 @Entity()
 export class PetProfile {
   @PrimaryGeneratedColumn()
-  petId: number;
+  id: number;
 
   @Column()
-  name: string;
+  displayName: string;
 
   @Column()
-  pictureURL: string;
+  avatarUrl: string;
 
   @Column()
   description: string;
@@ -23,6 +24,6 @@ export class PetProfile {
   @Column()
   age: number;
 
-  @Column()
-  userId: number;
+  @ManyToOne(() => UserProfile, (user) => user.pets)
+  owner: UserProfile;
 }
