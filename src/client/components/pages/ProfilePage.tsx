@@ -66,7 +66,8 @@ export function ProfilePage() {
           </Card>
         </Col>
 
-        <Col flex="400px">{/* <Card title="Friends"></Card> */}</Col>
+        {/* We're not using this column (yet) but we still want to reserve space for it */}
+        <Col flex="400px" />
       </Row>
     </MainLayout>
   );
