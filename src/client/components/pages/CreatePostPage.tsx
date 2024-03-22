@@ -14,12 +14,14 @@ import FormItem from "antd/es/form/FormItem";
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { api } from "../../api";
+import { useAddPetToPostModal } from "../../hooks/useAddPetToPostModal";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 import { MainLayout } from "../shared/MainLayout";
 
 export function CreatePostPage() {
   const navigate = useNavigate();
   const user = useCurrentUserProfile();
+  const { openAddPetsModal } = useAddPetToPostModal();
   const [radioValue, setRadioValue] = useState("public");
   const visOptions = [
     { label: "Public", value: "public" },
@@ -31,12 +33,11 @@ export function CreatePostPage() {
   };
 
   const onSubmit = async (values) => {
-    // TODO: Add values to database
     message.loading("Posting...");
     const success = await api.createPost(
       values.pictureURL,
       values.caption,
-      values.petTags,
+      "temp garfield",
       radioValue,
       user!.id
     );
@@ -49,6 +50,10 @@ export function CreatePostPage() {
     } else {
       message.error("Post Creation Failed");
     }
+  };
+
+  const addPets = async () => {
+    const petsTagged = await openAddPetsModal();
   };
 
   const formRef = useRef<FormInstance>(null);
@@ -82,7 +87,7 @@ export function CreatePostPage() {
                 name="petTags"
                 rules={[{ required: true }]}
               >
-                <Input />
+                <Button onClick={addPets}>Pets</Button>
               </FormItem>
 
               <Typography.Text>Who Can See Post: </Typography.Text>
