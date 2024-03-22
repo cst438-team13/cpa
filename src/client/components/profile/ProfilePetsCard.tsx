@@ -23,15 +23,7 @@ export function ProfilePetsCard({ userId }: Props) {
     const petInfo = await openCreatePetModal();
 
     message.loading("Creating pet..");
-    const success = await api.createPetProfile(
-      petInfo.displayName,
-      petInfo.description,
-      petInfo.avatarUrl,
-      petInfo.breed,
-      petInfo.color,
-      petInfo.age,
-      userId
-    );
+    const success = await api.createPetProfile(userId, petInfo);
 
     message.destroy();
     if (success) {

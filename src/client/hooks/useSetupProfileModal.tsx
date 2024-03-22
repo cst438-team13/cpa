@@ -73,17 +73,25 @@ function SetupProfileContent({ onFinish }: ContentProps) {
               customRequest={(e) => handleSetAvatar(e.file as RcFile)}
               style={{ cursor: "pointer" }}
             >
-              {avatarData != null ? (
-                <img src={avatarData} alt="avatar" style={{ width: "100%" }} />
-              ) : (
-                <button
-                  style={{ border: 0, background: "none", cursor: "pointer" }}
-                  type="button"
-                >
-                  <PlusOutlined />
-                  <div style={{ marginTop: 8 }}>Upload</div>
-                </button>
-              )}
+              <div
+                style={{
+                  cursor: "pointer",
+                  padding: 6,
+                }}
+              >
+                {avatarData == null ? (
+                  <>
+                    <PlusOutlined />
+                    <div style={{ marginTop: 8 }}>Picture</div>
+                  </>
+                ) : (
+                  <img
+                    src={avatarData}
+                    alt="avatar"
+                    style={{ width: "100%", borderRadius: 6 }}
+                  />
+                )}
+              </div>
             </Upload>
           </ImgCrop>
         </Form.Item>

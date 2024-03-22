@@ -1,16 +1,27 @@
-import { Button, Flex, Form, Input, Modal, Typography } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import {
+  Button,
+  Flex,
+  Form,
+  Input,
+  InputNumber,
+  Modal,
+  Typography,
+  message,
+} from "antd";
+import ImgCrop from "antd-img-crop";
 import FormItem from "antd/es/form/FormItem";
-import { RcFile } from "antd/es/upload";
+import Upload, { RcFile } from "antd/es/upload";
 import React, { useState } from "react";
 import { getScaledImageFromFile } from "../helpers/imageHelpers";
 
 type PetInfo = {
   displayName: string;
   description: string;
-  avatarUrl: string;
   breed: string;
   color: string;
   age: number;
+  avatarData: string;
 };
 
 export function useCreatePetModal() {
@@ -45,10 +56,50 @@ function CreatePetContent({ onFinish }: ContentProps) {
     setAvatarData(data);
   };
 
+  const onFormFinish = (values: any) => {
+    if (avatarData == null) {
+      message.error("Must upload a picture");
+      return;
+    }
+
+    onFinish({ avatarData, ...values });
+  };
+
   return (
     <Flex vertical>
       <Typography.Paragraph>Tell us about your pet.</Typography.Paragraph>
-      <Form onFinish={onFinish} autoComplete="off">
+      <Form onFinish={onFormFinish}>
+        <Form.Item rules={[{ required: true }]}>
+          <ImgCrop>
+            <Upload
+              name="avatar"
+              listType="picture-card"
+              showUploadList={false}
+              customRequest={(e) => handleSetAvatar(e.file as RcFile)}
+            >
+              <div
+                style={{
+                  cursor: "pointer",
+                  padding: 6,
+                }}
+              >
+                {avatarData == null ? (
+                  <>
+                    <PlusOutlined />
+                    <div style={{ marginTop: 8 }}>Picture</div>
+                  </>
+                ) : (
+                  <img
+                    src={avatarData}
+                    alt="avatar"
+                    style={{ width: "100%", borderRadius: 6 }}
+                  />
+                )}
+              </div>
+            </Upload>
+          </ImgCrop>
+        </Form.Item>
+
         <FormItem label="Name" name="displayName" rules={[{ required: true }]}>
           <Input />
         </FormItem>
@@ -56,14 +107,6 @@ function CreatePetContent({ onFinish }: ContentProps) {
         <FormItem
           label="Description"
           name="description"
-          rules={[{ required: true }]}
-        >
-          <Input />
-        </FormItem>
-
-        <FormItem
-          label="Avatar URL"
-          name="avatarUrl"
           rules={[{ required: true }]}
         >
           <Input />
@@ -78,7 +121,7 @@ function CreatePetContent({ onFinish }: ContentProps) {
         </FormItem>
 
         <FormItem label="Age" name="age" rules={[{ required: true }]}>
-          <Input />
+          <InputNumber />
         </FormItem>
 
         <Button type="primary" htmlType="submit">
