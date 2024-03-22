@@ -1,4 +1,4 @@
-import React, { StrictMode } from "react";
+import React from "react";
 import ReactDOM from "react-dom/client";
 import { App } from "./components/App";
 
@@ -6,11 +6,7 @@ function onLoad() {
   const rootElement = document.getElementById("root");
   const root = ReactDOM.createRoot(rootElement!);
 
-  root.render(
-    <StrictMode>
-      <App />
-    </StrictMode>
-  );
+  root.render(<App />);
 }
 
 window.addEventListener("load", onLoad);
