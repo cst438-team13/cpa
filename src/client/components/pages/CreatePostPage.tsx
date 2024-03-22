@@ -21,13 +21,16 @@ import { MainLayout } from "../shared/MainLayout";
 export function CreatePostPage() {
   const navigate = useNavigate();
   const user = useCurrentUserProfile();
-  const { openAddPetsModal } = useAddPetToPostModal();
+  const { openAddPetsModal } = useAddPetToPostModal(user!.id);
+
+  // storing radio checked value
   const [radioValue, setRadioValue] = useState("public");
   const visOptions = [
     { label: "Public", value: "public" },
     { label: "Friends Only", value: "friends" },
   ];
 
+  // changing radio checked value based off user input
   const onChange = ({ target: { value } }: RadioChangeEvent) => {
     setRadioValue(value);
   };
@@ -52,8 +55,12 @@ export function CreatePostPage() {
     }
   };
 
+  // opens modal when add pets button is clicked
   const addPets = async () => {
-    const petsTagged = await openAddPetsModal();
+    // get list of user pets before opening modal
+    const petList = await api.getPetsByUserId(user!.id);
+    console.log("from page ", petList);
+    const petsTagged = await openAddPetsModal(petList);
   };
 
   const formRef = useRef<FormInstance>(null);

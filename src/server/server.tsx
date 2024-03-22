@@ -103,6 +103,7 @@ class APIService {
     visibility: string,
     userId: number
   ) {
+    // New Post
     const newPost = new Posts();
     newPost.pictureURL = picURL;
     newPost.caption = caption;
@@ -112,6 +113,12 @@ class APIService {
 
     await DB.save(newPost);
     return true;
+  }
+
+  async getPetsByUserId(id: number) {
+    const pets = DB.find(PetProfile, { where: { userId: id } });
+
+    return pets;
   }
 
   async updateUserAccount(id: number, password: string) {
