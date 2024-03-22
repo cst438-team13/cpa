@@ -38,7 +38,7 @@ DB.seed = async () => {
 
   user.profile = new UserProfile();
   user.profile.avatarUrl = "/ugc/1.png";
-  user.profile.displayName = "Developer";
+  user.profile.displayName = "Test User";
   user.profile.location = "CSUMB";
   user.profile.language = "en";
   user.profile.pets = [];

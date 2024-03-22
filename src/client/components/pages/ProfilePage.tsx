@@ -1,11 +1,13 @@
 import { UserOutlined } from "@ant-design/icons";
-import { Card, Col, Flex, List, Row, Typography, message } from "antd";
+import { Card, Col, Flex, Input, Row, Typography, message } from "antd";
 import Avatar from "antd/es/avatar/avatar";
 import React from "react";
 import { useParams } from "react-router-dom";
+import type { UserProfile } from "../../../server/models/UserProfile";
 import { api } from "../../api";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 import { useQuery, useRefetchQuery } from "../../hooks/useQuery";
+import { Editable } from "../Editable";
 import { ProfilePetsCard } from "../profile/ProfilePetsCard";
 import { MainLayout } from "../shared/MainLayout";
 
@@ -19,13 +21,13 @@ export function ProfilePage() {
   const currentUser = useCurrentUserProfile();
   const canEdit = currentUser?.id === userId;
 
-  const infoTemplates = ["Location: ", "Language: "];
-  const userInfo = [user.location, user.language];
-
-  const onChangeName = async (value: string) => {
+  const onChangeField = async (field: keyof UserProfile, value: any) => {
     message.loading("Updating...");
 
-    await api.updateUserProfile(userId, { displayName: value });
+    const newValues = {};
+    newValues[field] = value;
+
+    await api.updateUserProfile(userId, newValues);
     await refetchQuery("getCurrentUserId");
     await refetchQuery("getUserProfile", userId);
 
@@ -44,24 +46,38 @@ export function ProfilePage() {
           <Card title="Profile Details">
             <Flex vertical align="center" gap={18}>
               <Avatar size={128} icon={<UserOutlined />} src={user.avatarUrl} />
-              <Typography.Title
-                level={4}
-                editable={canEdit && { onChange: onChangeName }}
-              >
-                {user.displayName}
+              <Typography.Title level={4}>
+                <Editable
+                  name="displayName"
+                  isEnabled={canEdit}
+                  value={user.displayName}
+                  onSubmit={(o) => onChangeField("displayName", o)}
+                >
+                  <Input />
+                </Editable>
               </Typography.Title>
-              <List
-                size="large"
-                dataSource={userInfo}
-                renderItem={(item, index) => (
-                  <List.Item>
-                    <Typography.Text strong>
-                      {infoTemplates[index]}
-                    </Typography.Text>
-                    {item}
-                  </List.Item>
-                )}
-              />
+              <div>
+                <Typography.Text strong>Location: </Typography.Text>
+                <Editable
+                  name="location"
+                  isEnabled={canEdit}
+                  value={user.location}
+                  onSubmit={(o) => onChangeField("location", o)}
+                >
+                  <Input />
+                </Editable>
+              </div>
+              <div>
+                <Typography.Text strong>Language: </Typography.Text>
+                <Editable
+                  name="language"
+                  isEnabled={canEdit}
+                  value={user.language}
+                  onSubmit={(o) => onChangeField("language", o)}
+                >
+                  <Input />
+                </Editable>
+              </div>
             </Flex>
           </Card>
         </Col>
