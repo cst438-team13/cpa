@@ -1,9 +1,10 @@
 import { DownOutlined } from "@ant-design/icons";
 
-import { Button, Card, Dropdown, List, Typography } from "antd";
+import { Button, Card, Dropdown, List, Typography, message } from "antd";
 import Avatar from "antd/es/avatar/avatar";
 import React from "react";
-import { useNavigate } from "react-router";
+import { api } from "../../api";
+import { useCreatePetModal } from "../../hooks/useCreatePetModal";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 import { useQuery } from "../../hooks/useQuery";
 
@@ -13,10 +14,24 @@ type Props = {
 
 export function ProfilePetsCard({ userId }: Props) {
   const user = useQuery("getUserProfile", userId);
-  const navigate = useNavigate();
+  const { openCreatePetModal } = useCreatePetModal();
 
   const currentUser = useCurrentUserProfile();
   const isPageOwner = currentUser?.id === userId;
+
+  const onClickCreatePet = async () => {
+    const petInfo = await openCreatePetModal();
+
+    message.loading("Creating pet..");
+    const success = await api.createPetProfile(userId, petInfo);
+
+    message.destroy();
+    if (success) {
+      message.info("Pet added!");
+    } else {
+      message.error("Something went wrong");
+    }
+  };
 
   // TEMP
   const petsData = [
@@ -48,9 +63,7 @@ export function ProfilePetsCard({ userId }: Props) {
     <Card
       title="Pets"
       extra={
-        isPageOwner && (
-          <Button onClick={() => navigate("/createPet")}>Add</Button>
-        )
+        isPageOwner && <Button onClick={() => onClickCreatePet()}>Add</Button>
       }
     >
       <List

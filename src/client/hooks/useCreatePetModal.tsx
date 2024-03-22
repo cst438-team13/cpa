@@ -4,48 +4,51 @@ import {
   Flex,
   Form,
   Input,
+  InputNumber,
   Modal,
-  Select,
   Typography,
-  Upload,
+  message,
 } from "antd";
 import ImgCrop from "antd-img-crop";
-import { RcFile } from "antd/es/upload";
+import FormItem from "antd/es/form/FormItem";
+import Upload, { RcFile } from "antd/es/upload";
 import React, { useState } from "react";
 import { getScaledImageFromFile } from "../helpers/imageHelpers";
 
-type ProfileInfo = {
+type PetInfo = {
   displayName: string;
-  location: string;
-  language: string;
-  avatarData: string | null;
+  description: string;
+  breed: string;
+  color: string;
+  age: number;
+  avatarData: string;
 };
 
-export function useSetupProfileModal() {
-  const openSetupProfileModal = () =>
-    new Promise<ProfileInfo>((resolve) => {
+export function useCreatePetModal() {
+  const openCreatePetModal = () =>
+    new Promise<PetInfo>((resolve) => {
       const onFinish = (values: unknown) => {
         destroy();
-        resolve(values as ProfileInfo);
+        resolve(values as PetInfo);
       };
 
       const { destroy } = Modal.info({
-        title: "Set up your profile",
+        title: "Create pet",
         centered: true,
         closable: false,
         footer: null,
-        content: <SetupProfileContent onFinish={onFinish} />,
+        content: <CreatePetContent onFinish={onFinish} />,
       });
     });
 
-  return { openSetupProfileModal };
+  return { openCreatePetModal };
 }
 
 type ContentProps = {
   onFinish: (values: unknown) => void;
 };
 
-function SetupProfileContent({ onFinish }: ContentProps) {
+function CreatePetContent({ onFinish }: ContentProps) {
   const [avatarData, setAvatarData] = useState<string | null>(null);
 
   const handleSetAvatar = async (file: RcFile) => {
@@ -53,25 +56,26 @@ function SetupProfileContent({ onFinish }: ContentProps) {
     setAvatarData(data);
   };
 
+  const onFormFinish = (values: any) => {
+    if (avatarData == null) {
+      message.error("Must upload a picture");
+      return;
+    }
+
+    onFinish({ avatarData, ...values });
+  };
+
   return (
     <Flex vertical>
-      <Typography.Paragraph>
-        Almost done! Now it's time to set up your profile.
-      </Typography.Paragraph>
-      <Form
-        onFinish={(values) => {
-          onFinish({ avatarData: avatarData, ...values });
-        }}
-        initialValues={{ language: "en" }}
-      >
-        <Form.Item>
+      <Typography.Paragraph>Tell us about your pet.</Typography.Paragraph>
+      <Form onFinish={onFormFinish}>
+        <Form.Item rules={[{ required: true }]}>
           <ImgCrop>
             <Upload
               name="avatar"
               listType="picture-card"
               showUploadList={false}
               customRequest={(e) => handleSetAvatar(e.file as RcFile)}
-              style={{ cursor: "pointer" }}
             >
               <div
                 style={{
@@ -96,29 +100,32 @@ function SetupProfileContent({ onFinish }: ContentProps) {
           </ImgCrop>
         </Form.Item>
 
-        <Form.Item label="Name" name="displayName" rules={[{ required: true }]}>
+        <FormItem label="Name" name="displayName" rules={[{ required: true }]}>
           <Input />
-        </Form.Item>
+        </FormItem>
 
-        <Form.Item
-          label="Location"
-          name="location"
+        <FormItem
+          label="Description"
+          name="description"
           rules={[{ required: true }]}
         >
           <Input />
-        </Form.Item>
+        </FormItem>
 
-        <Form.Item label="Language (preferred)" name="language">
-          <Select
-            options={[
-              { value: "en", label: "English" },
-              { value: "es", label: "Spanish" },
-            ]}
-          />
-        </Form.Item>
+        <FormItem label="Breed" name="breed" rules={[{ required: true }]}>
+          <Input />
+        </FormItem>
+
+        <FormItem label="Color" name="color" rules={[{ required: true }]}>
+          <Input />
+        </FormItem>
+
+        <FormItem label="Age" name="age" rules={[{ required: true }]}>
+          <InputNumber />
+        </FormItem>
 
         <Button type="primary" htmlType="submit">
-          Ok
+          Create Pet Profile!
         </Button>
       </Form>
     </Flex>

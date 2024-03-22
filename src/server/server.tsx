@@ -60,25 +60,36 @@ class APIService {
   constructor(private session: SessionData) {}
 
   async createPetProfile(
-    name: string,
-    description: string,
-    avatarUrl: string,
-    breed: string,
-    color: string,
-    age: number,
-    userId: number
+    userId: number,
+    profileInfo: Pick<
+      PetProfile,
+      "displayName" | "description" | "breed" | "color" | "age"
+    > & {
+      avatarData: string;
+    }
   ) {
     const owner = await this.getUserProfile(userId);
 
     // New pet
     const newPet = new PetProfile();
-    newPet.displayName = name;
-    newPet.description = description;
-    newPet.avatarUrl = avatarUrl;
-    newPet.breed = breed;
-    newPet.color = color;
-    newPet.age = age;
+    newPet.displayName = profileInfo.displayName;
+    newPet.description = profileInfo.description;
+    newPet.breed = profileInfo.breed;
+    newPet.color = profileInfo.color;
+    newPet.age = profileInfo.age;
     newPet.owner = owner;
+
+    // Upload avatar
+    {
+      const fileId = `petavatar-${crypto.randomUUID()}`;
+      const path = `/ugc/${fileId}`;
+      const data = profileInfo.avatarData
+        .replace("data:", "")
+        .replace(/^.+,/, "");
+
+      fs.writeFileSync(`public${path}`, data, "base64");
+      newPet.avatarUrl = path;
+    }
 
     await DB.save(newPet);
     return true;
