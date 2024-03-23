@@ -43,5 +43,14 @@ DB.seed = async () => {
   user.profile.language = "en";
   user.profile.pets = [];
 
+  const pet = new PetProfile();
+  pet.avatarUrl = "/ugc/1.png";
+  pet.owner = user.profile;
+  pet.age = 4;
+  pet.displayName = "Rosco";
+  pet.breed = "Poodle";
+  pet.color = "White";
+
   await DB.save(user);
+  await DB.save(pet);
 };

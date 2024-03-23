@@ -14,7 +14,8 @@ import { HomePage } from "./pages/HomePage";
 import { LandingPage } from "./pages/LandingPage";
 import { LoginPage } from "./pages/LoginPage";
 import { ManageAccountPage } from "./pages/ManageAccountPage";
-import { ProfilePage } from "./pages/ProfilePage";
+import { PetProfilePage } from "./pages/PetProfilePage";
+import { UserProfilePage } from "./pages/UserProfilePage";
 
 const queryClient = new QueryClient();
 
@@ -39,8 +40,12 @@ export function App() {
       element: <RequireAuth Component={ManageAccountPage} />,
     },
     {
-      path: "/profile/:id",
-      element: <RequireAuth Component={ProfilePage} />,
+      path: "/user/:id",
+      element: <RequireAuth Component={UserProfilePage} />,
+    },
+    {
+      path: "/pet/:id",
+      element: <RequireAuth Component={PetProfilePage} />,
     },
   ]);
 
@@ -72,7 +77,7 @@ function RequireAuth({
 
   useEffect(() => {
     if (user == null && !FallbackComponent) {
-      navigate("/");
+      navigate("/", { replace: true });
     }
   }, [user, FallbackComponent]);
 

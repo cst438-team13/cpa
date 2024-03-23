@@ -133,6 +133,14 @@ class APIService {
     return nullthrows(user).profile;
   }
 
+  async getPetProfile(id: number) {
+    const pet = await DB.findOne(PetProfile, {
+      where: { id },
+    });
+
+    return nullthrows(pet);
+  }
+
   async getCurrentUserId() {
     return this.session.userId ?? null;
   }

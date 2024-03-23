@@ -18,6 +18,6 @@ export class UserProfile {
   @Column()
   language: string;
 
-  @OneToMany(() => PetProfile, (pet) => pet.owner)
+  @OneToMany(() => PetProfile, (pet) => pet.owner, { cascade: true })
   pets: PetProfile[];
 }
