@@ -1,3 +1,4 @@
+import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import {
   //   Avatar,
   Button,
@@ -7,8 +8,7 @@ import {
   Modal,
   Typography,
 } from "antd";
-import React from "react";
-// import { PetProfile } from "../../server/models/PetProfile";
+import React, { useState } from "react";
 
 type PetProfile = {
   petId: number;
@@ -27,6 +27,7 @@ type Pets = {
 
 const petsOwned = {
   list: new Array<PetProfile>(),
+  tagged: new Array<number>(),
 };
 
 const user = {
@@ -61,7 +62,17 @@ type ContentProps = {
 };
 
 function AddPetsContent({ onFinish }: ContentProps) {
-  const petsToTag = [];
+  const available = [true, false];
+  const [button1, setStateB1] = useState(false);
+
+  const addToTagged = () => {
+    setStateB1(true);
+    // petsOwned.tagged.push(state.);
+  };
+
+  const removeFromTagged = () => {
+    setStateB1(false);
+  };
 
   return (
     <Flex vertical>
@@ -69,7 +80,21 @@ function AddPetsContent({ onFinish }: ContentProps) {
         <List
           dataSource={petsOwned.list}
           renderItem={(item) => (
-            <List.Item id="{item.petId}" actions={[<Button>Add Pet</Button>]}>
+            <List.Item
+              actions={[
+                <Button
+                  icon={<PlusOutlined />}
+                  onClick={addToTagged}
+                  disabled={button1}
+                ></Button>,
+                <Button
+                  danger
+                  icon={<MinusOutlined />}
+                  onClick={removeFromTagged}
+                  disabled={!button1}
+                ></Button>,
+              ]}
+            >
               {/* <Skeleton avatar title={false} loading={false}> */}
               <List.Item.Meta
                 //   avatar={<Avatar src={item.avatarUrl} />}
