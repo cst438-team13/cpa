@@ -24,6 +24,6 @@ export class PetProfile {
   @Column()
   age: number;
 
-  @ManyToOne(() => UserProfile, (user) => user.pets)
+  @ManyToOne(() => UserProfile, (user) => user.pets, { eager: true })
   owner: UserProfile;
 }

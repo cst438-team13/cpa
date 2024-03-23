@@ -29,7 +29,7 @@ export function UserButton() {
     if (menuItemKey === "logout") {
       await onClickLogout();
     } else if (menuItemKey == "profile") {
-      navigate(`/profile/${user?.id}`);
+      navigate(`/user/${user?.id}`);
     }
   };
 

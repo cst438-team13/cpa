@@ -11,15 +11,15 @@ import { Editable } from "../Editable";
 import { ProfilePetsCard } from "../profile/ProfilePetsCard";
 import { MainLayout } from "../shared/MainLayout";
 
-export function ProfilePage() {
+export function UserProfilePage() {
   const params = useParams();
-  const userId = Number(params.id);
+  const profileId = Number(params.id);
 
   const refetchQuery = useRefetchQuery();
-  const user = useQuery("getUserProfile", userId);
+  const profile = useQuery("getUserProfile", profileId);
 
   const currentUser = useCurrentUserProfile();
-  const canEdit = currentUser?.id === userId;
+  const canEdit = currentUser?.id === profileId;
 
   const onChangeField = async (field: keyof UserProfile, value: any) => {
     message.loading("Updating...");
@@ -27,9 +27,9 @@ export function ProfilePage() {
     const newValues = {};
     newValues[field] = value;
 
-    await api.updateUserProfile(userId, newValues);
+    await api.updateUserProfile(profileId, newValues);
     await refetchQuery("getCurrentUserId");
-    await refetchQuery("getUserProfile", userId);
+    await refetchQuery("getUserProfile", profileId);
 
     message.destroy();
     message.info("Updated!");
@@ -39,18 +39,22 @@ export function ProfilePage() {
     <MainLayout>
       <Row justify="space-around">
         <Col flex="400px">
-          <ProfilePetsCard userId={userId} />
+          <ProfilePetsCard userId={profileId} />
         </Col>
 
         <Col flex="650px">
           <Card title="Profile Details">
             <Flex vertical align="center" gap={18}>
-              <Avatar size={128} icon={<UserOutlined />} src={user.avatarUrl} />
+              <Avatar
+                size={128}
+                icon={<UserOutlined />}
+                src={profile.avatarUrl}
+              />
               <Typography.Title level={4}>
                 <Editable
                   name="displayName"
                   isEnabled={canEdit}
-                  value={user.displayName}
+                  value={profile.displayName}
                   onSubmit={(o) => onChangeField("displayName", o)}
                 >
                   <Input />
@@ -61,7 +65,7 @@ export function ProfilePage() {
                 <Editable
                   name="location"
                   isEnabled={canEdit}
-                  value={user.location}
+                  value={profile.location}
                   onSubmit={(o) => onChangeField("location", o)}
                 >
                   <Input />
@@ -72,7 +76,7 @@ export function ProfilePage() {
                 <Editable
                   name="language"
                   isEnabled={canEdit}
-                  value={user.language}
+                  value={profile.language}
                   onSubmit={(o) => onChangeField("language", o)}
                 >
                   <Input />
