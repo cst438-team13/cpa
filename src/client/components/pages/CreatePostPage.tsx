@@ -59,8 +59,8 @@ export function CreatePostPage() {
   const addPets = async () => {
     // get list of user pets before opening modal
     const petList = await api.getPetsByUserId(user!.id);
-    console.log("from page ", petList);
-    // const petsTagged = await openAddPetsModal(petList);
+    // console.log("from page ", petList);
+    const petsTagged = await openAddPetsModal(petList);
   };
 
   const formRef = useRef<FormInstance>(null);

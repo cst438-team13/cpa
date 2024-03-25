@@ -9,16 +9,17 @@ import {
   Typography,
 } from "antd";
 import React, { useState } from "react";
+import { UserProfile } from "../../server/models/UserProfile";
 
 type PetProfile = {
-  petId: number;
-  name: string;
-  pictureURL: string;
+  id: number;
+  displayName: string;
+  avatarUrl: string;
   description: string;
   breed: string;
   color: string;
   age: number;
-  userId: number;
+  owner: UserProfile;
 };
 
 type Pets = {
@@ -65,7 +66,8 @@ function AddPetsContent({ onFinish }: ContentProps) {
   const available = [true, false];
   const [button1, setStateB1] = useState(false);
 
-  const addToTagged = () => {
+  const addToTagged = (event) => {
+    console.log(event.target.id);
     setStateB1(true);
     // petsOwned.tagged.push(state.);
   };
@@ -83,11 +85,13 @@ function AddPetsContent({ onFinish }: ContentProps) {
             <List.Item
               actions={[
                 <Button
+                  id="{item.id}"
                   icon={<PlusOutlined />}
                   onClick={addToTagged}
                   disabled={button1}
                 ></Button>,
                 <Button
+                  id="{0 - item.id}"
                   danger
                   icon={<MinusOutlined />}
                   onClick={removeFromTagged}
@@ -98,7 +102,9 @@ function AddPetsContent({ onFinish }: ContentProps) {
               {/* <Skeleton avatar title={false} loading={false}> */}
               <List.Item.Meta
                 //   avatar={<Avatar src={item.avatarUrl} />}
-                title={<Typography.Text strong>{item.name}</Typography.Text>}
+                title={
+                  <Typography.Text strong>{item.displayName}</Typography.Text>
+                }
                 description={item.breed}
               />
               {/* </Skeleton> */}

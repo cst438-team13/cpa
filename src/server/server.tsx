@@ -116,9 +116,10 @@ class APIService {
   }
 
   async getPetsByUserId(userId: number) {
-    const userProfile = this.getUserProfile(userId);
+    const userProfile = await this.getUserProfile(userId);
+    const pets = await DB.find(PetProfile, { where: { owner: userProfile } });
 
-    return (await userProfile).pets;
+    return nullthrows(pets);
   }
 
   async updateUserAccount(id: number, password: string) {
