@@ -52,10 +52,6 @@ export function App() {
       path: "/createPost",
       element: <RequireAuth Component={CreatePostPage} />,
     },
-    {
-      path: "/createPost",
-      element: <RequireAuth Component={CreatePostPage} />,
-    },
   ]);
 
   return (
