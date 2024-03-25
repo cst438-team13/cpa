@@ -1,3 +1,4 @@
+import { PlusOutlined } from "@ant-design/icons";
 import type { RadioChangeEvent } from "antd";
 import {
   Button,
@@ -10,10 +11,13 @@ import {
   Radio,
   Typography,
 } from "antd";
+import ImgCrop from "antd-img-crop";
 import FormItem from "antd/es/form/FormItem";
+import Upload, { RcFile } from "antd/es/upload";
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { api } from "../../api";
+import { getScaledImageFromFile } from "../../helpers/imageHelpers";
 import { useAddPetToPostModal } from "../../hooks/useAddPetToPostModal";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 import { MainLayout } from "../shared/MainLayout";
@@ -30,15 +34,28 @@ export function CreatePostPage() {
     { label: "Friends Only", value: "friends" },
   ];
 
+  // for handling avatar img
+  const [avatarData, setAvatarData] = useState<string | null>(null);
+
+  const handleSetAvatar = async (file: RcFile) => {
+    const data = await getScaledImageFromFile(file, 128);
+    setAvatarData(data);
+  };
+
   // changing radio checked value based off user input
   const onChange = ({ target: { value } }: RadioChangeEvent) => {
     setRadioValue(value);
   };
 
   const onSubmit = async (values) => {
+    if (avatarData == null) {
+      message.error("Must upload a picture");
+      return;
+    }
     message.loading("Posting...");
+
     const success = await api.createPost(
-      values.pictureURL,
+      avatarData,
       values.caption,
       "temp garfield",
       radioValue,
@@ -59,7 +76,6 @@ export function CreatePostPage() {
   const addPets = async () => {
     // get list of user pets before opening modal
     const petList = await api.getPetsByUserId(user!.id);
-    // console.log("from page ", petList);
     const petsTagged = await openAddPetsModal(petList);
   };
 
@@ -72,12 +88,36 @@ export function CreatePostPage() {
           <Flex vertical align="center" style={{ width: "100%" }}>
             <Form onFinish={onSubmit} autoComplete="off" ref={formRef}>
               {/* TEMP */}
-              <FormItem
-                label="Picture Url"
-                name="pictureURL"
-                rules={[{ required: true }]}
-              >
-                <Input />
+              <Typography.Paragraph>Add Post Below.</Typography.Paragraph>
+              <FormItem>
+                <ImgCrop>
+                  <Upload
+                    name="avatar"
+                    listType="picture-card"
+                    showUploadList={false}
+                    customRequest={(e) => handleSetAvatar(e.file as RcFile)}
+                  >
+                    <div
+                      style={{
+                        cursor: "pointer",
+                        padding: 6,
+                      }}
+                    >
+                      {avatarData == null ? (
+                        <>
+                          <PlusOutlined />
+                          <div style={{ marginTop: 8 }}>Picture</div>
+                        </>
+                      ) : (
+                        <img
+                          src={avatarData}
+                          alt="avatar"
+                          style={{ width: "100%", borderRadius: 6 }}
+                        />
+                      )}
+                    </div>
+                  </Upload>
+                </ImgCrop>
               </FormItem>
 
               <FormItem
@@ -89,11 +129,7 @@ export function CreatePostPage() {
               </FormItem>
 
               {/* TEMP */}
-              <FormItem
-                label="Pet/s in Post"
-                name="petTags"
-                rules={[{ required: true }]}
-              >
+              <FormItem label="Pet/s in Post" name="petTags">
                 <Button onClick={addPets}>Pets</Button>
               </FormItem>
 

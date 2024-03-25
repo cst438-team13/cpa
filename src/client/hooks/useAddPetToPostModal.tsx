@@ -1,11 +1,12 @@
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import {
-  //   Avatar,
+  Avatar,
   Button,
   Card,
   Flex,
   List,
   Modal,
+  Skeleton,
   Typography,
 } from "antd";
 import React, { useState } from "react";
@@ -40,7 +41,6 @@ export function useAddPetToPostModal(userId: number) {
   const openAddPetsModal = (petList: Array<PetProfile>) =>
     new Promise<Pets>((resolve) => {
       petsOwned.list = petList;
-      console.log("Pets Owned ", petsOwned.list);
       const onFinish = (values: unknown) => {
         destroy();
         resolve(values as Pets);
@@ -67,7 +67,6 @@ function AddPetsContent({ onFinish }: ContentProps) {
   const [button1, setStateB1] = useState(false);
 
   const addToTagged = (event) => {
-    console.log(event.target.id);
     setStateB1(true);
     // petsOwned.tagged.push(state.);
   };
@@ -83,31 +82,29 @@ function AddPetsContent({ onFinish }: ContentProps) {
           dataSource={petsOwned.list}
           renderItem={(item) => (
             <List.Item
+              key={item.id}
               actions={[
                 <Button
-                  id="{item.id}"
+                  id="addPet"
                   icon={<PlusOutlined />}
                   onClick={addToTagged}
-                  disabled={button1}
                 ></Button>,
                 <Button
-                  id="{0 - item.id}"
                   danger
                   icon={<MinusOutlined />}
                   onClick={removeFromTagged}
-                  disabled={!button1}
                 ></Button>,
               ]}
             >
-              {/* <Skeleton avatar title={false} loading={false}> */}
-              <List.Item.Meta
-                //   avatar={<Avatar src={item.avatarUrl} />}
-                title={
-                  <Typography.Text strong>{item.displayName}</Typography.Text>
-                }
-                description={item.breed}
-              />
-              {/* </Skeleton> */}
+              <Skeleton avatar title={false} loading={false}>
+                <List.Item.Meta
+                  avatar={<Avatar src={item.avatarUrl} />}
+                  title={
+                    <Typography.Text strong>{item.displayName}</Typography.Text>
+                  }
+                  description={item.breed}
+                />
+              </Skeleton>
             </List.Item>
           )}
         ></List>

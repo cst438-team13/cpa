@@ -97,7 +97,7 @@ class APIService {
   }
 
   async createPost(
-    picURL: string,
+    avatarData: string,
     caption: string,
     petTags: string,
     visibility: string,
@@ -105,11 +105,20 @@ class APIService {
   ) {
     // New Post
     const newPost = new Posts();
-    newPost.pictureURL = picURL;
     newPost.caption = caption;
     newPost.petTags = petTags;
     newPost.visibility = visibility;
     newPost.userId = userId;
+
+    // Upload avatar
+    {
+      const fileId = `post-${crypto.randomUUID()}`;
+      const path = `/ugc/${fileId}`;
+      const data = avatarData.replace("data:", "").replace(/^.+,/, "");
+
+      fs.writeFileSync(`public${path}`, data, "base64");
+      newPost.pictureURL = path;
+    }
 
     await DB.save(newPost);
     return true;
