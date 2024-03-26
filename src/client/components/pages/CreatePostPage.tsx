@@ -21,7 +21,6 @@ import { useNavigate } from "react-router";
 import { PetProfile } from "../../../server/models/PetProfile";
 import { api } from "../../api";
 import { getScaledImageFromFile } from "../../helpers/imageHelpers";
-import { useAddPetToPostModal } from "../../hooks/useAddPetToPostModal";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 import { MainLayout } from "../shared/MainLayout";
 
@@ -35,7 +34,6 @@ const petsOwned = {
 export function CreatePostPage() {
   const navigate = useNavigate();
   const user = useCurrentUserProfile();
-  const { openAddPetsModal } = useAddPetToPostModal(user!.id);
 
   // storing radio checked value
   const [radioValue, setRadioValue] = useState("public");
@@ -101,13 +99,6 @@ export function CreatePostPage() {
     }
   };
 
-  // opens modal when add pets button is clicked
-  // const addPets = async () => {
-  //   // get list of user pets before opening modal
-  //   const petList = await api.getPetsByUserId(user!.id);
-  //   const petsTagged = await openAddPetsModal(petList);
-  // };
-
   const formRef = useRef<FormInstance>(null);
 
   return (
@@ -120,7 +111,7 @@ export function CreatePostPage() {
               <FormItem>
                 <ImgCrop>
                   <Upload
-                    name="avatar"
+                    name="post"
                     listType="picture-card"
                     showUploadList={false}
                     customRequest={(e) => handleSetAvatar(e.file as RcFile)}
