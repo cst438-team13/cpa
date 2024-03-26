@@ -1,26 +1,36 @@
 import { PlusOutlined } from "@ant-design/icons";
 import type { RadioChangeEvent } from "antd";
 import {
+  Avatar,
   Button,
   Card,
   Flex,
   Form,
   FormInstance,
   Input,
-  message,
+  Mentions,
   Radio,
   Typography,
+  message,
 } from "antd";
 import ImgCrop from "antd-img-crop";
 import FormItem from "antd/es/form/FormItem";
 import Upload, { RcFile } from "antd/es/upload";
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router";
+import { PetProfile } from "../../../server/models/PetProfile";
 import { api } from "../../api";
 import { getScaledImageFromFile } from "../../helpers/imageHelpers";
 import { useAddPetToPostModal } from "../../hooks/useAddPetToPostModal";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 import { MainLayout } from "../shared/MainLayout";
+
+const { getMentions } = Mentions;
+
+const petsOwned = {
+  list: new Array<PetProfile>(),
+  tagged: new Array<number>(),
+};
 
 export function CreatePostPage() {
   const navigate = useNavigate();
@@ -47,6 +57,25 @@ export function CreatePostPage() {
     setRadioValue(value);
   };
 
+  // loading animation while bringing up pets
+  // searches for pets with same letters as owner input.
+  const [loading, setLoading] = useState(false);
+  const onSearch = async (search: string) => {
+    setLoading(!!search);
+
+    const petList = await api.getPetsByUserId(user!.id);
+    petsOwned.list = petList;
+    setLoading(false);
+  };
+
+  // checking to see if owner has tagged any pets
+  const checkMention = async (_: any, value: string) => {
+    const mentions = getMentions(value);
+    if (mentions.length < 1) {
+      throw new Error("At least 1 pet must be Tagged!");
+    }
+  };
+
   const onSubmit = async (values) => {
     if (avatarData == null) {
       message.error("Must upload a picture");
@@ -57,7 +86,7 @@ export function CreatePostPage() {
     const success = await api.createPost(
       avatarData,
       values.caption,
-      "temp garfield",
+      values.petTags,
       radioValue,
       user!.id
     );
@@ -73,11 +102,11 @@ export function CreatePostPage() {
   };
 
   // opens modal when add pets button is clicked
-  const addPets = async () => {
-    // get list of user pets before opening modal
-    const petList = await api.getPetsByUserId(user!.id);
-    const petsTagged = await openAddPetsModal(petList);
-  };
+  // const addPets = async () => {
+  //   // get list of user pets before opening modal
+  //   const petList = await api.getPetsByUserId(user!.id);
+  //   const petsTagged = await openAddPetsModal(petList);
+  // };
 
   const formRef = useRef<FormInstance>(null);
 
@@ -87,7 +116,6 @@ export function CreatePostPage() {
         <Card title="New Post" style={{ width: 650 }}>
           <Flex vertical align="center" style={{ width: "100%" }}>
             <Form onFinish={onSubmit} autoComplete="off" ref={formRef}>
-              {/* TEMP */}
               <Typography.Paragraph>Add Post Below.</Typography.Paragraph>
               <FormItem>
                 <ImgCrop>
@@ -128,9 +156,29 @@ export function CreatePostPage() {
                 <Input />
               </FormItem>
 
-              {/* TEMP */}
-              <FormItem label="Pet/s in Post" name="petTags">
-                <Button onClick={addPets}>Pets</Button>
+              <FormItem
+                label="Pet/s in Post"
+                name="petTags"
+                rules={[{ validator: checkMention }]}
+              >
+                <Mentions
+                  placeholder="input @ to tag pets"
+                  onSearch={onSearch}
+                  loading={loading}
+                  options={petsOwned.list.map(
+                    ({ id, displayName, avatarUrl }) => ({
+                      key: String(id),
+                      value: displayName,
+                      label: (
+                        <>
+                          <Avatar src={avatarUrl} />
+                          <span>{displayName}</span>
+                        </>
+                      ),
+                    })
+                  )}
+                  allowClear
+                ></Mentions>
               </FormItem>
 
               <Typography.Text>Who Can See Post: </Typography.Text>
