@@ -8,6 +8,7 @@ import { api } from "../../api";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 import { useQuery, useRefetchQuery } from "../../hooks/useQuery";
 import { Editable } from "../Editable";
+import { ProfileCreatePostCard } from "../profile/ProfileCreatePostCard";
 import { ProfilePetsCard } from "../profile/ProfilePetsCard";
 import { MainLayout } from "../shared/MainLayout";
 
@@ -19,7 +20,7 @@ export function UserProfilePage() {
   const profile = useQuery("getUserProfile", profileId);
 
   const currentUser = useCurrentUserProfile();
-  const canEdit = currentUser?.id === profileId;
+  const isOwningUser = currentUser?.id === profileId;
 
   const onChangeField = async (field: keyof UserProfile, value: any) => {
     message.loading("Updating...");
@@ -43,47 +44,50 @@ export function UserProfilePage() {
         </Col>
 
         <Col flex="650px">
-          <Card title="Profile Details">
-            <Flex vertical align="center" gap={18}>
-              <Avatar
-                size={128}
-                icon={<UserOutlined />}
-                src={profile.avatarUrl}
-              />
-              <Typography.Title level={4}>
-                <Editable
-                  name="displayName"
-                  isEnabled={canEdit}
-                  value={profile.displayName}
-                  onSubmit={(o) => onChangeField("displayName", o)}
-                >
-                  <Input />
-                </Editable>
-              </Typography.Title>
-              <div>
-                <Typography.Text strong>Location: </Typography.Text>
-                <Editable
-                  name="location"
-                  isEnabled={canEdit}
-                  value={profile.location}
-                  onSubmit={(o) => onChangeField("location", o)}
-                >
-                  <Input />
-                </Editable>
-              </div>
-              <div>
-                <Typography.Text strong>Language: </Typography.Text>
-                <Editable
-                  name="language"
-                  isEnabled={canEdit}
-                  value={profile.language}
-                  onSubmit={(o) => onChangeField("language", o)}
-                >
-                  <Input />
-                </Editable>
-              </div>
-            </Flex>
-          </Card>
+          <Flex vertical gap={32}>
+            <Card title="Profile Details">
+              <Flex vertical align="center" gap={18}>
+                <Avatar
+                  size={128}
+                  icon={<UserOutlined />}
+                  src={profile.avatarUrl}
+                />
+                <Typography.Title level={4}>
+                  <Editable
+                    name="displayName"
+                    isEnabled={isOwningUser}
+                    value={profile.displayName}
+                    onSubmit={(o) => onChangeField("displayName", o)}
+                  >
+                    <Input />
+                  </Editable>
+                </Typography.Title>
+                <div>
+                  <Typography.Text strong>Location: </Typography.Text>
+                  <Editable
+                    name="location"
+                    isEnabled={isOwningUser}
+                    value={profile.location}
+                    onSubmit={(o) => onChangeField("location", o)}
+                  >
+                    <Input />
+                  </Editable>
+                </div>
+                <div>
+                  <Typography.Text strong>Language: </Typography.Text>
+                  <Editable
+                    name="language"
+                    isEnabled={isOwningUser}
+                    value={profile.language}
+                    onSubmit={(o) => onChangeField("language", o)}
+                  >
+                    <Input />
+                  </Editable>
+                </div>
+              </Flex>
+            </Card>
+            {isOwningUser && <ProfileCreatePostCard />}
+          </Flex>
         </Col>
 
         {/* We're not using this column (yet) but we still want to reserve space for it */}
