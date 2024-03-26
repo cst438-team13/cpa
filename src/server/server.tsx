@@ -9,6 +9,7 @@ import ReactDOMServer from "react-dom/server";
 import { rpcHandler } from "typed-rpc/express";
 import { DB } from "./db";
 import { PetProfile } from "./models/PetProfile";
+import { Posts } from "./models/Posts";
 import { UserAccount } from "./models/UserAccount";
 import { UserProfile } from "./models/UserProfile";
 
@@ -93,6 +94,41 @@ class APIService {
 
     await DB.save(newPet);
     return true;
+  }
+
+  async createPost(
+    avatarData: string,
+    caption: string,
+    petTags: string,
+    visibility: string,
+    userId: number
+  ) {
+    // New Post
+    const newPost = new Posts();
+    newPost.caption = caption;
+    newPost.petTags = petTags;
+    newPost.visibility = visibility;
+    newPost.userId = userId;
+
+    // Upload avatar
+    {
+      const fileId = `post-${crypto.randomUUID()}`;
+      const path = `/ugc/${fileId}`;
+      const data = avatarData.replace("data:", "").replace(/^.+,/, "");
+
+      fs.writeFileSync(`public${path}`, data, "base64");
+      newPost.pictureURL = path;
+    }
+
+    await DB.save(newPost);
+    return true;
+  }
+
+  async getPetsByUserId(userId: number) {
+    const userProfile = await this.getUserProfile(userId);
+    const pets = await DB.find(PetProfile, { where: { owner: userProfile } });
+
+    return nullthrows(pets);
   }
 
   async updateUserAccount(id: number, password: string) {

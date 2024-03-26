@@ -10,6 +10,7 @@ import {
 } from "react-router-dom";
 import { useCurrentUserProfile } from "../hooks/useCurrentUserProfile";
 import { CreateAccountPage } from "./pages/CreateAccountPage";
+import { CreatePostPage } from "./pages/CreatePostPage";
 import { HomePage } from "./pages/HomePage";
 import { LandingPage } from "./pages/LandingPage";
 import { LoginPage } from "./pages/LoginPage";
@@ -46,6 +47,10 @@ export function App() {
     {
       path: "/pet/:id",
       element: <RequireAuth Component={PetProfilePage} />,
+    },
+    {
+      path: "/createPost",
+      element: <RequireAuth Component={CreatePostPage} />,
     },
   ]);
 
