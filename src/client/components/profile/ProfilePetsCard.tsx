@@ -3,6 +3,8 @@ import { DownOutlined } from "@ant-design/icons";
 import { Button, Card, Dropdown, List, Typography, message } from "antd";
 import Avatar from "antd/es/avatar/avatar";
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import { api } from "../../api";
 import { useCreatePetModal } from "../../hooks/useCreatePetModal";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
@@ -15,6 +17,7 @@ type Props = {
 export function ProfilePetsCard({ userId }: Props) {
   const user = useQuery("getUserProfile", userId);
   const { openCreatePetModal } = useCreatePetModal();
+  const navigate = useNavigate();
 
   const currentUser = useCurrentUserProfile();
   const isPageOwner = currentUser?.id === userId;
@@ -36,11 +39,13 @@ export function ProfilePetsCard({ userId }: Props) {
   // TEMP
   const petsData = [
     {
+      id: 1,
       name: "Milo",
       breed: "Bulldog",
       avatarUrl: user.avatarUrl,
     },
     {
+      id: 2,
       name: "Cooper",
       breed: "German Shepard",
       avatarUrl: user.avatarUrl,
@@ -80,14 +85,21 @@ export function ProfilePetsCard({ userId }: Props) {
               ),
             ]}
           >
-            <List.Item.Meta
-              avatar={<Avatar src={item.avatarUrl} />}
-              title={<Typography.Text strong>{item.name}</Typography.Text>}
-              description={item.breed}
-            />
+            <ClickableContainer onClick={() => navigate(`/pet/${item.id}`)}>
+              <List.Item.Meta
+                avatar={<Avatar src={item.avatarUrl} />}
+                title={<Typography.Text strong>{item.name}</Typography.Text>}
+                description={item.breed}
+              />
+            </ClickableContainer>
           </List.Item>
         )}
       />
     </Card>
   );
 }
+
+const ClickableContainer = styled("div")`
+  cursor: pointer;
+  width: 100%;
+`;
