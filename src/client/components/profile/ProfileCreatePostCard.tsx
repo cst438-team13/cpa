@@ -137,7 +137,7 @@ export function ProfileCreatePostCard() {
               placeholder="Input @ to tag pets"
               options={petList.map(({ id, displayName, avatarUrl }) => ({
                 key: String(id),
-                value: displayName,
+                value: String(id),
                 label: (
                   <>
                     <Avatar src={avatarUrl} />

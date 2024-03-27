@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { PetProfile } from "./PetProfile";
+import { Post } from "./Post";
 
 @Entity()
 export class UserProfile {
@@ -20,4 +21,7 @@ export class UserProfile {
 
   @OneToMany(() => PetProfile, (pet) => pet.owner, { cascade: true })
   pets: PetProfile[];
+
+  @OneToMany(() => Post, (post) => post.author, { cascade: true })
+  posts: Post[];
 }
