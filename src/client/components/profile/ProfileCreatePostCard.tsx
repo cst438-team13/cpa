@@ -14,7 +14,6 @@ import {
   Upload,
   message,
 } from "antd";
-import ImgCrop from "antd-img-crop";
 import { RcFile } from "antd/es/upload";
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router";
@@ -90,34 +89,32 @@ export function ProfileCreatePostCard() {
         <Form onFinish={onSubmit} autoComplete="off" ref={formRef}>
           <Typography.Paragraph>Add Post Below.</Typography.Paragraph>
           <Form.Item>
-            <ImgCrop>
-              <Upload
-                name="post"
-                listType="picture-card"
-                showUploadList={false}
-                customRequest={(e) => handleSetAvatar(e.file as RcFile)}
+            <Upload
+              name="post"
+              listType="picture-card"
+              showUploadList={false}
+              customRequest={(e) => handleSetAvatar(e.file as RcFile)}
+            >
+              <div
+                style={{
+                  cursor: "pointer",
+                  padding: 6,
+                }}
               >
-                <div
-                  style={{
-                    cursor: "pointer",
-                    padding: 6,
-                  }}
-                >
-                  {avatarData == null ? (
-                    <>
-                      <PlusOutlined />
-                      <div style={{ marginTop: 8 }}>Picture</div>
-                    </>
-                  ) : (
-                    <img
-                      src={avatarData}
-                      alt="avatar"
-                      style={{ width: "100%", borderRadius: 6 }}
-                    />
-                  )}
-                </div>
-              </Upload>
-            </ImgCrop>
+                {avatarData == null ? (
+                  <>
+                    <PlusOutlined />
+                    <div style={{ marginTop: 8 }}>Picture</div>
+                  </>
+                ) : (
+                  <img
+                    src={avatarData}
+                    alt="avatar"
+                    style={{ width: "100%", borderRadius: 6 }}
+                  />
+                )}
+              </div>
+            </Upload>
           </Form.Item>
 
           <Form.Item
@@ -135,13 +132,13 @@ export function ProfileCreatePostCard() {
           >
             <Mentions
               placeholder="Input @ to tag pets"
-              options={petList.map(({ id, displayName, avatarUrl }) => ({
-                key: String(id),
-                value: String(id),
+              options={petList.map((pet) => ({
+                key: String(pet.id),
+                value: pet.displayName,
                 label: (
                   <>
-                    <Avatar src={avatarUrl} />
-                    <span>{displayName}</span>
+                    <Avatar src={pet.avatarUrl} />
+                    <span>{pet.displayName}</span>
                   </>
                 ),
               }))}

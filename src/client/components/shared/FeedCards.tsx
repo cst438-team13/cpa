@@ -39,13 +39,13 @@ export function FeedCards({ userId, isHomePage }: Props) {
               <img
                 src={post.pictureURL}
                 width={650}
-                style={{ borderRadius: 0 }}
+                style={{ borderRadius: 0, width: 650 }}
               />
             }
           >
             <Card.Meta
               title={`By ${post.author.displayName}`}
-              description={`Posted ${new Date(post.creationDate).toLocaleDateString()}`}
+              description={`Posted ${new Date(post.creationDate).toLocaleString()}`}
             />
           </Card>
         );
