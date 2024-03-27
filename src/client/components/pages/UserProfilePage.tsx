@@ -1,5 +1,5 @@
 import { UserOutlined } from "@ant-design/icons";
-import { Card, Col, Flex, Input, Row, Typography, message } from "antd";
+import { Card, Flex, Input, Typography, message } from "antd";
 import Avatar from "antd/es/avatar/avatar";
 import React from "react";
 import { useParams } from "react-router-dom";
@@ -38,63 +38,52 @@ export function UserProfilePage() {
   };
 
   return (
-    <MainLayout>
-      <Row justify="space-around">
-        <Col flex="400px">
-          <ProfilePetsCard userId={profileId} />
-        </Col>
-
-        <Col flex="650px">
-          <Flex vertical gap={24}>
-            <Card title="User Info">
-              <Flex vertical align="center" gap={18}>
-                <Avatar
-                  size={128}
-                  icon={<UserOutlined />}
-                  src={profile.avatarUrl}
-                />
-                <Typography.Title level={4}>
-                  <Editable
-                    name="displayName"
-                    isEnabled={isOwningUser}
-                    value={profile.displayName}
-                    onSubmit={(o) => onChangeField("displayName", o)}
-                  >
-                    <Input />
-                  </Editable>
-                </Typography.Title>
-                <div>
-                  <Typography.Text strong>Location: </Typography.Text>
-                  <Editable
-                    name="location"
-                    isEnabled={isOwningUser}
-                    value={profile.location}
-                    onSubmit={(o) => onChangeField("location", o)}
-                  >
-                    <Input />
-                  </Editable>
-                </div>
-                <div>
-                  <Typography.Text strong>Language: </Typography.Text>
-                  <Editable
-                    name="language"
-                    isEnabled={isOwningUser}
-                    value={profile.language}
-                    onSubmit={(o) => onChangeField("language", o)}
-                  >
-                    <Input />
-                  </Editable>
-                </div>
-              </Flex>
-            </Card>
-            {isOwningUser && <ProfileCreatePostCard />}
-            <FeedCards userId={profileId} isHomePage={false} />
+    <MainLayout leftContent={<ProfilePetsCard userId={profileId} />}>
+      <Flex vertical gap={24}>
+        <Card title="User Info">
+          <Flex vertical align="center" gap={18}>
+            <Avatar
+              size={128}
+              icon={<UserOutlined />}
+              src={profile.avatarUrl}
+            />
+            <Typography.Title level={4}>
+              <Editable
+                name="displayName"
+                isEnabled={isOwningUser}
+                value={profile.displayName}
+                onSubmit={(o) => onChangeField("displayName", o)}
+              >
+                <Input />
+              </Editable>
+            </Typography.Title>
+            <div>
+              <Typography.Text strong>Location: </Typography.Text>
+              <Editable
+                name="location"
+                isEnabled={isOwningUser}
+                value={profile.location}
+                onSubmit={(o) => onChangeField("location", o)}
+              >
+                <Input />
+              </Editable>
+            </div>
+            <div>
+              <Typography.Text strong>Language: </Typography.Text>
+              <Editable
+                name="language"
+                isEnabled={isOwningUser}
+                value={profile.language}
+                onSubmit={(o) => onChangeField("language", o)}
+              >
+                <Input />
+              </Editable>
+            </div>
           </Flex>
-        </Col>
-
-        {/* We're not using this column (yet) but we still want to reserve space for it */}
-        <Col flex="400px" />
-      </Row>
+        </Card>
+        {isOwningUser && <ProfileCreatePostCard />}
+        <FeedCards userId={profileId} isHomePage={false} />
+      </Flex>
     </MainLayout>
   );
 }
