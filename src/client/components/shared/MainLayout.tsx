@@ -1,4 +1,4 @@
-import { Button, Layout } from "antd";
+import { Button, Col, Layout, Row } from "antd";
 import React from "react";
 
 import { useNavigate } from "react-router-dom";
@@ -6,7 +6,13 @@ import styled from "styled-components";
 import { SearchBar } from "./SearchBar";
 import { UserButton } from "./UserButton";
 
-export function MainLayout({ children }: { children: React.ReactNode }) {
+type Props = {
+  children: React.ReactNode;
+  leftContent?: React.ReactNode;
+  rightContent?: React.ReactNode;
+};
+
+export function MainLayout({ children, leftContent, rightContent }: Props) {
   const navigate = useNavigate();
 
   return (
@@ -22,7 +28,13 @@ export function MainLayout({ children }: { children: React.ReactNode }) {
           <UserButton />
         </RightButtonsContainer>
       </HeaderCustom>
-      <Layout.Content style={{ padding: 24 }}>{children}</Layout.Content>
+      <Layout.Content style={{ padding: 24 }}>
+        <Row justify="space-around">
+          <Col flex="400px">{leftContent}</Col>
+          <Col flex="650px">{children}</Col>
+          <Col flex="400px">{rightContent}</Col>
+        </Row>
+      </Layout.Content>
     </LayoutCustom>
   );
 }
