@@ -20,7 +20,7 @@ export function PetProfilePage() {
         <Col flex="400px" />
 
         <Col flex="650px">
-          <Card title="Profile Details">
+          <Card title="Pet Info">
             <Flex vertical align="center" gap={18}>
               <Avatar
                 size={128}
