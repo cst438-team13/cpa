@@ -39,18 +39,14 @@ DB.seed = async () => {
   const pets: PetProfile[] = [];
 
   // Make between 3 and 5 users
-  users.push(await seedUser("dev", "Test User", "somePassword"));
+  users.push(await seedUser("dev", "somePassword", true));
   for (let i = 0; i < random.number(2, 4); i++) {
-    users.push(await seedUser(`seedUser${i}`, `Seed User ${i}`, "seed"));
+    users.push(await seedUser(`seedUser${i}`, "seed"));
   }
 
   // Make between 5 and 10 pets
   for (let i = 0; i < random.number(5, 10); i++) {
     pets.push(await seedPet(users));
-  }
-
-  for (let i = 0; i < random.number(10, 20); i++) {
-    await seedPost(`Seed Post ${i}`, [users[0]], pets);
   }
 
   // Make between 10 and 20 posts
@@ -61,21 +57,21 @@ DB.seed = async () => {
 
 async function seedUser(
   username: string,
-  displayName: string,
-  password: string
+  password: string,
+  useDefaultInfo?: boolean
 ) {
   const user = new UserAccount();
   user.username = username;
   user.passwordHash = await bcrypt.hash(password, 10);
 
   user.profile = new UserProfile();
-  user.profile.avatarUrl = "/ugc/1.png";
-  user.profile.displayName = displayName;
-  user.profile.location = random.choice([
-    "CSUMB",
-    "California",
-    "United States",
-  ]);
+  user.profile.avatarUrl = useDefaultInfo
+    ? "/ugc/1.png"
+    : random.internet.avatar();
+  user.profile.displayName = useDefaultInfo
+    ? "Test User"
+    : random.names.firstName();
+  user.profile.location = useDefaultInfo ? "CSUMB" : random.address.country();
   user.profile.language = random.choice(["en", "es", "fr"]);
   user.profile.pets = [];
 

@@ -50,7 +50,7 @@ export function ProfileCreatePostCard() {
   const petList = useQuery("getPetsByUserId", user!.id);
 
   // checking to see if owner has tagged any pets
-  const checkMention = async (_: any, value: string) => {
+  const checkMention = async (value: string) => {
     const mentions = Mentions.getMentions(value);
     if (mentions.length < 1) {
       throw new Error("At least 1 pet must be Tagged!");
@@ -131,7 +131,7 @@ export function ProfileCreatePostCard() {
           <Form.Item
             label="Pet(s) in Post"
             name="petTags"
-            rules={[{ validator: checkMention }]}
+            rules={[{ validator: (_, val) => checkMention(val) }]}
           >
             <Mentions
               placeholder="Input @ to tag pets"

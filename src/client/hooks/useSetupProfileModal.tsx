@@ -56,7 +56,7 @@ function SetupProfileContent({ onFinish }: ContentProps) {
   return (
     <Flex vertical>
       <Typography.Paragraph>
-        Almost done! Now it's time to set up your profile.
+        Almost done! Now it&apos;s time to set up your profile.
       </Typography.Paragraph>
       <Form
         onFinish={(values) => {

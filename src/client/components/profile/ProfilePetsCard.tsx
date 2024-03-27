@@ -15,7 +15,6 @@ type Props = {
 };
 
 export function ProfilePetsCard({ userId }: Props) {
-  const user = useQuery("getUserProfile", userId);
   const { openCreatePetModal } = useCreatePetModal();
   const navigate = useNavigate();
 

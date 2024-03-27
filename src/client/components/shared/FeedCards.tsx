@@ -32,6 +32,7 @@ export function FeedCards({ userId, isHomePage }: Props) {
       {posts.map((post) => {
         return (
           <Card
+            key={post.id}
             title={post.caption}
             hoverable
             cover={

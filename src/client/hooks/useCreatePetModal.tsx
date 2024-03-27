@@ -57,7 +57,7 @@ function CreatePetContent({ onFinish }: ContentProps) {
     setAvatarData(data);
   };
 
-  const onFormFinish = (values: any) => {
+  const onFormFinish = (values: object) => {
     if (avatarData == null) {
       message.error("Must upload a picture");
       return;

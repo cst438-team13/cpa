@@ -23,7 +23,7 @@ export function UserProfilePage() {
   const currentUser = useCurrentUserProfile();
   const isOwningUser = currentUser?.id === profileId;
 
-  const onChangeField = async (field: keyof UserProfile, value: any) => {
+  const onChangeField = async (field: keyof UserProfile, value: unknown) => {
     message.loading("Updating...");
 
     const newValues = {};

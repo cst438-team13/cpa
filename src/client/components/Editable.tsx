@@ -6,7 +6,7 @@ type Props = {
   value: React.ReactNode;
   children: React.ReactNode;
   name: string;
-  onSubmit: (value: any) => void;
+  onSubmit: (value: unknown) => void;
   isEnabled?: boolean;
 };
 
@@ -19,7 +19,7 @@ export function Editable({
 }: Props) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-  const onFinishForm = (values: any) => {
+  const onFinishForm = (values: object) => {
     onSubmit(Object.values(values)[0]);
     setIsPopupOpen(false);
   };
