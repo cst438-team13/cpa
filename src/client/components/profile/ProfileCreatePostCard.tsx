@@ -11,24 +11,17 @@ import {
   Mentions,
   Radio,
   Typography,
+  Upload,
   message,
 } from "antd";
 import ImgCrop from "antd-img-crop";
-import FormItem from "antd/es/form/FormItem";
-import Upload, { RcFile } from "antd/es/upload";
+import { RcFile } from "antd/es/upload";
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router";
-import { PetProfile } from "../../../server/models/PetProfile";
 import { api } from "../../api";
 import { getScaledImageFromFile } from "../../helpers/imageHelpers";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
-
-const { getMentions } = Mentions;
-
-const petsOwned = {
-  list: new Array<PetProfile>(),
-  tagged: new Array<number>(),
-};
+import { useQuery } from "../../hooks/useQuery";
 
 export function ProfileCreatePostCard() {
   const navigate = useNavigate();
@@ -54,20 +47,11 @@ export function ProfileCreatePostCard() {
     setRadioValue(value);
   };
 
-  // loading animation while bringing up pets
-  // searches for pets with same letters as owner input.
-  const [loading, setLoading] = useState(false);
-  const onSearch = async (search: string) => {
-    setLoading(!!search);
-
-    const petList = await api.getPetsByUserId(user!.id);
-    petsOwned.list = petList;
-    setLoading(false);
-  };
+  const petList = useQuery("getPetsByUserId", user!.id);
 
   // checking to see if owner has tagged any pets
   const checkMention = async (_: any, value: string) => {
-    const mentions = getMentions(value);
+    const mentions = Mentions.getMentions(value);
     if (mentions.length < 1) {
       throw new Error("At least 1 pet must be Tagged!");
     }
@@ -105,7 +89,7 @@ export function ProfileCreatePostCard() {
       <Flex vertical align="center" style={{ width: "100%" }}>
         <Form onFinish={onSubmit} autoComplete="off" ref={formRef}>
           <Typography.Paragraph>Add Post Below.</Typography.Paragraph>
-          <FormItem>
+          <Form.Item>
             <ImgCrop>
               <Upload
                 name="post"
@@ -134,22 +118,24 @@ export function ProfileCreatePostCard() {
                 </div>
               </Upload>
             </ImgCrop>
-          </FormItem>
+          </Form.Item>
 
-          <FormItem label="Caption" name="caption" rules={[{ required: true }]}>
+          <Form.Item
+            label="Caption"
+            name="caption"
+            rules={[{ required: true }]}
+          >
             <Input />
-          </FormItem>
+          </Form.Item>
 
-          <FormItem
-            label="Pet/s in Post"
+          <Form.Item
+            label="Pet(s) in Post"
             name="petTags"
             rules={[{ validator: checkMention }]}
           >
             <Mentions
-              placeholder="input @ to tag pets"
-              onSearch={onSearch}
-              loading={loading}
-              options={petsOwned.list.map(({ id, displayName, avatarUrl }) => ({
+              placeholder="Input @ to tag pets"
+              options={petList.map(({ id, displayName, avatarUrl }) => ({
                 key: String(id),
                 value: displayName,
                 label: (
@@ -160,20 +146,19 @@ export function ProfileCreatePostCard() {
                 ),
               }))}
               allowClear
-            ></Mentions>
-          </FormItem>
+            />
+          </Form.Item>
 
-          <Typography.Text>Who Can See Post: </Typography.Text>
-          <Radio.Group
-            name="visibility"
-            options={visOptions}
-            onChange={onChange}
-            value={radioValue}
-            optionType="button"
-            buttonStyle="solid"
-          />
-          <br></br>
-          <br></br>
+          <Form.Item label="Who can see post">
+            <Radio.Group
+              name="visibility"
+              options={visOptions}
+              onChange={onChange}
+              value={radioValue}
+              optionType="button"
+              buttonStyle="solid"
+            />
+          </Form.Item>
 
           <Button type="primary" htmlType="submit">
             Post!
