@@ -1,3 +1,6 @@
+import Fakerator from "fakerator";
+const fakerator = Fakerator("en-us");
+
 export const random = {
   number(min: number, max: number) {
     min = Math.ceil(min);
@@ -8,4 +11,6 @@ export const random = {
   choice<T>(items: T[]) {
     return items[random.number(0, items.length - 1)];
   },
+
+  ...fakerator,
 };

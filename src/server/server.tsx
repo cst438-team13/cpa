@@ -343,9 +343,13 @@ DB.init()
   .then(async () => {
     console.log("Connected to DB");
 
-    console.log("Seeding DB...");
-    await DB.seed();
-    console.log("Seeded DB");
+    const shouldSeed = process.argv.slice(2).includes("--clean");
+
+    if (shouldSeed) {
+      console.log("Seeding DB...");
+      await DB.seed();
+      console.log("Seeded DB");
+    }
 
     app.listen(port, () => {
       console.log(`Now running at http://localhost:${port}`);
