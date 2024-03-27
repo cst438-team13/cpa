@@ -9,7 +9,7 @@ import ReactDOMServer from "react-dom/server";
 import { rpcHandler } from "typed-rpc/express";
 import { DB } from "./db";
 import { PetProfile } from "./models/PetProfile";
-import { Posts } from "./models/Posts";
+import { Post } from "./models/Post";
 import { UserAccount } from "./models/UserAccount";
 import { UserProfile } from "./models/UserProfile";
 
@@ -103,12 +103,14 @@ class APIService {
     visibility: string,
     userId: number
   ) {
-    // New Post
-    const newPost = new Posts();
+    const author = await this.getUserProfile(userId);
+
+    // New post
+    const newPost = new Post();
     newPost.caption = caption;
     newPost.petTags = petTags;
     newPost.visibility = visibility;
-    newPost.userId = userId;
+    newPost.author = author;
 
     // Upload avatar
     {
