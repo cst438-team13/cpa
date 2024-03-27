@@ -28,7 +28,7 @@ export function ProfileCreatePostCard() {
   const user = useCurrentUserProfile();
 
   // storing radio checked value
-  const [radioValue, setRadioValue] = useState("public");
+  const [radioValue, setRadioValue] = useState<"friends" | "public">("public");
   const visOptions = [
     { label: "Public", value: "public" },
     { label: "Friends Only", value: "friends" },

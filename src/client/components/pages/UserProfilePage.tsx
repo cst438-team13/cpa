@@ -10,6 +10,7 @@ import { useQuery, useRefetchQuery } from "../../hooks/useQuery";
 import { Editable } from "../Editable";
 import { ProfileCreatePostCard } from "../profile/ProfileCreatePostCard";
 import { ProfilePetsCard } from "../profile/ProfilePetsCard";
+import { FeedCards } from "../shared/FeedCards";
 import { MainLayout } from "../shared/MainLayout";
 
 export function UserProfilePage() {
@@ -87,6 +88,7 @@ export function UserProfilePage() {
               </Flex>
             </Card>
             {isOwningUser && <ProfileCreatePostCard />}
+            <FeedCards userId={profileId} isHomePage={false} />
           </Flex>
         </Col>
 
