@@ -219,7 +219,7 @@ class APIService {
         visibility: isHomePage ? undefined : "public",
       },
       order: {
-        creationDate: "ASC",
+        creationDate: "DESC",
       },
     });
 
