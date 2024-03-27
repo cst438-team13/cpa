@@ -28,6 +28,8 @@ const dataSource = new DataSource({
 export const DB = dataSource.manager as DBManager;
 DB.dataSource = dataSource;
 DB.init = () => dataSource.initialize();
+
+// Fills ("seeds") the DB with sample data for testing
 DB.seed = async () => {
   // Clear DB (delete all existing info)
   await DB.connection.synchronize(true);
