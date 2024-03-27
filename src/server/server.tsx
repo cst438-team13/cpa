@@ -100,7 +100,7 @@ class APIService {
     avatarData: string,
     caption: string,
     petTags: string,
-    visibility: string,
+    visibility: "friends" | "public",
     userId: number
   ) {
     const author = await this.getUserProfile(userId);
@@ -200,6 +200,33 @@ class APIService {
     } else {
       return false;
     }
+  }
+
+  // Returns the next "count" feed posts
+  async getFeedPosts(
+    userId: number,
+    isHomePage: boolean,
+    start: number,
+    count: number
+  ) {
+    // Home page: show all posts by the user or their friends. TODO: Friends
+    // Profile page: show all posts by the user, if they are set to public.
+
+    const user = await this.getUserProfile(userId);
+    const posts = await DB.find(Post, {
+      where: {
+        author: user,
+        visibility: isHomePage ? undefined : "public",
+      },
+      order: {
+        creationDate: "ASC",
+      },
+    });
+
+    return {
+      posts: posts.slice(start, start + count),
+      hasMore: posts.length > start + count,
+    };
   }
 
   async authLoginWithGoogle(token: string) {

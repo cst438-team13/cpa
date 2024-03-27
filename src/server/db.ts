@@ -1,3 +1,4 @@
+import axios from "axios";
 import bcrypt from "bcrypt";
 import { DataSource, type EntityManager } from "typeorm";
 import { PetProfile } from "./models/PetProfile";
@@ -48,8 +49,12 @@ DB.seed = async () => {
     pets.push(await seedPet(users));
   }
 
-  // Make between 5 and 10 posts
-  for (let i = 0; i < random.number(5, 10); i++) {
+  for (let i = 0; i < random.number(10, 20); i++) {
+    await seedPost(`Seed Post ${i}`, [users[0]], pets);
+  }
+
+  // Make between 10 and 20 posts
+  for (let i = 0; i < random.number(10, 20); i++) {
     await seedPost(`Seed Post ${i}`, users, pets);
   }
 };
@@ -105,11 +110,15 @@ async function seedPost(
   users: UserProfile[],
   pets: PetProfile[]
 ) {
+  const randomImage = (
+    await axios.get("https://source.unsplash.com/random/?dog")
+  ).request.res.responseUrl;
+
   const post = new Post();
   post.author = random.choice(users);
   post.caption = caption;
   post.visibility = random.choice(["public", "friends"]);
-  post.pictureURL = "TODO";
+  post.pictureURL = randomImage;
 
   // Tag between 1 and 3 pets
   post.petTags = Array(random.number(1, 3))

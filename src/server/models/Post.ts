@@ -1,10 +1,19 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { UserProfile } from "./UserProfile";
 
 @Entity()
 export class Post {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @CreateDateColumn()
+  creationDate: Date;
 
   @Column()
   caption: string;
@@ -16,7 +25,7 @@ export class Post {
   petTags: string;
 
   @Column()
-  visibility: string;
+  visibility: "friends" | "public";
 
   @ManyToOne(() => UserProfile, (user) => user.posts, { eager: true })
   author: UserProfile;
