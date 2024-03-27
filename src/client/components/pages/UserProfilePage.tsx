@@ -9,6 +9,7 @@ import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 import { useQuery, useRefetchQuery } from "../../hooks/useQuery";
 import { Editable } from "../Editable";
 import { ProfileCreatePostCard } from "../profile/ProfileCreatePostCard";
+import { ProfileCreatePostCard2 } from "../profile/ProfileCreatePostCard2";
 import { ProfilePetsCard } from "../profile/ProfilePetsCard";
 import { FeedCards } from "../shared/FeedCards";
 import { MainLayout } from "../shared/MainLayout";
@@ -81,6 +82,7 @@ export function UserProfilePage() {
             </div>
           </Flex>
         </Card>
+        {isOwningUser && <ProfileCreatePostCard2 />}
         {isOwningUser && <ProfileCreatePostCard />}
         <FeedCards userId={profileId} />
       </Flex>

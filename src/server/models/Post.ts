@@ -7,6 +7,8 @@ import {
 } from "typeorm";
 import { UserProfile } from "./UserProfile";
 
+export type PostVisibility = "friends" | "public";
+
 @Entity()
 export class Post {
   @PrimaryGeneratedColumn()
@@ -25,7 +27,7 @@ export class Post {
   petTags: string;
 
   @Column()
-  visibility: "friends" | "public";
+  visibility: PostVisibility;
 
   @ManyToOne(() => UserProfile, (user) => user.posts, { eager: true })
   author: UserProfile;
