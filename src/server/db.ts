@@ -38,19 +38,19 @@ DB.seed = async () => {
   const users: UserProfile[] = [];
   const pets: PetProfile[] = [];
 
-  // Make between 3 and 5 users
+  // Make 3 users
   users.push(await seedUser("dev", "somePassword", true));
-  for (let i = 0; i < random.number(2, 4); i++) {
+  for (let i = 0; i < 3; i++) {
     users.push(await seedUser(`seedUser${i}`, "seed"));
   }
 
-  // Make between 5 and 10 pets
-  for (let i = 0; i < random.number(5, 10); i++) {
+  // Make 8 pets
+  for (let i = 0; i < 8; i++) {
     pets.push(await seedPet(users));
   }
 
-  // Make between 10 and 20 posts
-  for (let i = 0; i < random.number(10, 20); i++) {
+  // Make 18 posts
+  for (let i = 0; i < 18; i++) {
     await seedPost(`Seed Post ${i}`, users, pets);
   }
 };

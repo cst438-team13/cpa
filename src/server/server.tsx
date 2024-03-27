@@ -203,20 +203,18 @@ class APIService {
   }
 
   // Returns the next "count" feed posts
-  async getFeedPosts(
-    userId: number,
-    isHomePage: boolean,
-    start: number,
-    count: number
-  ) {
-    // Home page: show all posts by the user or their friends. TODO: Friends
-    // Profile page: show all posts by the user, if they are set to public.
+  async getFeedPosts(userId: number, start: number, count: number) {
+    // Home page: show all posts by the user or their friends. TODO: Implement
+    // Profile page: if logged in as this user, show ALL posts by them. Else, show all public posts.
+
+    const isAuthor = await this.checkCurrentUserIs(userId);
+    const isFriendOfAuthor = false;
 
     const user = await this.getUserProfile(userId);
     const posts = await DB.find(Post, {
       where: {
         author: user,
-        visibility: isHomePage ? undefined : "public",
+        visibility: isAuthor || isFriendOfAuthor ? undefined : "public",
       },
       order: {
         creationDate: "DESC",
@@ -334,6 +332,19 @@ class APIService {
     this.session.userId = null;
     return true;
   }
+
+  // Returns true if we are currently logged in with the given user id.
+  private async checkCurrentUserIs(userId: number) {
+    const currentUserId = await this.getCurrentUserId();
+    if (currentUserId == null) {
+      return false;
+    }
+
+    const currentUserProfile = await this.getUserProfile(currentUserId);
+    return currentUserProfile.id == userId;
+  }
+
+  private async Abc() {}
 }
 
 console.log("Connecting to DB...");
