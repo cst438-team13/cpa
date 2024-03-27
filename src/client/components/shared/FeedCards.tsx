@@ -5,10 +5,9 @@ import { api } from "../../api";
 
 type Props = {
   userId: number;
-  isHomePage: boolean;
 };
 
-export function FeedCards({ userId, isHomePage }: Props) {
+export function FeedCards({ userId }: Props) {
   const [hasMore, setHasMore] = useState(true);
   const [posts, setPosts] = useState([] as Post[]);
 
@@ -16,7 +15,7 @@ export function FeedCards({ userId, isHomePage }: Props) {
 
   const loadMore = async () => {
     setIsLoading(true);
-    const data = await api.getFeedPosts(userId, isHomePage, posts.length, 5);
+    const data = await api.getFeedPosts(userId, posts.length, 5);
 
     setPosts([...posts, ...data.posts]);
     setHasMore(data.hasMore);

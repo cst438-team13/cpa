@@ -10,8 +10,8 @@ export function HomePage() {
   return (
     <MainLayout>
       <Flex vertical gap={24} align="center" style={{ width: "100%" }}>
-        <Typography.Title>Feed</Typography.Title>
-        <FeedCards userId={user!.id} isHomePage={true} />
+        <Typography.Title>Home</Typography.Title>
+        <FeedCards userId={user!.id} />
       </Flex>
     </MainLayout>
   );
