@@ -35,7 +35,8 @@ export function useCreatePetModal() {
       const { destroy } = Modal.info({
         title: "Create pet",
         centered: true,
-        closable: false,
+        closable: true,
+        maskClosable: true,
         footer: null,
         content: <CreatePetContent onFinish={onFinish} />,
       });
