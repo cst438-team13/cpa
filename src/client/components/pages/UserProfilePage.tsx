@@ -45,7 +45,7 @@ export function UserProfilePage() {
 
         <Col flex="650px">
           <Flex vertical gap={24}>
-            <Card title="Profile Details">
+            <Card title="User Info">
               <Flex vertical align="center" gap={18}>
                 <Avatar
                   size={128}

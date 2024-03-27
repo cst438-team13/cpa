@@ -8,7 +8,7 @@ import styled from "styled-components";
 import { api } from "../../api";
 import { useCreatePetModal } from "../../hooks/useCreatePetModal";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
-import { useQuery } from "../../hooks/useQuery";
+import { useQuery, useRefetchQuery } from "../../hooks/useQuery";
 
 type Props = {
   userId: number;
@@ -22,6 +22,9 @@ export function ProfilePetsCard({ userId }: Props) {
   const currentUser = useCurrentUserProfile();
   const isPageOwner = currentUser?.id === userId;
 
+  const petsData = useQuery("getPetsByUserId", userId);
+  const refetchQuery = useRefetchQuery();
+
   const onClickCreatePet = async () => {
     const petInfo = await openCreatePetModal();
 
@@ -31,26 +34,11 @@ export function ProfilePetsCard({ userId }: Props) {
     message.destroy();
     if (success) {
       message.info("Pet added!");
+      await refetchQuery("getPetsByUserId");
     } else {
       message.error("Something went wrong");
     }
   };
-
-  // TEMP
-  const petsData = [
-    {
-      id: 1,
-      name: "Milo",
-      breed: "Bulldog",
-      avatarUrl: user.avatarUrl,
-    },
-    {
-      id: 2,
-      name: "Cooper",
-      breed: "German Shepard",
-      avatarUrl: user.avatarUrl,
-    },
-  ];
 
   const dropdownItems = [
     {
@@ -71,30 +59,34 @@ export function ProfilePetsCard({ userId }: Props) {
         isPageOwner && <Button onClick={() => onClickCreatePet()}>Add</Button>
       }
     >
-      <List
-        dataSource={petsData}
-        renderItem={(item) => (
-          <List.Item
-            actions={[
-              isPageOwner && (
-                <Dropdown menu={{ items: dropdownItems }} trigger={["click"]}>
-                  <Button type="link">
-                    More <DownOutlined />
-                  </Button>
-                </Dropdown>
-              ),
-            ]}
-          >
-            <ClickableContainer onClick={() => navigate(`/pet/${item.id}`)}>
-              <List.Item.Meta
-                avatar={<Avatar src={item.avatarUrl} />}
-                title={<Typography.Text strong>{item.name}</Typography.Text>}
-                description={item.breed}
-              />
-            </ClickableContainer>
-          </List.Item>
-        )}
-      />
+      {petsData.length > 0 && (
+        <List
+          dataSource={petsData}
+          renderItem={(item) => (
+            <List.Item
+              actions={[
+                isPageOwner && (
+                  <Dropdown menu={{ items: dropdownItems }} trigger={["click"]}>
+                    <Button type="link">
+                      More <DownOutlined />
+                    </Button>
+                  </Dropdown>
+                ),
+              ]}
+            >
+              <ClickableContainer onClick={() => navigate(`/pet/${item.id}`)}>
+                <List.Item.Meta
+                  avatar={<Avatar src={item.avatarUrl} />}
+                  title={
+                    <Typography.Text strong>{item.displayName}</Typography.Text>
+                  }
+                  description={item.breed}
+                />
+              </ClickableContainer>
+            </List.Item>
+          )}
+        />
+      )}
     </Card>
   );
 }
