@@ -49,7 +49,7 @@ app.get("*", (_req, res) => {
       </head>
       <body>
         <div id="root"></div>
-        <script src="/js/bundle.js" />
+        <script src="/js/client.js" />
       </body>
     </html>
   );
