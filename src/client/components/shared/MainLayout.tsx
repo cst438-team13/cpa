@@ -7,7 +7,7 @@ import { SearchBar } from "./SearchBar";
 import { UserButton } from "./UserButton";
 
 type Props = {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   leftContent?: React.ReactNode;
   rightContent?: React.ReactNode;
 };

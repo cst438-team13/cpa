@@ -15,6 +15,7 @@ import { LandingPage } from "./pages/LandingPage";
 import { LoginPage } from "./pages/LoginPage";
 import { ManageAccountPage } from "./pages/ManageAccountPage";
 import { PetProfilePage } from "./pages/PetProfilePage";
+import { SearchResultsPage } from "./pages/SearchResultsPage";
 import { UserProfilePage } from "./pages/UserProfilePage";
 
 const queryClient = new QueryClient();
@@ -46,6 +47,10 @@ export function App() {
     {
       path: "/pet/:id",
       element: <RequireAuth Component={PetProfilePage} />,
+    },
+    {
+      path: "/search",
+      element: <RequireAuth Component={SearchResultsPage} />,
     },
   ]);
 
