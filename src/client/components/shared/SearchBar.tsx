@@ -4,18 +4,17 @@ import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
 import styled from "styled-components";
-
-type SearchMode = "users" | "pets";
+import { useLocalStorage } from "usehooks-ts";
 
 export function SearchBar() {
   const navigate = useNavigate();
+  const [searchMode, setSearchMode] = useLocalStorage("search-mode", "users");
 
   const inputRef = useRef<InputRef>(null);
-  const selectValue = useRef<SearchMode>("users");
 
   const onSubmit = () => {
     navigate(
-      `/search?mode=${selectValue.current}&text=${inputRef.current?.input?.value}`
+      `/search?mode=${searchMode}&text=${inputRef.current?.input?.value}`
     );
   };
 
@@ -27,12 +26,12 @@ export function SearchBar() {
         onKeyUp={(e) => e.key === "Enter" && onSubmit()}
       />
       <Select
-        defaultValue="users"
+        defaultValue={searchMode}
         options={[
           { label: "Users", value: "users" },
           { label: "Pets", value: "pets" },
         ]}
-        onChange={(o) => (selectValue.current = o as SearchMode)}
+        onChange={(o) => setSearchMode(o)}
       />
       <Button type="primary" onClick={() => onSubmit()}>
         <SearchOutlined />
