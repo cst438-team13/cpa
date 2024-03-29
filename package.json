@@ -4,8 +4,8 @@
     "dev:clean": "parallel server:clean client:dev",
     "server": "ts-node src/server/server.tsx",
     "server:clean": "ts-node src/server/server.tsx --clean",
-    "client:prod": "esbuild src/client/client.tsx --bundle --outfile=public/js/bundle.js",
-    "client:dev": "esbuild src/client/client.tsx --bundle --outdir=public/js --watch",
+    "client:prod": "esbuild src/client/client.tsx --bundle --outdir=public/js --minify",
+    "client:dev": "esbuild src/client/client.tsx --bundle --outdir=public/js --watch --sourcemap",
     "lint": "eslint src/** --fix"
   },
   "devDependencies": {
