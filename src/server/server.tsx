@@ -7,6 +7,7 @@ import nullthrows from "nullthrows";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 import { rpcHandler } from "typed-rpc/express";
+import { Like } from "typeorm";
 import { DB } from "./db";
 import { PetProfile } from "./models/PetProfile";
 import { Post } from "./models/Post";
@@ -225,6 +226,14 @@ class APIService {
       posts: posts.slice(start, start + count),
       hasMore: posts.length > start + count,
     };
+  }
+
+  async searchUsers(name: string) {
+    return DB.find(UserProfile, {
+      where: {
+        displayName: Like(`%${name}%`),
+      },
+    });
   }
 
   async authLoginWithGoogle(token: string) {
