@@ -22,3 +22,11 @@ export const getScaledImageFromFile = (file: File, size: number) => {
     reader.readAsDataURL(file);
   });
 };
+
+export const getImageFromFile = (file: File) => {
+  return new Promise<string>((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.readAsDataURL(file);
+  });
+};
