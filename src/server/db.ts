@@ -116,10 +116,11 @@ async function seedPost(
   post.visibility = random.choice(["public", "friends"]);
   post.pictureURL = randomImage;
 
-  // Tag between 1 and 3 pets
+  // Tag between 1 and 3 pets (no duplicates)
   post.taggedPets = Array(random.number(1, 3))
     .fill(null)
-    .map(() => random.choice(pets));
+    .map(() => random.choice(pets))
+    .filter((o, i, a) => a.indexOf(o) === i);
 
   DB.save(post);
   return post;

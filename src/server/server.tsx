@@ -204,7 +204,7 @@ class APIService {
   }
 
   // Returns the next "count" feed posts
-  async getFeedPosts(userId: number, start: number, count: number) {
+  async getFeedPostsForUser(userId: number, start: number, count: number) {
     // Home page: show all posts by the user or their friends. TODO: Implement
     // Profile page: if logged in as this user, show ALL posts by them. Else, show all public posts.
 
@@ -220,7 +220,24 @@ class APIService {
       order: {
         creationDate: "DESC",
       },
+      relations: ["taggedPets"],
     });
+
+    return {
+      posts: posts.slice(start, start + count),
+      hasMore: posts.length > start + count,
+    };
+  }
+
+  async getFeedPostsForPet(petId: number, start: number, count: number) {
+    const pet = (
+      await DB.find(PetProfile, {
+        where: { id: petId },
+        relations: ["taggedPosts", "taggedPosts.taggedPets"],
+      })
+    )[0];
+
+    const posts = pet.taggedPosts;
 
     return {
       posts: posts.slice(start, start + count),
