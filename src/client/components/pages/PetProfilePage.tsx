@@ -5,6 +5,7 @@ import React from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "../../hooks/useQuery";
 import { Editable } from "../Editable";
+import { FeedCards } from "../shared/FeedCards";
 import { MainLayout } from "../shared/MainLayout";
 
 export function PetProfilePage() {
@@ -15,21 +16,28 @@ export function PetProfilePage() {
 
   return (
     <MainLayout>
-      <Card title="Pet Info">
-        <Flex vertical align="center" gap={18}>
-          <Avatar size={128} icon={<UserOutlined />} src={profile.avatarUrl} />
-          <Typography.Title level={4}>
-            <Editable
-              name="displayName"
-              isEnabled={false}
-              value={profile.displayName}
-              onSubmit={() => message.error("Not implemented")}
-            >
-              <Input />
-            </Editable>
-          </Typography.Title>
-        </Flex>
-      </Card>
+      <Flex vertical gap={24}>
+        <Card title="Pet Info">
+          <Flex vertical align="center" gap={18}>
+            <Avatar
+              size={128}
+              icon={<UserOutlined />}
+              src={profile.avatarUrl}
+            />
+            <Typography.Title level={4}>
+              <Editable
+                name="displayName"
+                isEnabled={false}
+                value={profile.displayName}
+                onSubmit={() => message.error("Not implemented")}
+              >
+                <Input />
+              </Editable>
+            </Typography.Title>
+          </Flex>
+        </Card>
+        <FeedCards petId={profileId} />
+      </Flex>
     </MainLayout>
   );
 }
