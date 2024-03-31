@@ -30,7 +30,7 @@ export function FeedCards(props: Props) {
   };
 
   useEffect(() => {
-    setTimeout(loadMore, 500);
+    setTimeout(loadMore, 100);
   }, []);
 
   return (
