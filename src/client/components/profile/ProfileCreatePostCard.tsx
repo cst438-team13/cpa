@@ -1,4 +1,4 @@
-import { PlusOutlined } from "@ant-design/icons";
+import { UploadOutlined } from "@ant-design/icons";
 import type { RadioChangeEvent } from "antd";
 import {
   Avatar,
@@ -10,7 +10,6 @@ import {
   Input,
   Mentions,
   Radio,
-  Typography,
   Upload,
   message,
 } from "antd";
@@ -18,7 +17,7 @@ import { RcFile } from "antd/es/upload";
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { api } from "../../api";
-import { getScaledImageFromFile } from "../../helpers/imageHelpers";
+import { getImageFromFile } from "../../helpers/imageHelpers";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 import { useQuery } from "../../hooks/useQuery";
 
@@ -26,19 +25,36 @@ export function ProfileCreatePostCard() {
   const navigate = useNavigate();
   const user = useCurrentUserProfile();
 
-  // storing radio checked value
+  // Store radio checked value
   const [radioValue, setRadioValue] = useState<"friends" | "public">("public");
   const visOptions = [
     { label: "Public", value: "public" },
     { label: "Friends Only", value: "friends" },
   ];
 
-  // for handling avatar img
-  const [avatarData, setAvatarData] = useState<string | null>(null);
+  // For handling attached picture
+  const [pictureData, setPictureData] = useState<string | null>(null);
 
-  const handleSetAvatar = async (file: RcFile) => {
-    const data = await getScaledImageFromFile(file, 128);
-    setAvatarData(data);
+  const petList = useQuery("getPetsByUserId", user!.id);
+
+  // Obvious bug here is this doesn't get reset if we remove mentioned pets.
+  // Unfortunately the way <Mention> works means we can't do a lot about it.
+  const mentionedPetIds = useRef<number[]>([]);
+
+  // Checking to see if owner has tagged any pets
+  const checkMentions = (value: string) => {
+    const mentions = Mentions.getMentions(value);
+
+    if (mentions.length < 1) {
+      throw new Error("At least 1 pet must be tagged!");
+    }
+  };
+
+  const beforeUploadPicture = async (file: RcFile) => {
+    const data = await getImageFromFile(file);
+    setPictureData(data);
+
+    return false;
   };
 
   // changing radio checked value based off user input
@@ -46,27 +62,20 @@ export function ProfileCreatePostCard() {
     setRadioValue(value);
   };
 
-  const petList = useQuery("getPetsByUserId", user!.id);
-
-  // checking to see if owner has tagged any pets
-  const checkMention = async (value: string) => {
-    const mentions = Mentions.getMentions(value);
-    if (mentions.length < 1) {
-      throw new Error("At least 1 pet must be Tagged!");
-    }
-  };
-
   const onSubmit = async (values) => {
-    if (avatarData == null) {
+    if (pictureData == null) {
       message.error("Must upload a picture");
       return;
     }
+
     message.loading("Posting...");
 
     const success = await api.createPost(
-      avatarData,
+      pictureData,
       values.caption,
-      values.petTags,
+      mentionedPetIds.current.map(
+        (id) => petList.filter((pet) => pet.id === id)[0]
+      ),
       radioValue,
       user!.id
     );
@@ -87,33 +96,14 @@ export function ProfileCreatePostCard() {
     <Card title="New Post" style={{ width: 650 }}>
       <Flex vertical align="center" style={{ width: "100%" }}>
         <Form onFinish={onSubmit} autoComplete="off" ref={formRef}>
-          <Typography.Paragraph>Add Post Below.</Typography.Paragraph>
           <Form.Item>
             <Upload
-              name="post"
-              listType="picture-card"
-              showUploadList={false}
-              customRequest={(e) => handleSetAvatar(e.file as RcFile)}
+              maxCount={1}
+              beforeUpload={(e) => beforeUploadPicture(e)}
+              onRemove={() => setPictureData(null)}
+              customRequest={() => {}}
             >
-              <div
-                style={{
-                  cursor: "pointer",
-                  padding: 6,
-                }}
-              >
-                {avatarData == null ? (
-                  <>
-                    <PlusOutlined />
-                    <div style={{ marginTop: 8 }}>Picture</div>
-                  </>
-                ) : (
-                  <img
-                    src={avatarData}
-                    alt="avatar"
-                    style={{ width: "100%", borderRadius: 6 }}
-                  />
-                )}
-              </div>
+              <Button icon={<UploadOutlined />}>Choose picture</Button>
             </Upload>
           </Form.Item>
 
@@ -127,11 +117,11 @@ export function ProfileCreatePostCard() {
 
           <Form.Item
             label="Pet(s) in Post"
-            name="petTags"
-            rules={[{ validator: (_, val) => checkMention(val) }]}
+            rules={[{ validator: (_, val) => checkMentions(val) }]}
           >
             <Mentions
               placeholder="Input @ to tag pets"
+              onSelect={(o) => mentionedPetIds.current.push(Number(o.key!))}
               options={petList.map((pet) => ({
                 key: String(pet.id),
                 value: pet.displayName,

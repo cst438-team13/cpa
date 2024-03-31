@@ -1,4 +1,11 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { Post } from "./Post";
 import { UserProfile } from "./UserProfile";
 
 @Entity()
@@ -26,4 +33,7 @@ export class PetProfile {
 
   @ManyToOne(() => UserProfile, (user) => user.pets, { eager: true })
   owner: UserProfile;
+
+  @ManyToMany(() => Post, (post) => post.taggedPets)
+  taggedPosts: Post[];
 }
