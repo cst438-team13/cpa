@@ -19,8 +19,8 @@ export function SearchBar() {
   };
 
   return (
-    <Space.Compact>
-      <SearchInput
+    <SearchContainer>
+      <Input
         placeholder="Search profiles.."
         ref={inputRef}
         onKeyUp={(e) => e.key === "Enter" && onSubmit()}
@@ -36,10 +36,10 @@ export function SearchBar() {
       <Button type="primary" onClick={() => onSubmit()}>
         <SearchOutlined />
       </Button>
-    </Space.Compact>
+    </SearchContainer>
   );
 }
 
-const SearchInput = styled(Input)`
-  width: 300px;
+const SearchContainer = styled(Space.Compact)`
+  width: 400px;
 `;
