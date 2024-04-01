@@ -245,18 +245,27 @@ class APIService {
     };
   }
 
-  async searchUsers(name: string) {
+  async searchUsers(name: string, location: string | undefined) {
     return DB.find(UserProfile, {
       where: {
+        location,
         displayName: Like(`%${name}%`),
       },
     });
   }
 
-  async searchPets(name: string) {
+  async searchPets(
+    name: string,
+    location: string | undefined,
+    id: number | undefined
+  ) {
     return DB.find(PetProfile, {
       where: {
+        id,
         displayName: Like(`%${name}%`),
+        owner: {
+          location,
+        },
       },
     });
   }

@@ -19,6 +19,7 @@ export function UserButton() {
     if (success) {
       // We just changed the result of getCurrentUserId(), so refetch it.
       await refetchQuery("getCurrentUserId");
+      sessionStorage.clear();
 
       navigate("/");
       message.info("Logged out");
