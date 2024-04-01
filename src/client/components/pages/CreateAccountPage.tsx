@@ -31,6 +31,7 @@ export function CreateAccountPage() {
     if (success) {
       // We just changed the result of getCurrentUserId(), so refetch it.
       await refetchQuery("getCurrentUserId");
+      sessionStorage.clear();
 
       message.destroy();
       message.info("Logged in!");

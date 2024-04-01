@@ -25,6 +25,7 @@ export function LoginPage() {
 
       // We just changed the result of getCurrentUserId(), so refetch it.
       await refetchQuery("getCurrentUserId");
+      sessionStorage.clear();
 
       // Go to home page
       navigate("/");

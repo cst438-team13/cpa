@@ -20,6 +20,7 @@ export function LandingPage() {
     if (success) {
       // We just changed the result of getCurrentUserId(), so refetch it.
       await refetchQuery("getCurrentUserId");
+      sessionStorage.clear();
       message.info("Logged out");
     }
   };

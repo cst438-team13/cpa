@@ -1,28 +1,26 @@
 import { SearchOutlined } from "@ant-design/icons";
-import { Button, Input, InputRef, Select, Space } from "antd";
-import React, { useRef } from "react";
+import { Button, Input, Select, Space } from "antd";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import styled from "styled-components";
-import { useLocalStorage } from "usehooks-ts";
+import { useSessionStorage } from "usehooks-ts";
 
 export function SearchBar() {
   const navigate = useNavigate();
-  const [searchMode, setSearchMode] = useLocalStorage("search-mode", "users");
-
-  const inputRef = useRef<InputRef>(null);
+  const [searchMode, setSearchMode] = useSessionStorage("search-mode", "users");
+  const [searchText, setSearchText] = useSessionStorage("search-text", "");
 
   const onSubmit = () => {
-    navigate(
-      `/search?mode=${searchMode}&text=${inputRef.current?.input?.value}`
-    );
+    navigate(`/search?mode=${searchMode}&text=${searchText}`);
   };
 
   return (
     <SearchContainer>
       <Input
-        placeholder="Search profiles.."
-        ref={inputRef}
+        defaultValue={searchText}
+        placeholder="Search by name.."
+        onChange={(e) => setSearchText(e.target.value)}
         onKeyUp={(e) => e.key === "Enter" && onSubmit()}
       />
       <Select
