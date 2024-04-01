@@ -253,6 +253,14 @@ class APIService {
     });
   }
 
+  async searchPets(name: string) {
+    return DB.find(PetProfile, {
+      where: {
+        displayName: Like(`%${name}%`),
+      },
+    });
+  }
+
   async authLoginWithGoogle(token: string) {
     const email = await axios
       .get("https://www.googleapis.com/oauth2/v3/userinfo", {
