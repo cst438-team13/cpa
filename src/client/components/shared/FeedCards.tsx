@@ -1,4 +1,4 @@
-import { Button, Card, Flex } from "antd";
+import { Button, Card, Flex, Typography } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import type { Post } from "../../../server/models/Post";
@@ -36,21 +36,30 @@ export function FeedCards(props: Props) {
   return (
     <>
       {posts.map((post) => {
+        const isTextPost = post.pictureURL == null || post.pictureURL == "";
+
         return (
           <Card
             key={post.id}
-            title={post.caption}
+            title={`${post.author.displayName} posted:`}
+            style={{ width: 650 }}
             hoverable
             cover={
-              <img
-                src={post.pictureURL}
-                width={650}
-                style={{ borderRadius: 0, width: 650 }}
-              />
+              isTextPost ? (
+                <Typography.Paragraph style={{ margin: 24, marginBottom: 0 }}>
+                  {post.text}
+                </Typography.Paragraph>
+              ) : (
+                <img
+                  src={post.pictureURL!}
+                  width={650}
+                  style={{ borderRadius: 0 }}
+                />
+              )
             }
           >
             <Card.Meta
-              title={`By ${post.author.displayName}`}
+              title={isTextPost ? undefined : post.text}
               description={
                 <>
                   {"Tagged "}

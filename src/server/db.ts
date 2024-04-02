@@ -110,15 +110,20 @@ async function seedPost(
   users: UserProfile[],
   pets: PetProfile[]
 ) {
-  const randomImage = (
-    await axios.get("https://source.unsplash.com/random/?dog")
-  ).request.res.responseUrl;
+  const isTextPost = random.number(1, 3) === 1;
 
   const post = new Post();
   post.author = random.choice(users);
-  post.caption = caption;
+  post.text = isTextPost ? random.lorem.paragraph() : caption;
   post.visibility = random.choice(["public", "friends"]);
-  post.pictureURL = randomImage;
+
+  if (!isTextPost) {
+    const randomImage = (
+      await axios.get("https://source.unsplash.com/random/?dog")
+    ).request.res.responseUrl;
+
+    post.pictureURL = randomImage;
+  }
 
   // Tag between 1 and 3 pets (no duplicates)
   post.taggedPets = Array(random.number(1, 3))
