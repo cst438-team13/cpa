@@ -25,6 +25,7 @@ const dataSource = new DataSource({
   logging: false,
   acquireTimeout: 30 * 1000,
   connectTimeout: 30 * 1000,
+  poolSize: 8,
 });
 
 export const DB = dataSource.manager as DBManager;
