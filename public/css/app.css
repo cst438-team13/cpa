@@ -24,3 +24,13 @@
 .ant-card {
   box-shadow: rgba(0, 0, 0, 0.2) 0px 1px 2px 0px;
 }
+
+.ant-upload-wrapper {
+  display: flex !important;
+  flex-direction: row-reverse !important;
+  align-items: center !important;
+}
+
+.ant-upload-list-item {
+  margin-top: 0 !important;
+}
