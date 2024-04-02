@@ -51,7 +51,6 @@ export function RequestsCard() {
                 <Button type="primary" onClick={() => onClickAccept(item.id)}>
                   Accept
                 </Button>,
-                ,
                 <Button onClick={() => onClickDeny(item.id)}>Deny</Button>,
               ]}
             >
@@ -63,7 +62,6 @@ export function RequestsCard() {
                       {item.pet.displayName}
                     </Typography.Text>
                   }
-                  // description={item.breed}
                 />
               </ClickableContainer>
             </List.Item>

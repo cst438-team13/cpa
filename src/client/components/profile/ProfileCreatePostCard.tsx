@@ -40,15 +40,6 @@ export function ProfileCreatePostCard() {
   // Unfortunately the way <Mention> works means we can't do a lot about it.
   const mentionedPetIds = useRef<number[]>([]);
 
-  // Checking to see if owner has tagged any pets
-  const checkMentions = (value: string) => {
-    const mentions = Mentions.getMentions(value);
-
-    if (mentions.length < 1) {
-      throw new Error("At least 1 pet must be tagged!");
-    }
-  };
-
   const beforeUploadPicture = async (file: RcFile) => {
     const data = await getImageFromFile(file);
     setPictureData(data);
@@ -62,6 +53,11 @@ export function ProfileCreatePostCard() {
   };
 
   const onSubmit = async (values) => {
+    if (mentionedPetIds.current.length < 1) {
+      message.error("At least 1 pet must be tagged");
+      return;
+    }
+
     message.loading("Posting...");
 
     const success = await api.createPost(
@@ -108,17 +104,6 @@ export function ProfileCreatePostCard() {
             />
           </Form.Item>
 
-          <Form.Item label="Visibility">
-            <Radio.Group
-              name="visibility"
-              options={visOptions}
-              onChange={onChange}
-              value={radioValue}
-              optionType="button"
-              buttonStyle="solid"
-            />
-          </Form.Item>
-
           <Form.Item>
             <Upload
               maxCount={1}
@@ -128,6 +113,17 @@ export function ProfileCreatePostCard() {
             >
               <Button icon={<UploadOutlined />}>Choose picture</Button>
             </Upload>
+          </Form.Item>
+
+          <Form.Item label="Visibility">
+            <Radio.Group
+              name="visibility"
+              options={visOptions}
+              onChange={onChange}
+              value={radioValue}
+              optionType="button"
+              buttonStyle="solid"
+            />
           </Form.Item>
 
           <Button type="primary" htmlType="submit">
