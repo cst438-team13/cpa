@@ -67,6 +67,7 @@ async function seedUser(
   user.passwordHash = await bcrypt.hash(password, 10);
 
   user.profile = new UserProfile();
+  user.profile.username = username;
   user.profile.avatarUrl = useDefaultInfo
     ? "/ugc/1.png"
     : random.internet.avatar();

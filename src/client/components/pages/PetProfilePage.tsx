@@ -98,6 +98,10 @@ export function PetProfilePage() {
                 <InputNumber />
               </Editable>
             </div>
+            <div>
+              <Typography.Text strong>Id: </Typography.Text>
+              {profile.id}
+            </div>
           </Flex>
         </Card>
         <FeedCards petId={profileId} />

@@ -393,6 +393,7 @@ class APIService {
 
     // New profile
     newUser.profile = new UserProfile();
+    newUser.profile.username = username;
     newUser.profile.displayName = profileInfo.displayName;
     newUser.profile.location = profileInfo.location;
     newUser.profile.language = profileInfo.language;
@@ -430,6 +431,7 @@ class APIService {
 
     // New profile
     newUser.profile = new UserProfile();
+    newUser.profile.username = email;
     newUser.profile.displayName = profileInfo.displayName;
     newUser.profile.location = profileInfo.location;
     newUser.profile.language = profileInfo.language;
