@@ -23,6 +23,17 @@ export function RequestsCard() {
     }
   };
 
+  const onClickDeny = async (requestId: number) => {
+    message.loading("Processing");
+    const success = await api.denyPetTransferRequest(requestId);
+
+    if (success) {
+      message.destroy();
+      message.info("Request rejected");
+      await refetchQuery("getPetTransferRequests", user!.id);
+    }
+  };
+
   // Don't show card if no requests exist
   if (requestsData.length < 1) {
     return <></>;
@@ -37,7 +48,11 @@ export function RequestsCard() {
           renderItem={(item) => (
             <List.Item
               actions={[
-                <Button onClick={() => onClickAccept(item.id)}>Accept</Button>,
+                <Button type="primary" onClick={() => onClickAccept(item.id)}>
+                  Accept
+                </Button>,
+                ,
+                <Button onClick={() => onClickDeny(item.id)}>Deny</Button>,
               ]}
             >
               <ClickableContainer onClick={() => navigate(`/pet/${item.id}`)}>

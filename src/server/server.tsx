@@ -257,6 +257,15 @@ class APIService {
     return true;
   }
 
+  async denyPetTransferRequest(id: number) {
+    const request = await DB.find(PetTransferRequest, {
+      where: { id },
+    });
+
+    await DB.remove(request);
+    return true;
+  }
+
   async authLoginWithPassword(username: string, password: string) {
     // TODO: hash passwords for security
     const users = await DB.findBy(UserAccount, {
