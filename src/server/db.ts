@@ -83,6 +83,7 @@ async function seedPet(users: UserProfile[]) {
   const pet = new PetProfile();
   pet.avatarUrl = "/ugc/1.png";
   pet.owner = random.choice(users);
+  pet.description = random.lorem.paragraph();
   pet.age = random.number(1, 14);
   pet.displayName = random.choice([
     "Rosco",
