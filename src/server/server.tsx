@@ -164,6 +164,19 @@ class APIService {
     return true;
   }
 
+  async updatePetProfile(id: number, updatedInfo: Partial<PetProfile>) {
+    const petProfile = await this.getPetProfile(id);
+
+    for (const prop in updatedInfo) {
+      if (updatedInfo[prop] !== undefined) {
+        petProfile[prop] = updatedInfo[prop];
+      }
+    }
+
+    await DB.save(petProfile);
+    return true;
+  }
+
   async getUserProfile(id: number) {
     const user = await DB.findOne(UserAccount, {
       where: { id },
@@ -175,6 +188,7 @@ class APIService {
   async getPetProfile(id: number) {
     const pet = await DB.findOne(PetProfile, {
       where: { id },
+      relations: { owner: true },
     });
 
     return nullthrows(pet);
