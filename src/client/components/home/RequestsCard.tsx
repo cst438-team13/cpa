@@ -23,6 +23,11 @@ export function RequestsCard() {
     }
   };
 
+  // Don't show card if no requests exist
+  if (requestsData.length < 1) {
+    return <></>;
+  }
+
   return (
     <Card title="Requests" styles={{ body: { paddingTop: 0 } }}>
       {requestsData.length > 0 && (

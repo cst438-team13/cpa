@@ -186,14 +186,6 @@ class APIService {
     return nullthrows(user);
   }
 
-  async getUserProfileByAccount(id: number) {
-    const user = await DB.findOne(UserAccount, {
-      where: { id },
-    });
-
-    return nullthrows(user).profile;
-  }
-
   async getAllUserProfiles() {
     const user = await DB.find(UserProfile, {
       where: {},
@@ -457,16 +449,18 @@ class APIService {
     return true;
   }
 
-  // Returns true if we are currently logged in with the given user id.
+  // Returns true if we are currently logged in with the given user profile id.
   private async checkCurrentUserIs(userId: number) {
     const currentUserId = await this.getCurrentUserAccountId();
     if (currentUserId == null) {
       return false;
     }
 
-    const currentUserProfile =
-      await this.getUserProfileByAccount(currentUserId);
-    return currentUserProfile.id == userId;
+    const currentUserAccount = await DB.findOne(UserAccount, {
+      where: { id: currentUserId },
+    });
+
+    return currentUserAccount?.profile.id == userId;
   }
 
   private async Abc() {}
