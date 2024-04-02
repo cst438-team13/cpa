@@ -203,10 +203,6 @@ class APIService {
     return nullthrows(pet);
   }
 
-  async getCurrentUserAccountId() {
-    return this.session.userId ?? null;
-  }
-
   async getPetTransferRequests(userId: number) {
     return await DB.find(PetTransferRequest, {
       where: {
@@ -458,21 +454,35 @@ class APIService {
     return true;
   }
 
-  // Returns true if we are currently logged in with the given user profile id.
-  private async checkCurrentUserIs(userId: number) {
+  async getCurrentUserProfile() {
     const currentUserId = await this.getCurrentUserAccountId();
-    if (currentUserId == null) {
-      return false;
+    if (!currentUserId) {
+      return null;
     }
 
     const currentUserAccount = await DB.findOne(UserAccount, {
       where: { id: currentUserId },
+      loadRelationIds: {
+        relations: ["profile"],
+      },
     });
 
-    return currentUserAccount?.profile.id == userId;
+    const currentUserProfile = await DB.findOne(UserProfile, {
+      where: { id: currentUserAccount?.profile.id },
+    });
+
+    return nullthrows(currentUserProfile);
   }
 
-  private async Abc() {}
+  private async getCurrentUserAccountId() {
+    return this.session.userId ?? null;
+  }
+
+  // Returns true if we are currently logged in with the given user profile id.
+  private async checkCurrentUserIs(userId: number) {
+    const currentUserProfile = await this.getCurrentUserProfile();
+    return currentUserProfile?.id == userId;
+  }
 }
 
 console.log("Connecting to DB...");
