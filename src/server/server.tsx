@@ -251,6 +251,20 @@ class APIService {
     return true;
   }
 
+  async acceptPetTransferRequest(id: number) {
+    const request = await DB.find(PetTransferRequest, {
+      where: { id },
+      relations: { pet: true, reciever: true },
+    });
+
+    const pet = request[0].pet;
+    pet.owner = request[0].reciever;
+
+    await DB.save(pet);
+    await DB.remove(request);
+    return true;
+  }
+
   async authLoginWithPassword(username: string, password: string) {
     // TODO: hash passwords for security
     const users = await DB.findBy(UserAccount, {

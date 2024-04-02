@@ -77,11 +77,10 @@ export function ProfilePetsCard({ userId }: Props) {
         message.destroy();
         if (success) {
           message.info("Request sent!");
+          destroy();
         } else {
           message.error("Request already exists");
         }
-
-        destroy();
       };
 
       const { destroy } = Modal.info({

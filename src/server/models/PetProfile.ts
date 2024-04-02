@@ -33,7 +33,10 @@ export class PetProfile {
   @Column()
   age: number;
 
-  @ManyToOne(() => UserProfile, (user) => user.pets, { eager: true })
+  @ManyToOne(() => UserProfile, (user) => user.pets, {
+    eager: true,
+    cascade: ["update"],
+  })
   owner: UserProfile;
 
   @ManyToMany(() => Post, (post) => post.taggedPets)
