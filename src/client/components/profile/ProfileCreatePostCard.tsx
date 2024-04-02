@@ -1,14 +1,11 @@
 import { UploadOutlined } from "@ant-design/icons";
-import type { RadioChangeEvent } from "antd";
 import {
   Avatar,
   Button,
   Card,
+  Dropdown,
   Flex,
-  Form,
-  FormInstance,
   Mentions,
-  Radio,
   Upload,
   message,
 } from "antd";
@@ -23,13 +20,6 @@ import { useQuery } from "../../hooks/useQuery";
 export function ProfileCreatePostCard() {
   const navigate = useNavigate();
   const user = useCurrentUserProfile();
-
-  // Store radio checked value
-  const [radioValue, setRadioValue] = useState<"friends" | "public">("public");
-  const visOptions = [
-    { label: "Public", value: "public" },
-    { label: "Friends Only", value: "friends" },
-  ];
 
   // For handling attached picture
   const [pictureData, setPictureData] = useState<string | null>(null);
@@ -47,12 +37,12 @@ export function ProfileCreatePostCard() {
     return false;
   };
 
-  // changing radio checked value based off user input
-  const onChange = ({ target: { value } }: RadioChangeEvent) => {
-    setRadioValue(value);
-  };
-
   const onSubmit = async (values) => {
+    if (!values.text) {
+      message.error("Text must not be empty!");
+      return;
+    }
+
     if (mentionedPetIds.current.length < 1) {
       message.error("At least 1 pet must be tagged");
       return;
@@ -66,7 +56,7 @@ export function ProfileCreatePostCard() {
       mentionedPetIds.current.map(
         (id) => petList.filter((pet) => pet.id === id)[0]
       ),
-      radioValue,
+      values.visibility,
       user!.id
     );
 
@@ -80,56 +70,63 @@ export function ProfileCreatePostCard() {
     }
   };
 
-  const formRef = useRef<FormInstance>(null);
+  const textRef = useRef<string>("");
+
+  const menuItems = [
+    {
+      key: "public",
+      label: "Post as public",
+    },
+    {
+      key: "friends",
+      label: "Post as friends-only",
+    },
+  ];
+
+  const onClickMenuItem = (key: string) => {
+    onSubmit({
+      text: textRef.current,
+      visibility: key,
+    });
+  };
 
   return (
     <Card title="New Post" style={{ width: 650 }}>
-      <Flex vertical align="center" style={{ width: "100%" }}>
-        <Form onFinish={onSubmit} autoComplete="off" ref={formRef}>
-          <Form.Item label="Text" name="text" rules={[{ required: true }]}>
-            <Mentions
-              placeholder="Input @ to tag pets"
-              autoSize={{ minRows: 3 }}
-              onSelect={(o) => mentionedPetIds.current.push(Number(o.key!))}
-              options={petList.map((pet) => ({
-                key: String(pet.id),
-                value: pet.displayName,
-                label: (
-                  <>
-                    <Avatar src={pet.avatarUrl} />
-                    <span>{pet.displayName}</span>
-                  </>
-                ),
-              }))}
-            />
-          </Form.Item>
+      <Flex vertical align="flex-end" gap={12}>
+        <Mentions
+          placeholder="Input @ to tag pets"
+          autoSize={{ minRows: 3 }}
+          onSelect={(o) => mentionedPetIds.current.push(Number(o.key!))}
+          onChange={(o) => (textRef.current = o)}
+          options={petList.map((pet) => ({
+            key: String(pet.id),
+            value: pet.displayName,
+            label: (
+              <>
+                <Avatar src={pet.avatarUrl} />
+                <span>{pet.displayName}</span>
+              </>
+            ),
+          }))}
+        />
 
-          <Form.Item>
-            <Upload
-              maxCount={1}
-              beforeUpload={(e) => beforeUploadPicture(e)}
-              onRemove={() => setPictureData(null)}
-              customRequest={() => {}}
-            >
-              <Button icon={<UploadOutlined />}>Choose picture</Button>
-            </Upload>
-          </Form.Item>
+        <Flex gap={12}>
+          <Upload
+            maxCount={1}
+            beforeUpload={(e) => beforeUploadPicture(e)}
+            onRemove={() => setPictureData(null)}
+            customRequest={() => {}}
+          >
+            <Button icon={<UploadOutlined />}>Choose picture</Button>
+          </Upload>
 
-          <Form.Item label="Visibility">
-            <Radio.Group
-              name="visibility"
-              options={visOptions}
-              onChange={onChange}
-              value={radioValue}
-              optionType="button"
-              buttonStyle="solid"
-            />
-          </Form.Item>
-
-          <Button type="primary" htmlType="submit">
-            Post!
-          </Button>
-        </Form>
+          <Dropdown
+            trigger={["click"]}
+            menu={{ items: menuItems, onClick: (e) => onClickMenuItem(e.key) }}
+          >
+            <Button type="primary">Post</Button>
+          </Dropdown>
+        </Flex>
       </Flex>
     </Card>
   );
