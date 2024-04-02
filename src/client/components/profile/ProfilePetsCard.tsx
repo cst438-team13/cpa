@@ -155,15 +155,22 @@ function TransferModalContent({
 }) {
   const [isValueChosen, setIsValueChosen] = useState<boolean>(true);
 
+  const filterOption = (
+    input: string,
+    option?: { label: string; value: number }
+  ) => (option?.label ?? "").toLowerCase().includes(input.toLowerCase());
+
   return (
     <Form style={{ marginTop: 12 }} onFinish={onFinish}>
       <Form.Item label="Transfer to" name="recieverId">
         <Select
+          showSearch
           onChange={(o) => setIsValueChosen(o != null && o != "")}
+          filterOption={filterOption}
           options={usersData
             .filter((o) => o.id !== currentUser?.id)
             .map((o) => ({
-              label: o.displayName,
+              label: `@${o.username} (${o.displayName})`,
               value: o.id,
             }))}
         />
