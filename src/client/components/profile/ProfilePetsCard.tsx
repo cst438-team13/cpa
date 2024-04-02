@@ -1,10 +1,22 @@
 import { DownOutlined } from "@ant-design/icons";
 
-import { Button, Card, Dropdown, List, Typography, message } from "antd";
+import {
+  Button,
+  Card,
+  Dropdown,
+  Form,
+  List,
+  Modal,
+  Select,
+  Typography,
+  message,
+} from "antd";
 import Avatar from "antd/es/avatar/avatar";
-import React from "react";
+import nullthrows from "nullthrows";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { UserProfile } from "../../../server/models/UserProfile";
 import { api } from "../../api";
 import { useCreatePetModal } from "../../hooks/useCreatePetModal";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
@@ -23,6 +35,8 @@ export function ProfilePetsCard({ userId }: Props) {
 
   const petsData = useQuery("getPetsByUserId", userId);
   const refetchQuery = useRefetchQuery();
+
+  const usersData = useQuery("getAllUserProfiles");
 
   const onClickCreatePet = async () => {
     const petInfo = await openCreatePetModal();
@@ -51,6 +65,41 @@ export function ProfilePetsCard({ userId }: Props) {
     },
   ];
 
+  const onClickMenuItem = (petId: number, key: string) => {
+    if (key === "transfer") {
+      const onFinish = async (values: any) => {
+        message.loading("Sending request");
+        const success = await api.createPetTransferRequest(
+          petId,
+          values.recieverId as number
+        );
+
+        message.destroy();
+        if (success) {
+          message.info("Request sent!");
+        } else {
+          message.error("Request already exists");
+        }
+
+        destroy();
+      };
+
+      const { destroy } = Modal.info({
+        title: "New transfer request",
+        centered: true,
+        closable: true,
+        footer: null,
+        content: (
+          <TransferModalContent
+            onFinish={onFinish}
+            currentUser={nullthrows(currentUser)}
+            usersData={usersData}
+          />
+        ),
+      });
+    }
+  };
+
   return (
     <Card
       title="Pets"
@@ -65,7 +114,13 @@ export function ProfilePetsCard({ userId }: Props) {
             <List.Item
               actions={[
                 isPageOwner && (
-                  <Dropdown menu={{ items: dropdownItems }} trigger={["click"]}>
+                  <Dropdown
+                    menu={{
+                      items: dropdownItems,
+                      onClick: (e) => onClickMenuItem(item.id, e.key),
+                    }}
+                    trigger={["click"]}
+                  >
                     <Button type="link">
                       More <DownOutlined />
                     </Button>
@@ -87,6 +142,37 @@ export function ProfilePetsCard({ userId }: Props) {
         />
       )}
     </Card>
+  );
+}
+
+function TransferModalContent({
+  currentUser,
+  usersData,
+  onFinish,
+}: {
+  currentUser: UserProfile;
+  usersData: UserProfile[];
+  onFinish: (values: any) => void;
+}) {
+  const [isValueChosen, setIsValueChosen] = useState<boolean>(true);
+
+  return (
+    <Form style={{ marginTop: 12 }} onFinish={onFinish}>
+      <Form.Item label="Transfer to" name="recieverId">
+        <Select
+          onChange={(o) => setIsValueChosen(o != null && o != "")}
+          options={usersData
+            .filter((o) => o.id !== currentUser?.id)
+            .map((o) => ({
+              label: o.displayName,
+              value: o.id,
+            }))}
+        />
+      </Form.Item>
+      <Button disabled={!isValueChosen} type="primary" htmlType="submit">
+        Send
+      </Button>
+    </Form>
   );
 }
 
