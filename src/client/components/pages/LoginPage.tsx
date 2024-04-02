@@ -23,8 +23,8 @@ export function LoginPage() {
     if (success) {
       message.info("Logged in!");
 
-      // We just changed the result of getCurrentUserAccountId(), so refetch it.
-      await refetchQuery("getCurrentUserAccountId");
+      // We just changed the result of getCurrentUserProfile(), so refetch it.
+      await refetchQuery("getCurrentUserProfile");
       sessionStorage.clear();
 
       // Go to home page
