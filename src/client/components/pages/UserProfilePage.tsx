@@ -57,6 +57,10 @@ export function UserProfilePage() {
               </Editable>
             </Typography.Title>
             <div>
+              <Typography.Text strong>Username: </Typography.Text>
+              {profile.username}
+            </div>
+            <div>
               <Typography.Text strong>Location: </Typography.Text>
               <Editable
                 name="location"

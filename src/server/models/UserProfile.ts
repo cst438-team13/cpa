@@ -9,6 +9,9 @@ export class UserProfile {
   id: number;
 
   @Column()
+  username: string;
+
+  @Column()
   displayName: string;
 
   @Column()
