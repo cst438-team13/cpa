@@ -1,5 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { PetProfile } from "./PetProfile";
+import { PetTransferRequest } from "./PetTransferRequest";
 import { Post } from "./Post";
 
 @Entity()
@@ -24,4 +25,7 @@ export class UserProfile {
 
   @OneToMany(() => Post, (post) => post.author, { cascade: true })
   posts: Post[];
+
+  @OneToMany(() => PetTransferRequest, (req) => req.reciever, { cascade: true })
+  petTransferRequests: PetTransferRequest[];
 }

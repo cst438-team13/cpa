@@ -29,8 +29,8 @@ export function CreateAccountPage() {
     );
 
     if (success) {
-      // We just changed the result of getCurrentUserId(), so refetch it.
-      await refetchQuery("getCurrentUserId");
+      // We just changed the result of getCurrentUserAccountId(), so refetch it.
+      await refetchQuery("getCurrentUserAccountId");
       sessionStorage.clear();
 
       message.destroy();

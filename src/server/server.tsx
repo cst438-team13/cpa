@@ -10,6 +10,7 @@ import { rpcHandler } from "typed-rpc/express";
 import { Like } from "typeorm";
 import { DB } from "./db";
 import { PetProfile } from "./models/PetProfile";
+import { PetTransferRequest } from "./models/PetTransferRequest";
 import { Post } from "./models/Post";
 import { UserAccount } from "./models/UserAccount";
 import { UserProfile } from "./models/UserProfile";
@@ -178,11 +179,19 @@ class APIService {
   }
 
   async getUserProfile(id: number) {
-    const user = await DB.findOne(UserAccount, {
+    const user = await DB.findOne(UserProfile, {
       where: { id },
     });
 
-    return nullthrows(user).profile;
+    return nullthrows(user);
+  }
+
+  async getAllUserProfiles() {
+    const user = await DB.find(UserProfile, {
+      where: {},
+    });
+
+    return nullthrows(user);
   }
 
   async getPetProfile(id: number) {
@@ -194,8 +203,58 @@ class APIService {
     return nullthrows(pet);
   }
 
-  async getCurrentUserId() {
+  async getCurrentUserAccountId() {
     return this.session.userId ?? null;
+  }
+
+  async getPetTransferRequests(userId: number) {
+    return await DB.find(PetTransferRequest, {
+      where: {
+        reciever: {
+          id: userId,
+        },
+      },
+      relations: {
+        pet: true,
+      },
+    });
+  }
+
+  async createPetTransferRequest(petId: number, recieverId: number) {
+    const pet = await this.getPetProfile(petId);
+    const reciever = await this.getUserProfile(recieverId);
+
+    const isDuplicateRequest = await DB.exists(PetTransferRequest, {
+      where: {
+        pet,
+        reciever,
+      },
+    });
+
+    if (isDuplicateRequest) {
+      return false;
+    }
+
+    const request = new PetTransferRequest();
+    request.pet = await this.getPetProfile(petId);
+    request.reciever = await this.getUserProfile(recieverId);
+
+    await DB.save(request);
+    return true;
+  }
+
+  async acceptPetTransferRequest(id: number) {
+    const request = await DB.find(PetTransferRequest, {
+      where: { id },
+      relations: { pet: true, reciever: true },
+    });
+
+    const pet = request[0].pet;
+    pet.owner = request[0].reciever;
+
+    await DB.save(pet);
+    await DB.remove(request);
+    return true;
   }
 
   async authLoginWithPassword(username: string, password: string) {
@@ -390,15 +449,18 @@ class APIService {
     return true;
   }
 
-  // Returns true if we are currently logged in with the given user id.
+  // Returns true if we are currently logged in with the given user profile id.
   private async checkCurrentUserIs(userId: number) {
-    const currentUserId = await this.getCurrentUserId();
+    const currentUserId = await this.getCurrentUserAccountId();
     if (currentUserId == null) {
       return false;
     }
 
-    const currentUserProfile = await this.getUserProfile(currentUserId);
-    return currentUserProfile.id == userId;
+    const currentUserAccount = await DB.findOne(UserAccount, {
+      where: { id: currentUserId },
+    });
+
+    return currentUserAccount?.profile.id == userId;
   }
 
   private async Abc() {}

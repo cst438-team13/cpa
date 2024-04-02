@@ -2,6 +2,7 @@ import axios from "axios";
 import bcrypt from "bcrypt";
 import { DataSource, type EntityManager } from "typeorm";
 import { PetProfile } from "./models/PetProfile";
+import { PetTransferRequest } from "./models/PetTransferRequest";
 import { Post } from "./models/Post";
 import { UserAccount } from "./models/UserAccount";
 import { UserProfile } from "./models/UserProfile";
@@ -19,7 +20,7 @@ const dataSource = new DataSource({
   username: "usuzxuui6mwipij2",
   password: "xtt1ask6fapd7tqg",
   database: "iv7yk8xt5q8bsq9e",
-  entities: [UserAccount, UserProfile, PetProfile, Post],
+  entities: [UserAccount, UserProfile, PetProfile, Post, PetTransferRequest],
   synchronize: true,
   logging: false,
   acquireTimeout: 30 * 1000,

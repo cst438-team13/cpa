@@ -3,8 +3,10 @@ import {
   Entity,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import { PetTransferRequest } from "./PetTransferRequest";
 import { Post } from "./Post";
 import { UserProfile } from "./UserProfile";
 
@@ -31,9 +33,15 @@ export class PetProfile {
   @Column()
   age: number;
 
-  @ManyToOne(() => UserProfile, (user) => user.pets, { eager: true })
+  @ManyToOne(() => UserProfile, (user) => user.pets, {
+    eager: true,
+    cascade: ["update"],
+  })
   owner: UserProfile;
 
   @ManyToMany(() => Post, (post) => post.taggedPets)
   taggedPosts: Post[];
+
+  @OneToMany(() => PetTransferRequest, (req) => req.pet, { cascade: true })
+  transferRequests: PetTransferRequest[];
 }
