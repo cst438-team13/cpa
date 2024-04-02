@@ -7,7 +7,6 @@ import {
   Flex,
   Form,
   FormInstance,
-  Input,
   Mentions,
   Radio,
   Upload,
@@ -63,16 +62,11 @@ export function ProfileCreatePostCard() {
   };
 
   const onSubmit = async (values) => {
-    if (pictureData == null) {
-      message.error("Must upload a picture");
-      return;
-    }
-
     message.loading("Posting...");
 
     const success = await api.createPost(
       pictureData,
-      values.caption,
+      values.text,
       mentionedPetIds.current.map(
         (id) => petList.filter((pet) => pet.id === id)[0]
       ),
@@ -96,31 +90,10 @@ export function ProfileCreatePostCard() {
     <Card title="New Post" style={{ width: 650 }}>
       <Flex vertical align="center" style={{ width: "100%" }}>
         <Form onFinish={onSubmit} autoComplete="off" ref={formRef}>
-          <Form.Item>
-            <Upload
-              maxCount={1}
-              beforeUpload={(e) => beforeUploadPicture(e)}
-              onRemove={() => setPictureData(null)}
-              customRequest={() => {}}
-            >
-              <Button icon={<UploadOutlined />}>Choose picture</Button>
-            </Upload>
-          </Form.Item>
-
-          <Form.Item
-            label="Caption"
-            name="caption"
-            rules={[{ required: true }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="Pet(s) in Post"
-            rules={[{ validator: (_, val) => checkMentions(val) }]}
-          >
+          <Form.Item label="Text" name="text" rules={[{ required: true }]}>
             <Mentions
               placeholder="Input @ to tag pets"
+              autoSize={{ minRows: 3 }}
               onSelect={(o) => mentionedPetIds.current.push(Number(o.key!))}
               options={petList.map((pet) => ({
                 key: String(pet.id),
@@ -132,11 +105,10 @@ export function ProfileCreatePostCard() {
                   </>
                 ),
               }))}
-              allowClear
             />
           </Form.Item>
 
-          <Form.Item label="Who can see post">
+          <Form.Item label="Visibility">
             <Radio.Group
               name="visibility"
               options={visOptions}
@@ -145,6 +117,17 @@ export function ProfileCreatePostCard() {
               optionType="button"
               buttonStyle="solid"
             />
+          </Form.Item>
+
+          <Form.Item>
+            <Upload
+              maxCount={1}
+              beforeUpload={(e) => beforeUploadPicture(e)}
+              onRemove={() => setPictureData(null)}
+              customRequest={() => {}}
+            >
+              <Button icon={<UploadOutlined />}>Choose picture</Button>
+            </Upload>
           </Form.Item>
 
           <Button type="primary" htmlType="submit">

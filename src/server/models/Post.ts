@@ -19,7 +19,7 @@ export class Post {
   creationDate: Date;
 
   @Column()
-  caption: string;
+  text: string;
 
   @Column()
   pictureURL: string;
