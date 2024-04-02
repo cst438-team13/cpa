@@ -94,8 +94,8 @@ export function ProfileCreatePostCard() {
     <Card title="New Post" style={{ width: 650 }}>
       <Flex vertical align="flex-end" gap={12}>
         <Mentions
-          placeholder="Input @ to tag pets"
-          autoSize={{ minRows: 3 }}
+          placeholder={pictureData == null ? "Body text" : "Title text"}
+          autoSize={pictureData == null ? { minRows: 3 } : undefined}
           onSelect={(o) => mentionedPetIds.current.push(Number(o.key!))}
           onChange={(o) => (textRef.current = o)}
           options={petList.map((pet) => ({
