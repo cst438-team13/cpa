@@ -16,6 +16,7 @@ import { api } from "../../api";
 import { getImageFromFile } from "../../helpers/imageHelpers";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 import { useQuery } from "../../hooks/useQuery";
+import { useTagPetsToPostsModal } from "../../hooks/useTagPetsToPostsModal";
 
 export function ProfileCreatePostCard() {
   const navigate = useNavigate();
@@ -29,6 +30,23 @@ export function ProfileCreatePostCard() {
   // Obvious bug here is this doesn't get reset if we remove mentioned pets.
   // Unfortunately the way <Mention> works means we can't do a lot about it.
   const mentionedPetIds = useRef<number[]>([]);
+
+  //open modal to tag pets
+  const { openTagPetModal } = useTagPetsToPostsModal();
+  const onClickTagPets = async () => {
+    const petsTagged = await openTagPetModal();
+
+    // message.loading("Creating pet..");
+    // const success = await api.createPetProfile(userId, petInfo);
+
+    // message.destroy();
+    // if (success) {
+    //   message.info("Pet added!");
+    //   await refetchQuery("getPetsByUserId");
+    // } else {
+    //   message.error("Something went wrong");
+    // }
+  };
 
   const beforeUploadPicture = async (file: RcFile) => {
     const data = await getImageFromFile(file);
@@ -119,6 +137,10 @@ export function ProfileCreatePostCard() {
           >
             <Button icon={<UploadOutlined />}>Choose picture</Button>
           </Upload>
+          <br></br>
+          <br></br>
+
+          <Button onClick={onClickTagPets}>Tag Pets in Post</Button>
 
           <Dropdown
             trigger={["click"]}
