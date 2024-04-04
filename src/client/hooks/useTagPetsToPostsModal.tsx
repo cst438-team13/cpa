@@ -1,21 +1,22 @@
-import { Button, Flex, Modal } from "antd";
+import { Avatar, Button, Flex, List, Modal, Typography } from "antd";
 import React from "react";
+import { PetProfile } from "../../server/models/PetProfile";
 
-type PetInfo = {
-  displayName: string;
-  description: string;
-  breed: string;
-  color: string;
-  age: number;
-  avatarData: string;
+type PetsTagged = {
+  tagged: Array<Number>;
 };
 
-export function useTagPetsToPostsModal() {
+const userPets = {
+  petsOwned: new Array<PetProfile>(),
+};
+
+export function useTagPetsToPostsModal(petList: Array<PetProfile>) {
+  userPets.petsOwned = petList;
   const openTagPetModal = () =>
-    new Promise<PetInfo>((resolve) => {
+    new Promise<PetsTagged>((resolve) => {
       const onFinish = (values: unknown) => {
         destroy();
-        resolve(values as PetInfo);
+        resolve(values as PetsTagged);
       };
 
       const { destroy } = Modal.info({
@@ -42,6 +43,22 @@ function TagPets({ onFinish }: ContentProps) {
 
   return (
     <Flex vertical>
+      {userPets.petsOwned.length > 0 && (
+        <List
+          dataSource={userPets.petsOwned}
+          renderItem={(item) => (
+            <List.Item>
+              <List.Item.Meta
+                avatar={<Avatar src={item.avatarUrl} />}
+                title={
+                  <Typography.Text strong>{item.displayName}</Typography.Text>
+                }
+                description={item.breed}
+              />
+            </List.Item>
+          )}
+        />
+      )}
       <Button type="primary" htmlType="submit">
         Done
       </Button>

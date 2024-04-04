@@ -32,7 +32,7 @@ export function ProfileCreatePostCard() {
   const mentionedPetIds = useRef<number[]>([]);
 
   //open modal to tag pets
-  const { openTagPetModal } = useTagPetsToPostsModal();
+  const { openTagPetModal } = useTagPetsToPostsModal(petList);
   const onClickTagPets = async () => {
     const petsTagged = await openTagPetModal();
 
