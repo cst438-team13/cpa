@@ -128,6 +128,13 @@ class APIService {
     return true;
   }
 
+  async removePet(petId: number) {
+    const pet = await DB.findOneBy(PetProfile, { id: petId });
+    await DB.remove(pet);
+
+    return true;
+  }
+
   async getPetsByUserId(userId: number) {
     const userProfile = await this.getUserProfile(userId);
     const pets = await DB.find(PetProfile, { where: { owner: userProfile } });

@@ -96,6 +96,19 @@ export function ProfilePetsCard({ userId }: Props) {
           />
         ),
       });
+    } else if (key === "remove") {
+      Modal.confirm({
+        title: "Are you sure?",
+        content: "Your pet will be permanantly deleted.",
+        onOk: async () => {
+          message.loading("Removing...");
+          await api.removePet(petId);
+
+          message.destroy();
+          message.info("Pet removed!");
+          await refetchQuery("getPetsByUserId");
+        },
+      });
     }
   };
 
