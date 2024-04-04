@@ -46,7 +46,13 @@ export function FeedCards(props: Props) {
             hoverable
             cover={
               isTextPost ? (
-                <Typography.Paragraph style={{ margin: 24, marginBottom: 0 }}>
+                <Typography.Paragraph
+                  style={{
+                    margin: 24,
+                    marginBottom: 0,
+                    width: 630,
+                  }}
+                >
                   {post.text}
                 </Typography.Paragraph>
               ) : (
