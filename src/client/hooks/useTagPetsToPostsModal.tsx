@@ -1,13 +1,16 @@
-import { Avatar, Button, Flex, List, Modal, Typography } from "antd";
+import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
+import { Avatar, Button, Flex, List, Modal, Typography, message } from "antd";
 import React from "react";
 import { PetProfile } from "../../server/models/PetProfile";
 
+// what will be sent back to create post card
 type PetsTagged = {
   tagged: Array<Number>;
 };
 
 const userPets = {
   petsOwned: new Array<PetProfile>(),
+  tagged: new Array<Number>(),
 };
 
 export function useTagPetsToPostsModal(petList: Array<PetProfile>) {
@@ -37,8 +40,36 @@ type ContentProps = {
 };
 
 function TagPets({ onFinish }: ContentProps) {
-  const onFormFinish = (values: object) => {
-    onFinish({ ...values });
+  const addPet = (pet: PetProfile) => {
+    // check if pet is already tagged
+    if (userPets.tagged.find((tempPet) => tempPet === pet.id) != undefined) {
+      message.error(pet.displayName + " is already tagged.");
+      return;
+    }
+
+    // not tagged so add pet
+    userPets.tagged.push(pet.id);
+    message.info(pet.displayName + " tagged!");
+  };
+
+  const removePet = (pet: PetProfile) => {
+    // check if pet is not tagged
+    if (userPets.tagged.find((tempPet) => tempPet === pet.id) == undefined) {
+      message.error(pet.displayName + " is not tagged.");
+      return;
+    }
+
+    // tagged so remove pet
+    // *** Could be a better way to remove element ***
+    userPets.tagged = userPets.tagged.filter(function (id) {
+      return id !== pet.id;
+    });
+    message.info(pet.displayName + " Removed!");
+  };
+
+  // send tagged pet ids array to
+  const submitPets = () => {
+    onFinish(userPets);
   };
 
   return (
@@ -55,11 +86,20 @@ function TagPets({ onFinish }: ContentProps) {
                 }
                 description={item.breed}
               />
+              <Button
+                icon={<PlusOutlined></PlusOutlined>}
+                onClick={() => addPet(item)}
+              ></Button>
+              <Button
+                icon={<MinusOutlined></MinusOutlined>}
+                danger
+                onClick={() => removePet(item)}
+              ></Button>
             </List.Item>
           )}
         />
       )}
-      <Button type="primary" htmlType="submit">
+      <Button type="primary" onClick={() => submitPets()}>
         Done
       </Button>
     </Flex>

@@ -34,7 +34,9 @@ export function ProfileCreatePostCard() {
   //open modal to tag pets
   const { openTagPetModal } = useTagPetsToPostsModal(petList);
   const onClickTagPets = async () => {
+    // array of pet ids tagged in modal
     const petsTagged = await openTagPetModal();
+    console.log(petsTagged.tagged);
 
     // message.loading("Creating pet..");
     // const success = await api.createPetProfile(userId, petInfo);
