@@ -12,14 +12,17 @@ import {
 import { RcFile } from "antd/es/upload";
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router";
+import { PetProfile } from "../../../server/models/PetProfile";
 import { api } from "../../api";
 import { getImageFromFile } from "../../helpers/imageHelpers";
 import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 import { useQuery } from "../../hooks/useQuery";
+import { useTagPetsToPostsModal } from "../../hooks/useTagPetsToPostsModal";
 
 export function ProfileCreatePostCard() {
   const navigate = useNavigate();
   const user = useCurrentUserProfile();
+  const [petsTagged, setPetsTagged] = useState<Array<PetProfile> | null>(null);
 
   // For handling attached picture
   const [pictureData, setPictureData] = useState<string | null>(null);
@@ -29,6 +32,25 @@ export function ProfileCreatePostCard() {
   // Obvious bug here is this doesn't get reset if we remove mentioned pets.
   // Unfortunately the way <Mention> works means we can't do a lot about it.
   const mentionedPetIds = useRef<number[]>([]);
+
+  //open modal to tag pets
+  const { openTagPetModal } = useTagPetsToPostsModal(petList);
+  const onClickTagPets = async () => {
+    // array of pet ids tagged in modal
+    const petsFromModal = await openTagPetModal();
+    console.log(petsFromModal.tagged);
+    setPetsTagged(petsFromModal.tagged);
+    // message.loading("Creating pet..");
+    // const success = await api.createPetProfile(userId, petInfo);
+
+    // message.destroy();
+    // if (success) {
+    //   message.info("Pet added!");
+    //   await refetchQuery("getPetsByUserId");
+    // } else {
+    //   message.error("Something went wrong");
+    // }
+  };
 
   const beforeUploadPicture = async (file: RcFile) => {
     const data = await getImageFromFile(file);
@@ -43,7 +65,12 @@ export function ProfileCreatePostCard() {
       return;
     }
 
-    if (mentionedPetIds.current.length < 1) {
+    // if (mentionedPetIds.current.length < 1) {
+    //   message.error("At least 1 pet must be tagged");
+    //   return;
+    // }
+
+    if (petsTagged == null || petsTagged.length == 0) {
       message.error("At least 1 pet must be tagged");
       return;
     }
@@ -53,9 +80,10 @@ export function ProfileCreatePostCard() {
     const success = await api.createPost(
       pictureData,
       values.text,
-      mentionedPetIds.current.map(
-        (id) => petList.filter((pet) => pet.id === id)[0]
-      ),
+      petsTagged,
+      // mentionedPetIds.current.map(
+      //   (id) => petList.filter((pet) => pet.id === id)[0]
+      // ),
       values.visibility,
       user!.id
     );
@@ -93,6 +121,7 @@ export function ProfileCreatePostCard() {
   return (
     <Card title="New Post" style={{ width: 650 }}>
       <Flex vertical align="flex-end" gap={12}>
+        {/* TODO: Change from mention to something else */}
         <Mentions
           placeholder={pictureData == null ? "Body text" : "Title text"}
           autoSize={pictureData == null ? { minRows: 3 } : undefined}
@@ -119,6 +148,10 @@ export function ProfileCreatePostCard() {
           >
             <Button icon={<UploadOutlined />}>Choose picture</Button>
           </Upload>
+          <br></br>
+          <br></br>
+
+          <Button onClick={onClickTagPets}>Tag Pets in Post</Button>
 
           <Dropdown
             trigger={["click"]}
