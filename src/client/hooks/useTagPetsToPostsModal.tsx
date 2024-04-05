@@ -5,12 +5,12 @@ import { PetProfile } from "../../server/models/PetProfile";
 
 // what will be sent back to create post card
 type PetsTagged = {
-  tagged: Array<Number>;
+  tagged: Array<PetProfile>;
 };
 
 const userPets = {
   petsOwned: new Array<PetProfile>(),
-  tagged: new Array<Number>(),
+  tagged: new Array<PetProfile>(),
 };
 
 export function useTagPetsToPostsModal(petList: Array<PetProfile>) {
@@ -42,27 +42,27 @@ type ContentProps = {
 function TagPets({ onFinish }: ContentProps) {
   const addPet = (pet: PetProfile) => {
     // check if pet is already tagged
-    if (userPets.tagged.find((tempPet) => tempPet === pet.id) != undefined) {
+    if (userPets.tagged.find((tempPet) => tempPet.id === pet.id) != undefined) {
       message.error(pet.displayName + " is already tagged.");
       return;
     }
 
     // not tagged so add pet
-    userPets.tagged.push(pet.id);
+    userPets.tagged.push(pet);
     message.info(pet.displayName + " tagged!");
   };
 
   const removePet = (pet: PetProfile) => {
     // check if pet is not tagged
-    if (userPets.tagged.find((tempPet) => tempPet === pet.id) == undefined) {
+    if (userPets.tagged.find((tempPet) => tempPet.id === pet.id) == undefined) {
       message.error(pet.displayName + " is not tagged.");
       return;
     }
 
     // tagged so remove pet
     // *** Could be a better way to remove element ***
-    userPets.tagged = userPets.tagged.filter(function (id) {
-      return id !== pet.id;
+    userPets.tagged = userPets.tagged.filter(function (petToDelete) {
+      return petToDelete.id !== pet.id;
     });
     message.info(pet.displayName + " Removed!");
   };
