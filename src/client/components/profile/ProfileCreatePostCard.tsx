@@ -1,14 +1,6 @@
 import { UploadOutlined } from "@ant-design/icons";
-import {
-  Avatar,
-  Button,
-  Card,
-  Dropdown,
-  Flex,
-  Mentions,
-  Upload,
-  message,
-} from "antd";
+import { Button, Card, Dropdown, Flex, Upload, message } from "antd";
+import TextArea from "antd/es/input/TextArea";
 import { RcFile } from "antd/es/upload";
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router";
@@ -20,6 +12,7 @@ import { useQuery } from "../../hooks/useQuery";
 import { useTagPetsToPostsModal } from "../../hooks/useTagPetsToPostsModal";
 
 export function ProfileCreatePostCard() {
+  const STRING_MAX = 255;
   const navigate = useNavigate();
   const user = useCurrentUserProfile();
   const [petsTagged, setPetsTagged] = useState<Array<PetProfile> | null>(null);
@@ -27,29 +20,13 @@ export function ProfileCreatePostCard() {
   // For handling attached picture
   const [pictureData, setPictureData] = useState<string | null>(null);
 
-  const petList = useQuery("getPetsByUserId", user!.id);
-
-  // Obvious bug here is this doesn't get reset if we remove mentioned pets.
-  // Unfortunately the way <Mention> works means we can't do a lot about it.
-  const mentionedPetIds = useRef<number[]>([]);
-
   //open modal to tag pets
+  const petList = useQuery("getPetsByUserId", user!.id);
   const { openTagPetModal } = useTagPetsToPostsModal(petList);
   const onClickTagPets = async () => {
     // array of pet ids tagged in modal
     const petsFromModal = await openTagPetModal();
-    console.log(petsFromModal.tagged);
     setPetsTagged(petsFromModal.tagged);
-    // message.loading("Creating pet..");
-    // const success = await api.createPetProfile(userId, petInfo);
-
-    // message.destroy();
-    // if (success) {
-    //   message.info("Pet added!");
-    //   await refetchQuery("getPetsByUserId");
-    // } else {
-    //   message.error("Something went wrong");
-    // }
   };
 
   const beforeUploadPicture = async (file: RcFile) => {
@@ -65,10 +42,10 @@ export function ProfileCreatePostCard() {
       return;
     }
 
-    // if (mentionedPetIds.current.length < 1) {
-    //   message.error("At least 1 pet must be tagged");
-    //   return;
-    // }
+    if (values.text.length > 255) {
+      message.error("Text must be less than or equal to 255 characters!");
+      return;
+    }
 
     if (petsTagged == null || petsTagged.length == 0) {
       message.error("At least 1 pet must be tagged");
@@ -81,9 +58,6 @@ export function ProfileCreatePostCard() {
       pictureData,
       values.text,
       petsTagged,
-      // mentionedPetIds.current.map(
-      //   (id) => petList.filter((pet) => pet.id === id)[0]
-      // ),
       values.visibility,
       user!.id
     );
@@ -121,23 +95,14 @@ export function ProfileCreatePostCard() {
   return (
     <Card title="New Post" style={{ width: 650 }}>
       <Flex vertical align="flex-end" gap={12}>
-        {/* TODO: Change from mention to something else */}
-        <Mentions
+        <TextArea
+          name="caption"
+          count={{ show: true, max: STRING_MAX }}
           placeholder={pictureData == null ? "Body text" : "Title text"}
           autoSize={pictureData == null ? { minRows: 3 } : undefined}
-          onSelect={(o) => mentionedPetIds.current.push(Number(o.key!))}
-          onChange={(o) => (textRef.current = o)}
-          options={petList.map((pet) => ({
-            key: String(pet.id),
-            value: pet.displayName,
-            label: (
-              <>
-                <Avatar src={pet.avatarUrl} />
-                <span>{pet.displayName}</span>
-              </>
-            ),
-          }))}
+          onChange={(e) => (textRef.current = e.target.value)}
         />
+        <br></br>
 
         <Flex gap={12}>
           <Upload
