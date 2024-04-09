@@ -50,7 +50,7 @@ function TagPets({ onFinish, ownedPets }: ContentProps) {
   };
 
   return (
-    <Flex vertical>
+    <Flex vertical gap={12}>
       {ownedPets.length > 0 && (
         <List
           dataSource={ownedPets}
