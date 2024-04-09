@@ -1,34 +1,23 @@
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { Avatar, Button, Flex, List, Modal, Typography, message } from "antd";
-import React from "react";
+import React, { useState } from "react";
 import { PetProfile } from "../../server/models/PetProfile";
 
-// what will be sent back to create post card
-type PetsTagged = {
-  tagged: Array<PetProfile>;
-};
-
-const userPets = {
-  petsOwned: new Array<PetProfile>(),
-  tagged: new Array<PetProfile>(),
-};
-
-export function useTagPetsToPostsModal(petList: Array<PetProfile>) {
-  userPets.petsOwned = petList;
+export function useTagPetsToPostsModal(petList: PetProfile[]) {
   const openTagPetModal = () =>
-    new Promise<PetsTagged>((resolve) => {
+    new Promise<PetProfile[]>((resolve) => {
       const onFinish = (values: unknown) => {
         destroy();
-        resolve(values as PetsTagged);
+        resolve(values as PetProfile[]);
       };
 
       const { destroy } = Modal.info({
-        title: "Tag a Pet!",
+        title: "Tag pets",
         centered: true,
         closable: true,
         maskClosable: true,
         footer: null,
-        content: <TagPets onFinish={onFinish} />,
+        content: <TagPets onFinish={onFinish} ownedPets={petList} />,
       });
     });
 
@@ -37,46 +26,34 @@ export function useTagPetsToPostsModal(petList: Array<PetProfile>) {
 
 type ContentProps = {
   onFinish: (values: unknown) => void;
+  ownedPets: PetProfile[];
 };
 
-function TagPets({ onFinish }: ContentProps) {
-  const addPet = (pet: PetProfile) => {
-    // check if pet is already tagged
-    if (userPets.tagged.find((tempPet) => tempPet.id === pet.id) != undefined) {
-      message.error(pet.displayName + " is already tagged.");
-      return;
-    }
+function TagPets({ onFinish, ownedPets }: ContentProps) {
+  const [taggedPets, setTaggedPets] = useState([] as PetProfile[]);
 
+  const addPet = (pet: PetProfile) => {
     // not tagged so add pet
-    userPets.tagged.push(pet);
-    message.info(pet.displayName + " tagged!");
+    setTaggedPets([...taggedPets, pet]);
+    message.info(pet.displayName + " tagged");
   };
 
   const removePet = (pet: PetProfile) => {
-    // check if pet is not tagged
-    if (userPets.tagged.find((tempPet) => tempPet.id === pet.id) == undefined) {
-      message.error(pet.displayName + " is not tagged.");
-      return;
-    }
-
     // tagged so remove pet
-    // *** Could be a better way to remove element ***
-    userPets.tagged = userPets.tagged.filter(function (petToDelete) {
-      return petToDelete.id !== pet.id;
-    });
-    message.info(pet.displayName + " Removed!");
+    setTaggedPets(taggedPets.filter((item) => item.id !== pet.id));
+    message.info(pet.displayName + " removed");
   };
 
   // send tagged pet ids array to
   const submitPets = () => {
-    onFinish(userPets);
+    onFinish(taggedPets);
   };
 
   return (
     <Flex vertical>
-      {userPets.petsOwned.length > 0 && (
+      {ownedPets.length > 0 && (
         <List
-          dataSource={userPets.petsOwned}
+          dataSource={ownedPets}
           renderItem={(item) => (
             <List.Item>
               <List.Item.Meta
@@ -86,15 +63,19 @@ function TagPets({ onFinish }: ContentProps) {
                 }
                 description={item.breed}
               />
-              <Button
-                icon={<PlusOutlined></PlusOutlined>}
-                onClick={() => addPet(item)}
-              ></Button>
-              <Button
-                icon={<MinusOutlined></MinusOutlined>}
-                danger
-                onClick={() => removePet(item)}
-              ></Button>
+              {!taggedPets.includes(item) && (
+                <Button
+                  icon={<PlusOutlined></PlusOutlined>}
+                  onClick={() => addPet(item)}
+                />
+              )}
+              {taggedPets.includes(item) && (
+                <Button
+                  icon={<MinusOutlined></MinusOutlined>}
+                  danger
+                  onClick={() => removePet(item)}
+                />
+              )}
             </List.Item>
           )}
         />
