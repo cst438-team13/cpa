@@ -12,10 +12,12 @@ import { useQuery } from "../../hooks/useQuery";
 import { useTagPetsToPostsModal } from "../../hooks/useTagPetsToPostsModal";
 
 export function ProfileCreatePostCard() {
-  const STRING_MAX = 255;
+  const BODY_TEXT_MAX = 255;
+  const CAPTION_TEXT_MAX = 64;
+
   const navigate = useNavigate();
   const user = useCurrentUserProfile();
-  const [petsTagged, setPetsTagged] = useState<Array<PetProfile> | null>(null);
+  const [petsTagged, setPetsTagged] = useState<PetProfile[] | null>(null);
 
   // For handling attached picture
   const [pictureData, setPictureData] = useState<string | null>(null);
@@ -26,7 +28,7 @@ export function ProfileCreatePostCard() {
   const onClickTagPets = async () => {
     // array of pet ids tagged in modal
     const petsFromModal = await openTagPetModal();
-    setPetsTagged(petsFromModal.tagged);
+    setPetsTagged(petsFromModal);
   };
 
   const beforeUploadPicture = async (file: RcFile) => {
@@ -94,15 +96,17 @@ export function ProfileCreatePostCard() {
 
   return (
     <Card title="New Post" style={{ width: 650 }}>
-      <Flex vertical align="flex-end" gap={12}>
+      <Flex vertical align="flex-end" gap={32}>
         <TextArea
           name="caption"
-          count={{ show: true, max: STRING_MAX }}
+          count={{
+            show: true,
+            max: pictureData == null ? BODY_TEXT_MAX : CAPTION_TEXT_MAX,
+          }}
           placeholder={pictureData == null ? "Body text" : "Title text"}
-          autoSize={pictureData == null ? { minRows: 3 } : undefined}
+          autoSize={pictureData == null ? { minRows: 3 } : { maxRows: 1 }}
           onChange={(e) => (textRef.current = e.target.value)}
         />
-        <br></br>
 
         <Flex gap={12}>
           <Upload
@@ -113,8 +117,6 @@ export function ProfileCreatePostCard() {
           >
             <Button icon={<UploadOutlined />}>Choose picture</Button>
           </Upload>
-          <br></br>
-          <br></br>
 
           <Button onClick={onClickTagPets}>Tag Pets in Post</Button>
 
