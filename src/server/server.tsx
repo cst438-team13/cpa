@@ -471,16 +471,10 @@ class APIService {
 
     const currentUserAccount = await DB.findOne(UserAccount, {
       where: { id: currentUserId },
-      loadRelationIds: {
-        relations: ["profile"],
-      },
+      relations: ["profile"],
     });
 
-    const currentUserProfile = await DB.findOne(UserProfile, {
-      where: { id: currentUserAccount?.profile.id },
-    });
-
-    return nullthrows(currentUserProfile);
+    return nullthrows(currentUserAccount?.profile);
   }
 
   private async getCurrentUserAccountId() {
