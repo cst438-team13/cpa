@@ -12,5 +12,7 @@
 
   "editor.codeActionsOnSave": {
     "source.organizeImports": "always"
-  }
+  },
+  "appService.defaultWebAppToDeploy": "/subscriptions/9ed4287a-3a94-457b-8beb-eb65127978cb/resourceGroups/appsvc_linux_centralus_basic/providers/Microsoft.Web/sites/pawsconnect",
+  "appService.deploySubpath": "."
 }

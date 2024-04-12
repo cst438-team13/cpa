@@ -30,7 +30,7 @@ export function UserProfilePage() {
     newValues[field] = value;
 
     await api.updateUserProfile(profileId, newValues);
-    await refetchQuery("getCurrentUserProfile");
+    await refetchQuery("getUserProfile", profileId);
 
     message.destroy();
     message.info("Updated!");
