@@ -7,8 +7,8 @@
     "client:prod": "esbuild src/client/client.tsx --bundle --outdir=public/js --minify",
     "client:dev": "esbuild src/client/client.tsx --bundle --outdir=public/js --watch --sourcemap",
     "lint": "eslint src/** --fix",
-    "build": "npm run client:prod",
-    "start": "npm run server"
+    "build": "npm run client:prod && tsc --project src/server/tsconfig.json",
+    "start": "node build/server.js"
   },
   "devDependencies": {
     "@types/antd": "1.0.0",
