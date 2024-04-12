@@ -2,6 +2,7 @@
 
 # Webpack output
 public/js
+build/
 
 public/ugc/*
 !public/ugc/1.png
