@@ -7,6 +7,7 @@ import { api } from "../../api";
 type Props =
   | {
       userId: number;
+      isHomePage: boolean;
     }
   | { petId: number };
 
@@ -21,7 +22,12 @@ export function FeedCards(props: Props) {
 
     const data =
       "userId" in props
-        ? await api.getFeedPostsForUser(props.userId, posts.length, 5)
+        ? await api.getFeedPostsForUser(
+            props.userId,
+            props.isHomePage,
+            posts.length,
+            5
+          )
         : await api.getFeedPostsForPet(props.petId, posts.length, 5);
 
     setPosts([...posts, ...data.posts]);
@@ -41,7 +47,7 @@ export function FeedCards(props: Props) {
         return (
           <Card
             key={post.id}
-            title={`${post.author.displayName} posted:`}
+            title={`${post.author.displayName} posted${post.visibility == "public" ? "" : " for friends"}:`}
             style={{ width: 650 }}
             hoverable
             cover={

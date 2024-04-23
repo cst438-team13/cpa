@@ -1,4 +1,11 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { PetProfile } from "./PetProfile";
 import { PetTransferRequest } from "./PetTransferRequest";
 import { Post } from "./Post";
@@ -22,6 +29,10 @@ export class UserProfile {
 
   @Column()
   language: string;
+
+  @ManyToMany(() => UserProfile, (friend) => friend.friends)
+  @JoinTable()
+  friends: UserProfile[];
 
   @OneToMany(() => PetProfile, (pet) => pet.owner, { cascade: true })
   pets: PetProfile[];
