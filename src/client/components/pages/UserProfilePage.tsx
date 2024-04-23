@@ -1,5 +1,5 @@
 import { UserOutlined } from "@ant-design/icons";
-import { Card, Flex, Input, Typography, message } from "antd";
+import { Button, Card, Flex, Input, Typography, message } from "antd";
 import Avatar from "antd/es/avatar/avatar";
 import React from "react";
 import { useParams } from "react-router-dom";
@@ -9,6 +9,7 @@ import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 import { useQuery, useRefetchQuery } from "../../hooks/useQuery";
 import { Editable } from "../Editable";
 import { ProfileCreatePostCard } from "../profile/ProfileCreatePostCard";
+import { ProfileFriendsCard } from "../profile/ProfileFriendsCard";
 import { ProfilePetsCard } from "../profile/ProfilePetsCard";
 import { FeedCards } from "../shared/FeedCards";
 import { MainLayout } from "../shared/MainLayout";
@@ -22,6 +23,32 @@ export function UserProfilePage() {
 
   const currentUser = useCurrentUserProfile();
   const isOwningUser = currentUser?.id === profileId;
+
+  const isUserFriend = useQuery("isFriendOfUser", currentUser!.id, profileId);
+
+  const onAddFriend = async () => {
+    message.loading("Adding...");
+
+    await api.addFriendByUserId(currentUser!.id, profileId);
+    await refetchQuery("getFriendsByUserId", currentUser!.id);
+    await refetchQuery("getFriendsByUserId", profileId);
+    await refetchQuery("isFriendOfUser", currentUser!.id, profileId);
+
+    message.destroy();
+    message.info("Friend added!");
+  };
+
+  const onRemoveFriend = async () => {
+    message.loading("Removing...");
+
+    await api.removeFriendByUserId(currentUser!.id, profileId);
+    await refetchQuery("getFriendsByUserId", currentUser!.id);
+    await refetchQuery("getFriendsByUserId", profileId);
+    await refetchQuery("isFriendOfUser", currentUser!.id, profileId);
+
+    message.destroy();
+    message.info("Friend removed!");
+  };
 
   const onChangeField = async (field: keyof UserProfile, value: unknown) => {
     message.loading("Updating...");
@@ -37,9 +64,26 @@ export function UserProfilePage() {
   };
 
   return (
-    <MainLayout leftContent={<ProfilePetsCard userId={profileId} />}>
+    <MainLayout
+      leftContent={<ProfilePetsCard userId={profileId} />}
+      rightContent={<ProfileFriendsCard userId={profileId} />}
+    >
       <Flex vertical gap={24}>
-        <Card title="User Info">
+        <Card
+          title={
+            <Flex align="center" justify="space-between">
+              User Info
+              {!isOwningUser &&
+                (isUserFriend ? (
+                  <Button danger onClick={onRemoveFriend}>
+                    Remove Friend
+                  </Button>
+                ) : (
+                  <Button onClick={onAddFriend}>Add Friend</Button>
+                ))}
+            </Flex>
+          }
+        >
           <Flex vertical align="center" gap={18}>
             <Avatar
               size={128}

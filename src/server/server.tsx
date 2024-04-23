@@ -142,6 +142,46 @@ class APIService {
     return nullthrows(pets);
   }
 
+  async addFriendByUserId(userId: number, otherId: number) {
+    const userProfile = await DB.findOne(UserProfile, {
+      where: { id: userId },
+      relations: { friends: true },
+    });
+
+    const otherProfile = await DB.findOne(UserProfile, {
+      where: { id: otherId },
+      relations: { friends: true },
+    });
+
+    userProfile?.friends.push(nullthrows(otherProfile));
+    otherProfile?.friends.push(nullthrows(userProfile));
+
+    await DB.save(userProfile);
+    await DB.save(otherProfile);
+
+    return true;
+  }
+
+  async removeFriendByUserId(userId: number, otherId: number) {
+    const userProfile = await DB.findOne(UserProfile, {
+      where: { id: userId },
+      relations: { friends: true },
+    });
+
+    const otherProfile = await DB.findOne(UserProfile, {
+      where: { id: otherId },
+      relations: { friends: true },
+    });
+
+    userProfile!.friends = userProfile!.friends.filter((o) => o.id != otherId);
+    otherProfile!.friends = otherProfile!.friends.filter((o) => o.id != userId);
+
+    await DB.save(userProfile);
+    await DB.save(otherProfile);
+
+    return true;
+  }
+
   async updateUserAccount(id: number, password: string) {
     const passwordHash = await bcrypt.hash(password, 10);
 
@@ -208,6 +248,26 @@ class APIService {
     });
 
     return nullthrows(pet);
+  }
+
+  async isFriendOfUser(userId: number, otherId: number) {
+    return await DB.exists(UserProfile, {
+      where: {
+        id: userId,
+        friends: {
+          id: otherId,
+        },
+      },
+    });
+  }
+
+  async getFriendsByUserId(userId: number) {
+    const userProfile = await DB.findOne(UserProfile, {
+      where: { id: userId },
+      relations: { friends: true },
+    });
+
+    return nullthrows(userProfile).friends;
   }
 
   async getPetTransferRequests(userId: number) {

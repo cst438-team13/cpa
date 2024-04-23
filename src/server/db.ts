@@ -83,8 +83,12 @@ async function seedUser(
 }
 
 async function seedPet(users: UserProfile[]) {
+  const randomImage = (
+    await axios.get("https://source.unsplash.com/random/?dog,profile,avatar")
+  ).request.res.responseUrl;
+
   const pet = new PetProfile();
-  pet.avatarUrl = "/ugc/1.png";
+  pet.avatarUrl = randomImage;
   pet.owner = random.choice(users);
   pet.description = random.lorem.paragraph();
   pet.age = random.number(1, 14);
