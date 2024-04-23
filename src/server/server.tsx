@@ -225,9 +225,10 @@ class APIService {
     return true;
   }
 
-  async getUserProfile(id: number) {
+  async getUserProfile(id: number, relations?: string[]) {
     const user = await DB.findOne(UserProfile, {
       where: { id },
+      relations,
     });
 
     return nullthrows(user);
@@ -349,17 +350,22 @@ class APIService {
   }
 
   // Returns the next "count" feed posts
-  async getFeedPostsForUser(userId: number, start: number, count: number) {
-    // Home page: show all posts by the user or their friends. TODO: Implement
+  async getFeedPostsForUser(
+    userId: number,
+    isHomePage: boolean,
+    start: number,
+    count: number
+  ) {
+    // Home page: show all posts by the user or their friends.
     // Profile page: if logged in as this user, show ALL posts by them. Else, show all public posts.
 
     const isAuthor = await this.checkCurrentUserIs(userId);
-    const isFriendOfAuthor = false;
+    const isFriendOfAuthor = await this.checkCurrentUserIsFriendOf(userId);
 
-    const user = await this.getUserProfile(userId);
+    const user = await this.getUserProfile(userId, ["friends"]);
     const posts = await DB.find(Post, {
       where: {
-        author: user,
+        author: [user, ...(isHomePage ? user.friends : [])],
         visibility: isAuthor || isFriendOfAuthor ? undefined : "public",
       },
       order: {
@@ -545,6 +551,11 @@ class APIService {
   private async checkCurrentUserIs(userId: number) {
     const currentUserProfile = await this.getCurrentUserProfile();
     return currentUserProfile?.id == userId;
+  }
+
+  private async checkCurrentUserIsFriendOf(userId: number) {
+    const currentUserProfile = await this.getCurrentUserProfile();
+    return await this.isFriendOfUser(userId, currentUserProfile!.id);
   }
 }
 

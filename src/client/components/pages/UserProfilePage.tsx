@@ -129,7 +129,7 @@ export function UserProfilePage() {
           </Flex>
         </Card>
         {isOwningUser && <ProfileCreatePostCard />}
-        <FeedCards userId={profileId} />
+        <FeedCards isHomePage={false} userId={profileId} />
       </Flex>
     </MainLayout>
   );

@@ -11,7 +11,7 @@ export function HomePage() {
   return (
     <MainLayout rightContent={<RequestsCard />}>
       <Flex vertical gap={24} align="center" style={{ width: "100%" }}>
-        <FeedCards userId={user!.id} />
+        <FeedCards isHomePage userId={user!.id} />
       </Flex>
     </MainLayout>
   );
