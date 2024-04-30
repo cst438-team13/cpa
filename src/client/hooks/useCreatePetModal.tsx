@@ -77,6 +77,7 @@ function CreatePetContent({ onFinish }: ContentProps) {
               listType="picture-card"
               showUploadList={false}
               customRequest={(e) => handleSetAvatar(e.file as RcFile)}
+              className="avatar-upload"
             >
               <div
                 style={{
