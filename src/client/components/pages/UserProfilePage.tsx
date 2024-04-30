@@ -27,15 +27,15 @@ export function UserProfilePage() {
   const isUserFriend = useQuery("isFriendOfUser", currentUser!.id, profileId);
 
   const onAddFriend = async () => {
-    message.loading("Adding...");
-
-    await api.addFriendByUserId(currentUser!.id, profileId);
-    await refetchQuery("getFriendsByUserId", currentUser!.id);
-    await refetchQuery("getFriendsByUserId", profileId);
-    await refetchQuery("isFriendOfUser", currentUser!.id, profileId);
+    message.loading("Sending request");
+    const success = await api.createFriendRequest(currentUser!.id, profile.id);
 
     message.destroy();
-    message.info("Friend added!");
+    if (success) {
+      message.info("Request sent!");
+    } else {
+      message.error("Request already exists");
+    }
   };
 
   const onRemoveFriend = async () => {

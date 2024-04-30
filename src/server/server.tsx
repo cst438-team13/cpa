@@ -9,6 +9,7 @@ import ReactDOMServer from "react-dom/server";
 import { rpcHandler } from "typed-rpc/express";
 import { Like } from "typeorm";
 import { DB } from "./db";
+import { FriendRequest } from "./models/FriendRequest";
 import { PetProfile } from "./models/PetProfile";
 import { PetTransferRequest } from "./models/PetTransferRequest";
 import { Post } from "./models/Post";
@@ -277,6 +278,68 @@ class APIService {
     });
 
     return nullthrows(userProfile).friends;
+  }
+
+  async createFriendRequest(userId: number, recieverId: number) {
+    const sender = await this.getUserProfile(userId);
+    const reciever = await this.getUserProfile(recieverId);
+
+    const isDuplicateRequest = await DB.exists(FriendRequest, {
+      where: {
+        sender,
+        reciever,
+      },
+    });
+
+    if (isDuplicateRequest) {
+      return false;
+    }
+
+    const request = new FriendRequest();
+    request.sender = sender;
+    request.reciever = reciever;
+
+    await DB.save(request);
+    return true;
+  }
+
+  async getFriendRequests(userId: number) {
+    return await DB.find(FriendRequest, {
+      where: {
+        reciever: {
+          id: userId,
+        },
+      },
+      relations: {
+        sender: true,
+      },
+    });
+  }
+
+  async acceptFriendRequest(id: number) {
+    const request = await DB.find(FriendRequest, {
+      where: { id },
+      relations: { sender: { friends: true }, reciever: { friends: true } },
+    });
+
+    const { sender, reciever } = request[0];
+
+    sender.friends.push(reciever);
+    reciever.friends.push(sender);
+
+    await DB.save(sender);
+    await DB.save(reciever);
+    await DB.remove(request);
+    return true;
+  }
+
+  async denyFriendRequest(id: number) {
+    const request = await DB.find(FriendRequest, {
+      where: { id },
+    });
+
+    await DB.remove(request);
+    return true;
   }
 
   async getPetTransferRequests(userId: number) {
