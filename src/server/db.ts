@@ -1,5 +1,6 @@
 import axios from "axios";
 import bcrypt from "bcrypt";
+import "dotenv/config";
 import { DataSource, type EntityManager } from "typeorm";
 import { PetProfile } from "./models/PetProfile";
 import { PetTransferRequest } from "./models/PetTransferRequest";
