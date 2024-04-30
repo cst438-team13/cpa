@@ -1,8 +1,9 @@
-import { Button, Card, Flex, Typography } from "antd";
+import { Button, Card, Flex, Typography, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import type { Post } from "../../../server/models/Post";
 import { api } from "../../api";
+import { useCurrentUserProfile } from "../../hooks/useCurrentUserProfile";
 
 type Props =
   | {
@@ -15,9 +16,11 @@ export function FeedCards(props: Props) {
   const [hasMore, setHasMore] = useState(true);
   const [posts, setPosts] = useState([] as Post[]);
 
+  const currentUser = useCurrentUserProfile();
+
   const [isLoading, setIsLoading] = useState(true);
 
-  const loadMore = async () => {
+  const onClickLoadMore = async () => {
     setIsLoading(true);
 
     const data =
@@ -35,8 +38,23 @@ export function FeedCards(props: Props) {
     setIsLoading(false);
   };
 
+  const onClickTranslate = async (post: Post) => {
+    message.loading("Translating...");
+    const translated = await api.translatePost(post, currentUser!);
+
+    message.destroy();
+    if (translated == null) {
+      message.error(`Couldn't translate from ${post.language}`);
+    } else {
+      message.info("Translated!");
+
+      post.text = translated;
+      setPosts([...posts]);
+    }
+  };
+
   useEffect(() => {
-    setTimeout(loadMore, 100);
+    setTimeout(onClickLoadMore, 100);
   }, []);
 
   return (
@@ -47,7 +65,19 @@ export function FeedCards(props: Props) {
         return (
           <Card
             key={post.id}
-            title={`${post.author.displayName} posted${post.visibility == "public" ? "" : " for friends"}:`}
+            title={
+              <Flex justify="space-between" align="center">
+                <div>
+                  {post.author.displayName} posted
+                  {post.visibility == "public" ? "" : " for friends"}:
+                </div>
+                {post.language !== currentUser?.language && (
+                  <Button onClick={() => onClickTranslate(post)}>
+                    Translate ({post.language} to {currentUser?.language})
+                  </Button>
+                )}
+              </Flex>
+            }
             style={{ width: 650 }}
             hoverable
             cover={
@@ -95,7 +125,7 @@ export function FeedCards(props: Props) {
       {hasMore && (
         <Flex style={{ width: "100%" }} justify="center">
           <Button
-            onClick={() => !isLoading && loadMore()}
+            onClick={() => !isLoading && onClickLoadMore()}
             type="primary"
             loading={isLoading}
           >

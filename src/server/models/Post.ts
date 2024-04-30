@@ -19,6 +19,9 @@ export class Post {
   creationDate: Date;
 
   @Column()
+  language: string;
+
+  @Column()
   text: string;
 
   @Column()

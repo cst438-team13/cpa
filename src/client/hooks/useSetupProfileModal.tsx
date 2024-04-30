@@ -11,6 +11,7 @@ import {
 } from "antd";
 import ImgCrop from "antd-img-crop";
 import { RcFile } from "antd/es/upload";
+import { getLangCodeList, getLangNameFromCode } from "language-name-map";
 import React, { useState } from "react";
 import { getScaledImageFromFile } from "../helpers/imageHelpers";
 
@@ -52,6 +53,11 @@ function SetupProfileContent({ onFinish }: ContentProps) {
     const data = await getScaledImageFromFile(file, 128);
     setAvatarData(data);
   };
+
+  const languages = getLangCodeList().map((o) => ({
+    value: o,
+    label: getLangNameFromCode(o)?.name,
+  }));
 
   return (
     <Flex vertical>
@@ -109,12 +115,7 @@ function SetupProfileContent({ onFinish }: ContentProps) {
         </Form.Item>
 
         <Form.Item label="Language (preferred)" name="language">
-          <Select
-            options={[
-              { value: "en", label: "English" },
-              { value: "es", label: "Spanish" },
-            ]}
-          />
+          <Select options={languages} />
         </Form.Item>
 
         <Button type="primary" htmlType="submit">
