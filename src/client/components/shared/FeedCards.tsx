@@ -1,5 +1,4 @@
 import { Button, Card, Flex, Typography, message } from "antd";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import type { Post } from "../../../server/models/Post";
@@ -13,43 +12,18 @@ type Props =
   | { petId: number };
 
 export function FeedCards(props: Props) {
+  const [postCaption, setPostCaption] = useState("");
   const [hasMore, setHasMore] = useState(true);
   const [posts, setPosts] = useState([] as Post[]);
 
   const [isLoading, setIsLoading] = useState(true);
 
   // post description translation
-  const translate = async () => {
-    // will need to find better way to do this
-    const apiKey = "cfbeec553f734317bc6f5a96505e8159";
-    const region = "westus2";
-    const endpoint = "https://api.cognitive.microsofttranslator.com/translate";
-
-    try {
-      const response = await axios.post(
-        endpoint,
-        [
-          {
-            text: "Hola como estas hoy",
-          },
-        ],
-        {
-          params: {
-            "api-version": "3.0",
-            to: "en",
-          },
-          headers: {
-            "Ocp-Apim-Subscription-Key": apiKey,
-            // location required if you're using a multi-service or regional (not global) resource.
-            "Ocp-Apim-Subscription-Region": region,
-            "Content-type": "application/json",
-          },
-        }
-      );
-      console.log(response.data[0].translations[0].text);
-    } catch (error) {
-      message.error("Error Translating!");
-    }
+  const translateCaption = async (caption) => {
+    const translation = api.translateText(caption);
+    translation == null
+      ? message.error("Error Translating!")
+      : console.log(translation);
   };
 
   const loadMore = async () => {
@@ -121,7 +95,7 @@ export function FeedCards(props: Props) {
                     hour: "numeric",
                     minute: "2-digit",
                   })}{" "}
-                  <a onClick={translate}> Translate </a>
+                  <a onClick={() => translateCaption(post.text)}> Translate </a>
                 </>
               }
             />

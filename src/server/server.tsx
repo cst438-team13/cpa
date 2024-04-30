@@ -98,6 +98,38 @@ class APIService {
     return true;
   }
 
+  async translateText(caption: string) {
+    // will need to find better way to do this
+    const apiKey = "cfbeec553f734317bc6f5a96505e8159";
+    const region = "westus2";
+    const endpoint = "https://api.cognitive.microsofttranslator.com/translate";
+    try {
+      const response = await axios.post(
+        endpoint,
+        [
+          {
+            text: caption,
+          },
+        ],
+        {
+          params: {
+            "api-version": "3.0",
+            to: "es",
+          },
+          headers: {
+            "Ocp-Apim-Subscription-Key": apiKey,
+            // location required if you're using a multi-service or regional (not global) resource.
+            "Ocp-Apim-Subscription-Region": region,
+            "Content-type": "application/json",
+          },
+        }
+      );
+      return response.data[0].translations[0].text;
+    } catch (error) {
+      return null;
+    }
+  }
+
   async createPost(
     pictureData: string | null,
     text: string,
