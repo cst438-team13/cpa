@@ -78,7 +78,6 @@ function SetupProfileContent({ onFinish }: ContentProps) {
               showUploadList={false}
               customRequest={(e) => handleSetAvatar(e.file as RcFile)}
               className="avatar-upload"
-              style={{ cursor: "pointer" }}
             >
               <div
                 style={{
