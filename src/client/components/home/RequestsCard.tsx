@@ -10,9 +10,10 @@ export function RequestsCard() {
   const user = useCurrentUserProfile();
   const navigate = useNavigate();
   const refetchQuery = useRefetchQuery();
-  const requestsData = useQuery("getPetTransferRequests", user!.id);
+  const petRequestsData = useQuery("getPetTransferRequests", user!.id);
+  const friendRequestsData = useQuery("getFriendRequests", user!.id);
 
-  const onClickAccept = async (requestId: number) => {
+  const onClickAcceptPet = async (requestId: number) => {
     message.loading("Processing");
     const success = await api.acceptPetTransferRequest(requestId);
 
@@ -23,7 +24,7 @@ export function RequestsCard() {
     }
   };
 
-  const onClickDeny = async (requestId: number) => {
+  const onClickDenyPet = async (requestId: number) => {
     message.loading("Processing");
     const success = await api.denyPetTransferRequest(requestId);
 
@@ -34,24 +35,49 @@ export function RequestsCard() {
     }
   };
 
+  const onClickAcceptFriend = async (requestId: number) => {
+    message.loading("Processing");
+    const success = await api.acceptFriendRequest(requestId);
+
+    if (success) {
+      message.destroy();
+      message.info("Request accepted!");
+      await refetchQuery("getFriendRequests", user!.id);
+    }
+  };
+
+  const onClickDenyFriend = async (requestId: number) => {
+    message.loading("Processing");
+    const success = await api.denyFriendRequest(requestId);
+
+    if (success) {
+      message.destroy();
+      message.info("Request rejected");
+      await refetchQuery("getFriendRequests", user!.id);
+    }
+  };
+
   // Don't show card if no requests exist
-  if (requestsData.length < 1) {
+  if (petRequestsData.length < 1 && friendRequestsData.length < 1) {
     return <></>;
   }
 
   return (
     <Card title="Requests" styles={{ body: { paddingTop: 0 } }}>
-      {requestsData.length > 0 && (
+      {petRequestsData.length > 0 && (
         <List
           header="Pet transfers"
-          dataSource={requestsData}
+          dataSource={petRequestsData}
           renderItem={(item) => (
             <List.Item
               actions={[
-                <Button type="primary" onClick={() => onClickAccept(item.id)}>
+                <Button
+                  type="primary"
+                  onClick={() => onClickAcceptPet(item.id)}
+                >
                   Accept
                 </Button>,
-                <Button onClick={() => onClickDeny(item.id)}>Deny</Button>,
+                <Button onClick={() => onClickDenyPet(item.id)}>Deny</Button>,
               ]}
             >
               <ClickableContainer onClick={() => navigate(`/pet/${item.id}`)}>
@@ -60,6 +86,38 @@ export function RequestsCard() {
                   title={
                     <Typography.Text strong>
                       {item.pet.displayName}
+                    </Typography.Text>
+                  }
+                />
+              </ClickableContainer>
+            </List.Item>
+          )}
+        />
+      )}
+      {friendRequestsData.length > 0 && (
+        <List
+          header="Friend requests"
+          dataSource={friendRequestsData}
+          renderItem={(item) => (
+            <List.Item
+              actions={[
+                <Button
+                  type="primary"
+                  onClick={() => onClickAcceptFriend(item.id)}
+                >
+                  Accept
+                </Button>,
+                <Button onClick={() => onClickDenyFriend(item.id)}>
+                  Deny
+                </Button>,
+              ]}
+            >
+              <ClickableContainer onClick={() => navigate(`/user/${item.id}`)}>
+                <List.Item.Meta
+                  avatar={<Avatar src={item.sender.avatarUrl} />}
+                  title={
+                    <Typography.Text strong>
+                      {item.sender.displayName}
                     </Typography.Text>
                   }
                 />

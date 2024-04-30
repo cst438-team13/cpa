@@ -6,6 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import { FriendRequest } from "./FriendRequest";
 import { PetProfile } from "./PetProfile";
 import { PetTransferRequest } from "./PetTransferRequest";
 import { Post } from "./Post";
@@ -42,4 +43,10 @@ export class UserProfile {
 
   @OneToMany(() => PetTransferRequest, (req) => req.reciever, { cascade: true })
   petTransferRequests: PetTransferRequest[];
+
+  @OneToMany(() => FriendRequest, (req) => req.reciever, { cascade: true })
+  inboundFriendRequests: FriendRequest[];
+
+  @OneToMany(() => FriendRequest, (req) => req.sender, { cascade: true })
+  outboundFriendRequests: FriendRequest[];
 }
