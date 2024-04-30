@@ -14,6 +14,7 @@ import { PetTransferRequest } from "./models/PetTransferRequest";
 import { Post } from "./models/Post";
 import { UserAccount } from "./models/UserAccount";
 import { UserProfile } from "./models/UserProfile";
+import { azure } from "./utils/azure";
 
 const app = express();
 const port = process.env.PORT ?? 3000;
@@ -61,6 +62,10 @@ app.get("*", (_req, res) => {
 
 class APIService {
   constructor(private session: SessionData) {}
+
+  async translatePost(post: Post, user: UserProfile) {
+    return await azure.translate(post.text, post.language, user.language);
+  }
 
   async createPetProfile(
     userId: number,
@@ -113,6 +118,9 @@ class APIService {
     newPost.taggedPets = taggedPets;
     newPost.visibility = visibility;
     newPost.author = author;
+
+    // If the detected language is relatively certain, use it. Otherwise default to the author's language.
+    newPost.language = (await azure.detectLang(text)) ?? author.language;
 
     // Upload picture
     if (pictureData != null) {

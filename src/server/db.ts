@@ -120,6 +120,7 @@ async function seedPost(
   post.author = random.choice(users);
   post.text = isTextPost ? random.lorem.paragraph() : caption;
   post.visibility = random.choice(["public", "friends"]);
+  post.language = isTextPost ? "la" : "en";
 
   if (!isTextPost) {
     const randomImage = (
