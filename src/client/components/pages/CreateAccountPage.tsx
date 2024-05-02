@@ -8,12 +8,25 @@ import { useRefetchQuery } from "../../hooks/useQuery";
 import { useSetupProfileModal } from "../../hooks/useSetupProfileModal";
 
 export function CreateAccountPage() {
+  const numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+  const symbols = ["!", "@", "#", "$", "%", "&", "-", "_"];
   const navigate = useNavigate();
   const refetchQuery = useRefetchQuery();
   const { openSetupProfileModal } = useSetupProfileModal();
 
   const onSubmit = async (values) => {
-    // TODO: Check if Password is a valid format
+    if (!numbers.some((v) => values.password.includes(v))) {
+      message.error("Password must have a number 0-9.");
+      return;
+    }
+    if (!symbols.some((v) => values.password.includes(v))) {
+      message.error("Password must have one of these characters: " + symbols);
+      return;
+    }
+    if (values.password == values.password.toLowerCase()) {
+      message.error("Password must have an uppercase letter.");
+      return;
+    }
     if (values.password != values.confirmPassword) {
       message.error("Passwords do not match.");
       return;
