@@ -1,6 +1,7 @@
 import { UserOutlined } from "@ant-design/icons";
-import { Button, Card, Flex, Input, Typography, message } from "antd";
+import { Button, Card, Flex, Input, Select, Typography, message } from "antd";
 import Avatar from "antd/es/avatar/avatar";
+import { getLangCodeList, getLangNameFromCode } from "language-name-map";
 import React from "react";
 import { useParams } from "react-router-dom";
 import type { UserProfile } from "../../../server/models/UserProfile";
@@ -25,6 +26,11 @@ export function UserProfilePage() {
   const isOwningUser = currentUser?.id === profileId;
 
   const isUserFriend = useQuery("isFriendOfUser", currentUser!.id, profileId);
+
+  const languages = getLangCodeList().map((o) => ({
+    value: o,
+    label: getLangNameFromCode(o)?.name,
+  }));
 
   const onAddFriend = async () => {
     message.loading("Sending request");
@@ -117,14 +123,11 @@ export function UserProfilePage() {
             </div>
             <div>
               <Typography.Text strong>Language: </Typography.Text>
-              <Editable
-                name="language"
-                isEnabled={isOwningUser}
-                value={profile.language}
-                onSubmit={(o) => onChangeField("language", o)}
-              >
-                <Input />
-              </Editable>
+              <Select
+                onChange={(o) => onChangeField("language", o)}
+                defaultValue={profile.language}
+                options={languages}
+              />
             </div>
           </Flex>
         </Card>
