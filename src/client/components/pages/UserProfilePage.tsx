@@ -123,11 +123,15 @@ export function UserProfilePage() {
             </div>
             <div>
               <Typography.Text strong>Language: </Typography.Text>
-              <Select
-                onChange={(o) => onChangeField("language", o)}
-                defaultValue={profile.language}
-                options={languages}
-              />
+              {isOwningUser ? (
+                <Select
+                  onChange={(o) => onChangeField("language", o)}
+                  defaultValue={profile.language}
+                  options={languages}
+                />
+              ) : (
+                getLangNameFromCode(profile.language)?.name
+              )}
             </div>
           </Flex>
         </Card>
